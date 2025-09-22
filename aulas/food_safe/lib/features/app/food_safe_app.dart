@@ -16,7 +16,7 @@ class FoodSafeApp extends StatelessWidget {
         useMaterial3: true,
         materialTapTargetSize: MaterialTapTargetSize.padded,
         visualDensity: VisualDensity.standard,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       routes: {
         '/': (context) => const SplashScreenPage(),

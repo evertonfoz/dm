@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../onboarding/onboarding_page.dart';
 
@@ -13,11 +14,29 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
+
+    Future.microtask(() async {
+      final prefs = await SharedPreferences.getInstance();
+      final marketingConsent = prefs.getBool('marketing_consent');
+
+      if (marketingConsent == true) {
+        Future.delayed(const Duration(seconds: 3), () {
+          if (mounted) {
+            Navigator.of(context).pushReplacementNamed('/home');
+          }
+        });
+        return;
+      }
       if (mounted) {
         Navigator.of(context).pushReplacementNamed(OnboardingPage.routeName);
       }
     });
+
+    // Future.delayed(const Duration(seconds: 3), () {
+    //   if (mounted) {
+    //     Navigator.of(context).pushReplacementNamed(OnboardingPage.routeName);
+    //   }
+    // });
   }
 
   @override
