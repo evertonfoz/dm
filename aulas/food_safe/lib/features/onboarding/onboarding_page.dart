@@ -47,7 +47,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         children: [
           Center(
             child: SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.55,
+              height: MediaQuery.sizeOf(context).height * 0.6,
               child: Column(
                 children: [
                   // Container(height: 100, color: Colors.red),

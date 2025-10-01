@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../services/shared_preferences_services.dart';
 import '../onboarding/onboarding_page.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -16,8 +17,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
 
     Future.microtask(() async {
-      final prefs = await SharedPreferences.getInstance();
-      final marketingConsent = prefs.getBool('marketing_consent');
+      final marketingConsent =
+          await SharedPreferencesService.getMarketingConsent();
 
       if (marketingConsent == true) {
         Future.delayed(const Duration(seconds: 3), () {
@@ -31,12 +32,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         Navigator.of(context).pushReplacementNamed(OnboardingPage.routeName);
       }
     });
-
-    // Future.delayed(const Duration(seconds: 3), () {
-    //   if (mounted) {
-    //     Navigator.of(context).pushReplacementNamed(OnboardingPage.routeName);
-    //   }
-    // });
   }
 
   @override

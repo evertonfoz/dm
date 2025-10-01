@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../policies/policy_viewer_page.dart';
+
 class GoToAccessPageOBpage extends StatelessWidget {
   const GoToAccessPageOBpage({super.key});
 
@@ -30,11 +32,34 @@ class GoToAccessPageOBpage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed('/home');
-            },
-            child: const Text('Ir para o Acesso'),
+          Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.check_circle, color: Colors.green),
+                title: const Text('Política de Privacidade'),
+                trailing: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return PolicyViewerPage(
+                            policyTitle: 'Política de Privacidade',
+                            assetPath: 'assets/policies/privacy_policy.md',
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: Text('Ler'),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed('/home');
+                },
+                child: const Text('Ir para o Acesso'),
+              ),
+            ],
           ),
         ],
       ),

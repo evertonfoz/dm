@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:food_safe/services/shared_preferences_services.dart';
 
 class ConsentPageOBPage extends StatefulWidget {
   final VoidCallback onConsentGiven;
-  // final PageController pageController;
-
-  // const ConsentPageOBPage({super.key, required this.pageController});
   const ConsentPageOBPage({super.key, required this.onConsentGiven});
 
   @override
@@ -34,50 +31,12 @@ class _ConsentPageOBPageState extends State<ConsentPageOBPage> {
           onPressed: !_marketingConsent
               ? null
               : () async {
-                  final prefs = await SharedPreferences.getInstance();
-
-                  await prefs.setBool('marketing_consent', _marketingConsent);
-
+                  await SharedPreferencesService.setMarketingConsent(
+                    _marketingConsent,
+                  );
                   widget.onConsentGiven();
                 },
-          // () {
-          // widget.pageController.nextPage(
-          //   duration: const Duration(milliseconds: 300),
-          //   curve: Curves.easeInOut,
-          // );
-          // Lógica para salvar o consentimento
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: Text(
-          //       _marketingConsent
-          //           ? 'Consentimento concedido'
-          //           : 'Consentimento negado',
-          //     ),
-          //   ),
-          // );
-          // },
         ),
-        // Visibility(
-        //   visible: _marketingConsent,
-        //   maintainSize: true,
-        //   maintainAnimation: true,
-        //   maintainState: true,
-        //   child: ElevatedButton(
-        //     child: const Text('Salvar Consentimento'),
-        //     onPressed: () {
-        //       // Lógica para salvar o consentimento
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //         SnackBar(
-        //           content: Text(
-        //             _marketingConsent
-        //                 ? 'Consentimento concedido'
-        //                 : 'Consentimento negado',
-        //           ),
-        //         ),
-        //       );
-        //     },
-        //   ),
-        // ),
       ],
     );
   }
