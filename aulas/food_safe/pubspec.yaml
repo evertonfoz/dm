@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_native_splash: ^2.4.6
+  gpt_markdown: ^1.1.4
   shared_preferences: ^2.5.3
 
 dev_dependencies:
@@ -23,3 +24,4 @@ flutter:
   assets:
     - assets/
     - assets/images/onboarding/
+    - assets/policies/
