@@ -1,9 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:food_safe/services/shared_preferences_services.dart';
 
+import '../../policies/listtile_policy_widget.dart';
 import '../../policies/policy_viewer_page.dart';
 
-class GoToAccessPageOBpage extends StatelessWidget {
+class GoToAccessPageOBpage extends StatefulWidget {
   const GoToAccessPageOBpage({super.key});
+
+  @override
+  State<GoToAccessPageOBpage> createState() => _GoToAccessPageOBpageState();
+}
+
+class _GoToAccessPageOBpageState extends State<GoToAccessPageOBpage> {
+  bool _isPrivacyPolicyRead = false;
+  bool _isTermsOfUseRead = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPrivacyPolicyReadStatus();
+    _checkTermsOfUseReadStatus();
+  }
+
+  void _checkPrivacyPolicyReadStatus() async {
+    bool isRead = await SharedPreferencesService.getPrivacyPolicyAllRead();
+    setState(() {
+      _isPrivacyPolicyRead = isRead;
+    });
+  }
+
+  void _checkTermsOfUseReadStatus() async {
+    bool isRead = await SharedPreferencesService.getTermsOfUseReadStatus();
+    setState(() {
+      _isTermsOfUseRead = isRead;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,29 +65,81 @@ class GoToAccessPageOBpage extends StatelessWidget {
           const SizedBox(height: 24),
           Column(
             children: [
-              ListTile(
-                leading: const Icon(Icons.check_circle, color: Colors.green),
-                title: const Text('Política de Privacidade'),
-                trailing: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return PolicyViewerPage(
-                            policyTitle: 'Política de Privacidade',
-                            assetPath: 'assets/policies/privacy_policy.md',
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  child: Text('Ler'),
-                ),
+              // ListTile(
+              //   leading: Icon(
+              //     _isPrivacyPolicyRead ? Icons.check_circle : Icons.cancel,
+              //     color: _isPrivacyPolicyRead ? Colors.green : Colors.red,
+              //   ),
+              //   title: const Text('Política de Privacidade'),
+              //   trailing: TextButton(
+              //     onPressed: _isPrivacyPolicyRead
+              //         ? null
+              //         : () {
+              //             Navigator.of(context)
+              //                 .push(
+              //                   MaterialPageRoute(
+              //                     builder: (context) {
+              //                       return PolicyViewerPage(
+              //                         policyTitle: 'Política de Privacidade',
+              //                         assetPath:
+              //                             'assets/policies/privacy_policy.md',
+              //                       );
+              //                     },
+              //                   ),
+              //                 )
+              //                 .then((value) {
+              //                   bool didRead = value ?? false;
+
+              //                   SharedPreferencesService.setPrivacyPolicyAllRead(
+              //                     didRead,
+              //                   );
+              //                   if (didRead) {
+              //                     ScaffoldMessenger.of(context)
+              //                         .showSnackBar(
+              //                           const SnackBar(
+              //                             content: Text(
+              //                               'Obrigado por aceitar a política!',
+              //                             ),
+              //                           ),
+              //                         )
+              //                         .closed
+              //                         .then((_) {
+              //                           setState(() {
+              //                             _isPrivacyPolicyRead = didRead;
+              //                           });
+              //                         });
+              //                   }
+              //                 });
+              //           },
+              //     child: Text(_isPrivacyPolicyRead ? 'Lido' : 'Ler'),
+              //   ),
+              // ),
+              ListtilePolicyWidget(
+                isPrivacyPolicyRead: _isPrivacyPolicyRead,
+                assetPath: 'assets/policies/privacy_policy.md',
+                policyTitle: 'Política de Privacidade',
+                onPolicyRead: () {
+                  setState(() {
+                    _isPrivacyPolicyRead = true;
+                  });
+                },
+              ),
+              ListtilePolicyWidget(
+                isPrivacyPolicyRead: _isTermsOfUseRead,
+                assetPath: 'assets/policies/terms_of_use.md',
+                policyTitle: 'Termos de Uso',
+                onPolicyRead: () {
+                  setState(() {
+                    _isTermsOfUseRead = true;
+                  });
+                },
               ),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed('/home');
-                },
+                onPressed: (_isPrivacyPolicyRead && _isTermsOfUseRead)
+                    ? () {
+                        Navigator.of(context).pushReplacementNamed('/home');
+                      }
+                    : null,
                 child: const Text('Ir para o Acesso'),
               ),
             ],

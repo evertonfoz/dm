@@ -15,9 +15,10 @@ dependencies:
   shared_preferences: ^2.5.3
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
@@ -25,3 +26,7 @@ flutter:
     - assets/
     - assets/images/onboarding/
     - assets/policies/
+
+flutter_launcher_icons:
+  ios: true
+  image_path: "assets/splash_02.png"

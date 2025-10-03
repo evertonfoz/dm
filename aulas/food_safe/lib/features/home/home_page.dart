@@ -37,7 +37,8 @@ class _HomePageState extends State<HomePage> {
 
     if (confirm != true) return;
 
-    await SharedPreferencesService.revokeMarketingConsent();
+    await SharedPreferencesService.removeAll();
+    // await SharedPreferencesService.revokeMarketingConsent();
 
     if (!mounted) return;
 
