@@ -17,6 +17,11 @@ class SharedPreferencesService {
     return _instance!;
   }
 
+  // Test helper: reset the singleton instance. Use only in tests.
+  static void resetForTests() {
+    _instance = null;
+  }
+
   static Future<void> setMarketingConsent(bool consent) async {
     if (_instance == null) {
       await getInstance();
@@ -44,6 +49,49 @@ class SharedPreferencesService {
     }
     return _instance!._prefs.getBool(PreferencesKeys.privacyPolicyAllRead) ??
         false;
+  }
+
+  // User data helpers (name and email) - keep separate from consent keys
+  static Future<void> setUserName(String name) async {
+    if (_instance == null) {
+      await getInstance();
+    }
+    await _instance!._prefs.setString(PreferencesKeys.userName, name);
+  }
+
+  static Future<String?> getUserName() async {
+    if (_instance == null) {
+      await getInstance();
+    }
+    return _instance!._prefs.getString(PreferencesKeys.userName);
+  }
+
+  static Future<void> removeUserName() async {
+    if (_instance == null) {
+      await getInstance();
+    }
+    await _instance!._prefs.remove(PreferencesKeys.userName);
+  }
+
+  static Future<void> setUserEmail(String email) async {
+    if (_instance == null) {
+      await getInstance();
+    }
+    await _instance!._prefs.setString(PreferencesKeys.userEmail, email);
+  }
+
+  static Future<String?> getUserEmail() async {
+    if (_instance == null) {
+      await getInstance();
+    }
+    return _instance!._prefs.getString(PreferencesKeys.userEmail);
+  }
+
+  static Future<void> removeUserEmail() async {
+    if (_instance == null) {
+      await getInstance();
+    }
+    await _instance!._prefs.remove(PreferencesKeys.userEmail);
   }
 
   static Future<void> revokeMarketingConsent() async {

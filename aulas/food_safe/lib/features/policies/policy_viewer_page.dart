@@ -19,7 +19,6 @@ class PolicyViewerPage extends StatefulWidget {
 class _PolicyViewerPageState extends State<PolicyViewerPage> {
   final ScrollController _scrollController = ScrollController();
   String _policyContentFromMarkdown = '';
-  double _scrollPosition = 0.0;
   bool _reachedEndOfDocument = false;
 
   @override
@@ -64,7 +63,6 @@ class _PolicyViewerPageState extends State<PolicyViewerPage> {
 
   void _onScroll() {
     setState(() {
-      _scrollPosition = _scrollController.position.pixels;
       _reachedEndOfDocument =
           _scrollController.position.atEdge &&
           _scrollController.position.pixels != 0;

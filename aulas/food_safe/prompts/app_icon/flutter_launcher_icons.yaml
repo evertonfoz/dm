@@ -1,0 +1,10 @@
+# Cópia canônica: yaml_to_pubspec/flutter_launcher_icons.yaml
+#
+# Edite o arquivo canônico e rode:
+#   dart run flutter_launcher_icons:main
+#
+# Exemplo comentado para colar no arquivo canônico:
+# flutter_icons:
+#   android: true
+#   ios: true
+#   image_path: "assets/images/brand/icon_light.png"

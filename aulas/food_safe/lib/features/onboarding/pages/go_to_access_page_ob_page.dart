@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:food_safe/services/shared_preferences_services.dart';
+import 'package:celilac_life/services/shared_preferences_services.dart';
 
 import '../../policies/listtile_policy_widget.dart';
-import '../../policies/policy_viewer_page.dart';
+// import '../../policies/policy_viewer_page.dart';
 
 class GoToAccessPageOBpage extends StatefulWidget {
   const GoToAccessPageOBpage({super.key});

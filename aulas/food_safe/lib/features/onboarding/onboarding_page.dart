@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_safe/features/onboarding/widgets/dots_indicator.dart';
+import 'package:celilac_life/features/onboarding/widgets/dots_indicator.dart';
 
 import 'pages/consent_page.dart';
 import 'pages/go_to_access_page_ob_page.dart';

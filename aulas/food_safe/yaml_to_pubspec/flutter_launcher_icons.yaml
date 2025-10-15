@@ -1,0 +1,14 @@
+# Exemplo de configuração para flutter_launcher_icons
+# Ajuste os caminhos conforme necessário.
+# Para usar (recomendado):
+# dart run flutter_launcher_icons:main
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/brand/icon_dark.png"
+  adaptive_icon_background: "assets/images/brand/icon_light.png"
+  adaptive_icon_foreground: "assets/images/brand/icon_light.png"
+
+# Para gerar a versão dark:
+# - altere image_path para "assets/images/brand/icon_dark.png" e rode novamente

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/shared_preferences_services.dart';
 import '../onboarding/onboarding_page.dart';
@@ -36,18 +35,49 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    final brightness = Theme.of(context).colorScheme.brightness;
+    final isDark = brightness == Brightness.dark;
+    final bg = Theme.of(context).colorScheme.background;
+    final imagePath = isDark
+        ? 'assets/images/splashscreen/splashscreen_dark.png'
+        : 'assets/images/splashscreen/splashscreen_light.png';
+
+    return Scaffold(
+      backgroundColor: bg,
+      body: Stack(
+        fit: StackFit.expand,
         children: [
-          Image.asset('assets/splash.png', width: 200, height: 200),
-          const CircularProgressIndicator(strokeWidth: 3),
-          Padding(
-            padding: const EdgeInsets.only(top: 18.0),
-            child: Text(
-              'Carregando...',
-              style: Theme.of(context).textTheme.bodyMedium,
+          // Background image that covers the whole screen
+          Image.asset(
+            imagePath,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stack) => Container(color: bg),
+          ),
+          // Overlay bottom content (progress + text)
+          SafeArea(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 36.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(
+                      strokeWidth: 3,
+                      valueColor: AlwaysStoppedAnimation(
+                        Theme.of(context).colorScheme.onBackground,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Carregando...',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],

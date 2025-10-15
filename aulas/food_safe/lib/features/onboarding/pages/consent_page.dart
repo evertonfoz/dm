@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_safe/services/shared_preferences_services.dart';
+import 'package:celilac_life/services/shared_preferences_services.dart';
 
 class ConsentPageOBPage extends StatefulWidget {
   final VoidCallback onConsentGiven;

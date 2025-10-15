@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../home/home_page.dart';
+import '../home/profile_page.dart';
 import '../onboarding/onboarding_page.dart';
 import '../splashscreen/splashscreen_page.dart';
 
@@ -21,6 +22,7 @@ class FoodSafeApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreenPage(),
         OnboardingPage.routeName: (context) => const OnboardingPage(),
+        ProfilePage.routeName: (context) => const ProfilePage(),
         HomePage.routeName: (context) => const HomePage(title: 'Food Safe'),
       },
       // home: const SplashScreenPage(),

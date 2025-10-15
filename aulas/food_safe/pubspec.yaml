@@ -1,4 +1,4 @@
-name: food_safe
+name: celilac_life
 description: "A new Flutter project."
 publish_to: 'none'
 version: 1.0.0+1
@@ -15,8 +15,8 @@ dependencies:
   shared_preferences: ^2.5.3
 
 dev_dependencies:
-  flutter_launcher_icons: ^0.14.4
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
 
@@ -26,7 +26,13 @@ flutter:
     - assets/
     - assets/images/onboarding/
     - assets/policies/
+    - assets/images/splashscreen/
+    - assets/images/splashscreen/splashscreen_light.png
+    - assets/images/splashscreen/splashscreen_dark.png
 
 flutter_launcher_icons:
+  android: true
   ios: true
-  image_path: "assets/splash_02.png"
+  image_path: "assets/images/brand/icon_light.png"
+  adaptive_icon_background: "assets/images/brand/icon_light.png"
+  adaptive_icon_foreground: "assets/images/brand/icon_light.png"
