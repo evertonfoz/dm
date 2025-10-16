@@ -152,60 +152,60 @@ class _HomePageState extends State<HomePage> {
         title: Text(widget.title),
       ),
       drawer: Drawer(
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              UserAccountsDrawerHeader(
-                accountName: Text(_userName ?? 'Usuário não registrado'),
-                accountEmail: Text(_userEmail ?? ''),
-                currentAccountPicture: CircleAvatar(
-                  child: Text(
-                    _userName != null && _userName!.isNotEmpty
-                        ? _userName!
-                              .trim()
-                              .split(' ')
-                              .map((e) => e.isNotEmpty ? e[0] : '')
-                              .take(2)
-                              .join()
-                        : '?',
-                    style: const TextStyle(fontSize: 20),
-                  ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(_userName ?? 'Usuário não registrado'),
+              accountEmail: Text(_userEmail ?? ''),
+              currentAccountPicture: CircleAvatar(
+                child: Text(
+                  _userName != null && _userName!.isNotEmpty
+                      ? _userName!
+                            .trim()
+                            .split(' ')
+                            .map((e) => e.isNotEmpty ? e[0] : '')
+                            .take(2)
+                            .join()
+                      : '?',
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text('Editar perfil'),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  final result = await Navigator.of(
-                    context,
-                  ).pushNamed('/profile');
-                  if (result == true) {
-                    _loadUser();
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.privacy_tip),
-                title: const Text('Privacidade & consentimentos'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _openPrivacyDialog();
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.info_outline),
-                title: const Text('Política de Privacidade'),
-                onTap: () {
-                  // open local policy page or asset
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed('/policies');
-                },
-              ),
-            ],
-          ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Editar perfil'),
+              onTap: () async {
+                Navigator.of(context).pop();
+                final result = await Navigator.of(
+                  context,
+                ).pushNamed('/profile');
+                if (result == true) {
+                  _loadUser();
+                }
+              },
+              // subtitle: const Text('Atualize suas informações pessoais.'),
+              // trailing: const Icon(Icons.edit),
+            ),
+            ListTile(
+              leading: const Icon(Icons.privacy_tip),
+              title: const Text('Privacidade & consentimentos'),
+              onTap: () {
+                // Navigator.of(context).pop();
+                _openPrivacyDialog();
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('Política de Privacidade'),
+              onTap: () {
+                // open local policy page or asset
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/policies');
+              },
+            ),
+          ],
         ),
       ),
       body: Center(),
@@ -301,11 +301,13 @@ class _HomePageState extends State<HomePage> {
                           _userEmail = null;
                         });
                       }
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Dados locais removidos.'),
-                        ),
-                      );
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Dados locais removidos.'),
+                          ),
+                        );
+                      }
                     }
                   },
                 ),
