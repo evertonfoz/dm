@@ -64,4 +64,14 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('consent_marketing', value);
   }
+
+  Future<bool> getOnboardingDone() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('onboarding_done') ?? false;
+  }
+
+  Future<void> setOnboardingDone(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboarding_done', value);
+  }
 }
