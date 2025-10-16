@@ -1,0 +1,38 @@
+name: lan_party_planner
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  shared_preferences: ^2.2.2
+  flutter_launcher_icons: ^0.14.4
+  intl: ^0.18.1
+  http: ^1.2.1
+  crypto: ^3.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/assets/PNGs/logoIASemfundo.png
+    - lib/assets/PNGs/logoIA.png
+    - lib/assets/privacidade.md
+    - lib/assets/termos.md
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "lib/assets/PNGs/logoIA.png"
+
