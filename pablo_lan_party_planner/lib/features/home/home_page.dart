@@ -96,6 +96,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Future<void> _logout() async {
+    await _storageService.setOnboardingDone(false);
+    await _storageService.removeUserName();
+    await _storageService.removeUserEmail();
+    await _storageService.setConsentMarketing(false);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,6 +141,14 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: const Icon(Icons.privacy_tip),
               title: const Text('Privacidade & Consentimentos'),
               onTap: _showPrivacyDialog,
+            ),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Sair'),
+              onTap: () {
+                Navigator.of(context).pop();
+                _logout();
+              },
             ),
           ],
         ),
