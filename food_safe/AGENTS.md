@@ -67,3 +67,20 @@ Notas finais
 Se quiser, posso:
 - localizar e substituir automaticamente ocorrências de comandos deprecados no repositório (fazer commits com as mudanças);
 - ou criar um pequeno script que escaneie e liste arquivos que usam comandos deprecados para você revisar.
+
+Banco de dados - pasta `sqls/` (IMPORTANTE para agentes)
+-----------------------------------------------------
+O repositório contém uma pasta `sqls/` na raiz que armazena scripts SQL de definição de tabelas e índices usados para sincronização e validação de esquema. Agentes automatizados e revisores devem:
+
+- Sempre verificar `sqls/` (e subpastas) ao avaliar a estrutura do banco de dados.
+- Usar os scripts dentro de `sqls/` como fonte de verdade para criar/validar tabelas em ambientes de staging e migrações de testes.
+- Para novos modelos de dados, adicionar um script `create_table_<entidade>.sql` na pasta apropriada e atualizar este arquivo de documentação.
+
+Exemplo de localização e uso:
+
+```
+sqls/providers/create_table_providers.sql
+```
+
+Ao executar avaliações de schema ou sincronizações incrementais, verifique `updated_at` e índices provistos nos scripts para garantir que filtros de sincronização (`updated_at > :last_sync`) funcionem corretamente.
+
