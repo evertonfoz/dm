@@ -1,6 +1,6 @@
 // Cole em: lib/features/splashscreen/splashscreen_page.dart
 
-import 'package:celilac_life/features/onboarding/onboarding_page.dart';
+import 'package:celilac_life/features/onboarding/onboarding_welcome_page.dart';
 import 'package:celilac_life/services/shared_preferences_services.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +29,9 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         return;
       }
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed(OnboardingPage.routeName);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const OnBoardingWelcomePage()),
+        );
       }
     });
   }

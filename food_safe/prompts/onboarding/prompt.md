@@ -55,14 +55,19 @@ Dependências a garantir (adicionar em `pubspec.yaml`)
 - font_awesome_flutter
 - lottie (opcional)
 
-Regras de UI/UX e comportamento
--------------------------------
-- Responsividade: usar proporções de tela (ex.: top image ~45% height). Em telas pequenas (height < 700) adaptar o espaço.
-- Botões: borderRadius: 40, sem sombra (elevation: 0), cores vindas do tema.
-- Background no Welcome: `Image.asset` com `BoxFit.cover`, ocupando 100% width/height.
-- Login: apenas e-mail, texto informando que será enviado um e-mail com instruções.
-- Termos: só permitir avançar quando checkbox marcado.
-- Todas as telas devem mostrar a versão do app no rodapé via `AppVersionWidget`.
+ 
+ Regras de UI/UX e comportamento
+ -------------------------------
+ - Responsividade: usar proporções de tela (ex.: top image ~45% height). Em telas pequenas (height < 700) adaptar o espaço.
+ - Botões principais: usar sempre `borderRadius: 40` e `elevation: 0` (sem sombra), com cores vindas do tema.
+ - Cards, ListTiles e componentes de seleção podem usar `borderRadius` menor (ex: 14 ou 16), mantendo visual consistente com Material Design.
+ - Background no Welcome: `Image.asset` com `BoxFit.cover`, ocupando 100% width/height.
+ - Login: apenas e-mail, texto informando que será enviado um e-mail com instruções.
+ - Termos: só permitir avançar quando checkbox marcado.
+ - Todas as telas devem mostrar a versão do app no rodapé via `AppVersionWidget`.
+ 
+ **Nota para LLMs:**
+ Ao gerar código para onboarding, mantenha o padrão de `borderRadius: 40` e `elevation: 0` nos botões principais (ElevatedButton). Para cards, listas e seletores, valores menores de borderRadius são aceitáveis para preservar a hierarquia visual e a identidade do Material Design.
 
 Regras de rotas
 ---------------

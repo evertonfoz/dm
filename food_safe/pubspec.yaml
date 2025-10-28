@@ -23,6 +23,7 @@ dependencies:
   gpt_markdown: ^1.1.4
   shared_preferences: ^2.5.3
   flutter_secure_storage: ^9.0.0
+  async_button_builder: ^3.0.0+1
 
 dev_dependencies:
   flutter_lints: ^5.0.0
@@ -48,6 +49,9 @@ flutter:
     - assets/images/splashscreen/
     - assets/images/splashscreen/splashscreen_light.png
     - assets/images/splashscreen/splashscreen_dark.png
+
+    # Lotties
+    - assets/lotties/welcome.json
 
 flutter_launcher_icons:
   android: true

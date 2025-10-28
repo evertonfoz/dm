@@ -9,7 +9,7 @@ Tarefas (to-do)
 
 2. Pubspec
    - [ ] Adicionar assets em `pubspec.yaml` (imagens e lotties).
-   - [ ] Adicionar dependências necessárias no `pubspec.yaml`.
+  - [x] Adicionar dependências necessárias no `pubspec.yaml`.
 
 3. Implementação das telas
   - [x] `WelcomeScreen` (`/`)

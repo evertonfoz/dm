@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/shared_preferences_services.dart';
-import '../onboarding/onboarding_page.dart';
+import '../onboarding/onboarding_welcome_page.dart';
 
 class SplashScreenPage extends StatefulWidget {
   const SplashScreenPage({super.key});
@@ -28,7 +28,10 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         return;
       }
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed(OnboardingPage.routeName);
+        // Ajuste: OnBoardingWelcomePage não possui routeName. Use MaterialPageRoute diretamente ou defina uma rota nomeada se necessário.
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const OnBoardingWelcomePage()),
+        );
       }
     });
   }
