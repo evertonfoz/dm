@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
 import '../home/home_page.dart';
@@ -12,6 +13,7 @@ class FoodSafeApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    String initialRoute = kDebugMode ? HomePage.routeName : '/';
     return MaterialApp(
       title: 'Food Safe',
       theme: ThemeData(
@@ -20,6 +22,7 @@ class FoodSafeApp extends StatelessWidget {
         visualDensity: VisualDensity.standard,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
+      initialRoute: initialRoute,
       routes: {
         '/': (context) => const SplashScreenPage(),
         '/onboarding': (context) => const OnBoardingWelcomePage(),
@@ -28,7 +31,6 @@ class FoodSafeApp extends StatelessWidget {
         HomePage.routeName: (context) => const HomePage(title: 'Food Safe'),
         // onboarding routes are handled by OnboardingPage currently
       },
-      // home: const SplashScreenPage(),
     );
   }
 }

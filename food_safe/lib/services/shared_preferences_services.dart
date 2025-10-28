@@ -122,4 +122,18 @@ class SharedPreferencesService {
     }
     await _instance!._prefs.clear();
   }
+
+  static Future<void> setProvidersTutorialShown(bool shown) async {
+    if (_instance == null) {
+      await getInstance();
+    }
+    await _instance!._prefs.setBool('providers_tutorial_shown', shown);
+  }
+
+  static Future<bool> getProvidersTutorialShown() async {
+    if (_instance == null) {
+      await getInstance();
+    }
+    return _instance!._prefs.getBool('providers_tutorial_shown') ?? false;
+  }
 }

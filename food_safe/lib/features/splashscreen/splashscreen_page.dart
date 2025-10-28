@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
 import '../../services/shared_preferences_services.dart';
@@ -14,11 +15,15 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
-
     Future.microtask(() async {
+      if (kDebugMode) {
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
+        return;
+      }
       final marketingConsent =
           await SharedPreferencesService.getMarketingConsent();
-
       if (marketingConsent == true) {
         Future.delayed(const Duration(seconds: 3), () {
           if (mounted) {
@@ -28,7 +33,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         return;
       }
       if (mounted) {
-        // Ajuste: OnBoardingWelcomePage não possui routeName. Use MaterialPageRoute diretamente ou defina uma rota nomeada se necessário.
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const OnBoardingWelcomePage()),
         );
