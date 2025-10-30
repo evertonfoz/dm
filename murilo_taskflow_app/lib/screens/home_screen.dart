@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Scaffold(
       drawer: _buildDrawer(context),
       appBar: AppBar(
-        title: const Text('TaskFlow'),
+        title: const Text('UTFPR'),
         centerTitle: true,
         actions: [
           // Avatar do usuário no AppBar
