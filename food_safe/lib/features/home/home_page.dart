@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 import '../../services/shared_preferences_services.dart';
 import '../providers/infrastructure/local/providers_local_dao_shared_prefs.dart';
@@ -27,14 +26,20 @@ class _HomePageState extends State<HomePage>
   AnimationController? _fabController;
   Animation<double>? _fabScale;
   bool _showOnboardingTip = false;
-  Timer? _tipTimer;
-  bool _showProvidersTutorial = true;
+  // Start false to avoid showing the tutorial overlay automatically
+  // before we load the persisted preference from SharedPreferences.
+  bool _showProvidersTutorial = false;
+  // When true, the small FAB tip will not be shown again. Mirrors the
+  // persisted 'providers tutorial shown' preference.
+  bool _dontShowTipAgain = false;
 
   @override
   void initState() {
     super.initState();
     _loadUser();
-    _loadProviders();
+    // Load whether the user already confirmed the providers tutorial. If the
+    // stored value is true (tutorial already shown), we don't display it again.
+    _loadProvidersTutorialPreference().then((_) => _loadProviders());
     _fabController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
@@ -47,8 +52,26 @@ class _HomePageState extends State<HomePage>
   @override
   void dispose() {
     _fabController?.dispose();
-    _tipTimer?.cancel();
     super.dispose();
+  }
+
+  Future<void> _loadProvidersTutorialPreference() async {
+    try {
+      final shown = await SharedPreferencesService.getProvidersTutorialShown();
+      if (!mounted) return;
+      // Persisted value indicates whether the user already confirmed the
+      // tutorial (true means "don't show tip again"). We record that in
+      // `_dontShowTipAgain`. Do not automatically open the overlay here; the
+      // overlay should only open when the user taps the hint or uses the
+      // Drawer action.
+      setState(() {
+        _dontShowTipAgain = shown;
+        // keep _showProvidersTutorial false here; it will be opened only on
+        // explicit user action.
+      });
+    } catch (_) {
+      // ignore and keep default true
+    }
   }
 
   Future<void> _loadUser() async {
@@ -72,37 +95,8 @@ class _HomePageState extends State<HomePage>
       // Primeiro, tenta carregar dados existentes
       var list = await dao.listAll();
 
-      // Se não houver dados, cria dados de teste
-      if (list.isEmpty) {
-        final imageUrls = [
-          'https://img.freepik.com/fotos-gratis/vista-superior-de-uma-mesa-comida-saudavel_23-2148574952.jpg',
-          'https://media.istockphoto.com/id/1130860236/pt/foto/healthy-food-background.jpg?s=612x612&w=0&k=20&c=6QnQw1Qw1Qw1Qw1Qw1Qw1Qw1Qw1Qw1Qw1Qw1Qw1Qw',
-          'https://img.freepik.com/fotos-gratis/composicao-de-alimentos-saudaveis_23-2148574950.jpg',
-          'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=facearea&w=128&q=80',
-          'https://www.foodiesfeed.com/wp-content/uploads/2023/10/healthy-food-table.jpg',
-          'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg',
-          'https://cdn.pixabay.com/photo/2017/01/20/15/06/vegetables-1995056_1280.jpg',
-          'https://burst.shopifycdn.com/photos/healthy-breakfast.jpg?width=925&format=pjpg&exif=1&iptc=1',
-          'https://www.stockvault.net/data/2019/05/07/265181/preview16.jpg',
-          'https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=facearea&w=128&q=80',
-        ];
-        list = List.generate(
-          20,
-          (i) => ProviderDto(
-            id: 1000 + i,
-            name: 'Fornecedor ${i + 1}',
-            image_url: imageUrls[i % imageUrls.length],
-            brand_color_hex: null,
-            rating: 3.5 + (i % 5) * 0.3,
-            distance_km: (i % 7 == 0) ? null : 1.2 + i * 0.7,
-            metadata: null,
-            updated_at: DateTime.now()
-                .subtract(Duration(days: i))
-                .toIso8601String(),
-          ),
-        );
-        await dao.upsertAll(list);
-      }
+      // Do not create sample providers automatically. If none are present,
+      // leave the list empty so the UI can show onboarding hints instead.
 
       if (!mounted) return;
       setState(() {
@@ -110,14 +104,17 @@ class _HomePageState extends State<HomePage>
         _loadingProviders = false;
       });
       if (list.isEmpty) {
-        _showOnboardingTip = true;
-        _fabController?.repeat(reverse: true);
-        _tipTimer?.cancel();
-        _tipTimer = Timer(const Duration(seconds: 6), () {
-          if (mounted) setState(() => _showOnboardingTip = false);
+        // Only show the small FAB tip/animation if the user didn't opt out
+        // (persisted value). We intentionally don't auto-open the full
+        // tutorial overlay here.
+        if (!_dontShowTipAgain) {
+          _showOnboardingTip = true;
+          _fabController?.repeat(reverse: true);
+        } else {
+          _showOnboardingTip = false;
           _fabController?.stop();
           _fabController?.reset();
-        });
+        }
       } else {
         _showOnboardingTip = false;
         _fabController?.stop();
@@ -421,6 +418,24 @@ class _HomePageState extends State<HomePage>
                 _openPrivacyDialog();
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.replay),
+              title: const Text('Reexibir tutorial'),
+              subtitle: const Text(
+                'Mostrar novamente o tutorial de fornecedores',
+              ),
+              onTap: () async {
+                Navigator.of(context).pop();
+                await SharedPreferencesService.setProvidersTutorialShown(false);
+                if (!mounted) return;
+                setState(() {
+                  _showProvidersTutorial = true;
+                  _showOnboardingTip = true;
+                  _dontShowTipAgain = false;
+                  _fabController?.repeat(reverse: true);
+                });
+              },
+            ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.info_outline),
@@ -456,36 +471,177 @@ class _HomePageState extends State<HomePage>
                   Positioned(
                     right: 24,
                     bottom: 110,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        AnimatedBuilder(
-                          animation: _fabController!,
-                          builder: (context, child) => Transform.translate(
-                            offset: Offset(0, 10 * (1 - _fabController!.value)),
-                            child: child,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        // Make the small hint clickable so users can re-open the
+                        // full providers tutorial overlay if they want to see it.
+                        if (!mounted) return;
+                        setState(() {
+                          _showProvidersTutorial = true;
+                        });
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          AnimatedBuilder(
+                            // Use a fallback animation if the controller is null to
+                            // avoid exceptions during the first frames or after
+                            // disposal.
+                            animation:
+                                _fabController ?? kAlwaysCompleteAnimation,
+                            builder: (context, child) {
+                              final v = _fabController?.value ?? 1.0;
+                              return Transform.translate(
+                                offset: Offset(0, 10 * (1 - v)),
+                                child: child,
+                              );
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Clique aqui para começar!',
+                                  style: TextStyle(
+                                    color: Colors.blueAccent.shade700,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Icon(
+                                  Icons.arrow_downward,
+                                  color: Colors.blueAccent,
+                                  size: 28,
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Clique aqui para começar!',
-                                style: TextStyle(
-                                  color: Colors.blueAccent.shade700,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
+                        ],
+                      ),
+                    ),
+                  ),
+                // Render the full tutorial overlay even when the providers
+                // list is empty so the small clickable hint can open it.
+                if (_showProvidersTutorial)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.black26,
+                      child: Center(
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Card(
+                              elevation: 8,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue[50],
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Icon(
+                                        Icons.info_outline,
+                                        size: 48,
+                                        color: Colors.blue[700],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                      'Como gerenciar fornecedores',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.headlineSmall,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _buildTutorialItem(
+                                      icon: Icons.edit,
+                                      title: 'Editar fornecedor',
+                                      description:
+                                          'Toque no ícone de lápis para editar as informações do fornecedor',
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildTutorialItem(
+                                      icon: Icons.touch_app,
+                                      title: 'Ver detalhes',
+                                      description:
+                                          'Toque na linha do fornecedor para visualizar mais detalhes',
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildTutorialItem(
+                                      icon: Icons.add_circle,
+                                      title: 'Adicionar fornecedor',
+                                      description:
+                                          'Toque no botão + flutuante para adicionar um novo fornecedor',
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildTutorialItem(
+                                      icon: Icons.refresh,
+                                      title: 'Atualizar lista',
+                                      description:
+                                          'Puxe a tela para baixo para atualizar a lista de fornecedores',
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildTutorialItem(
+                                      icon: Icons.swipe_left,
+                                      title: 'Remover fornecedor',
+                                      description:
+                                          'Deslize a linha para a esquerda para remover um fornecedor',
+                                    ),
+                                    const SizedBox(height: 24),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            if (!mounted) return;
+                                            setState(() {
+                                              _showProvidersTutorial = false;
+                                            });
+                                          },
+                                          child: const Text('Fechar'),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        ElevatedButton.icon(
+                                          onPressed: () async {
+                                            await SharedPreferencesService.setProvidersTutorialShown(
+                                              true,
+                                            );
+                                            if (!mounted) return;
+                                            setState(() {
+                                              _showProvidersTutorial = false;
+                                              _showOnboardingTip = false;
+                                            });
+                                            _fabController?.stop();
+                                            _fabController?.reset();
+                                          },
+                                          icon: const Icon(Icons.check),
+                                          label: const Text('Li e entendi'),
+                                          style: ElevatedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              Icon(
-                                Icons.arrow_downward,
-                                color: Colors.blueAccent,
-                                size: 28,
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
               ],
@@ -765,20 +921,50 @@ class _HomePageState extends State<HomePage>
                                             'Deslize a linha para a esquerda para remover um fornecedor',
                                       ),
                                       const SizedBox(height: 24),
-                                      ElevatedButton.icon(
-                                        onPressed: () {
-                                          setState(() {
-                                            _showProvidersTutorial = false;
-                                          });
-                                        },
-                                        icon: const Icon(Icons.close),
-                                        label: const Text('Fechar'),
-                                        style: ElevatedButton.styleFrom(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 32,
-                                            vertical: 12,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              // Close overlay for this session but do
+                                              // NOT persist the acceptance so the
+                                              // tutorial will appear again on next run.
+                                              if (!mounted) return;
+                                              setState(() {
+                                                _showProvidersTutorial = false;
+                                              });
+                                            },
+                                            child: const Text('Fechar'),
                                           ),
-                                        ),
+                                          const SizedBox(width: 12),
+                                          ElevatedButton.icon(
+                                            onPressed: () async {
+                                              // Persist that the user has seen/confirmed
+                                              // the providers tutorial so we don't show it
+                                              // again automatically.
+                                              await SharedPreferencesService.setProvidersTutorialShown(
+                                                true,
+                                              );
+                                              if (!mounted) return;
+                                              setState(() {
+                                                _showProvidersTutorial = false;
+                                                _showOnboardingTip = false;
+                                              });
+                                              _fabController?.stop();
+                                              _fabController?.reset();
+                                            },
+                                            icon: const Icon(Icons.check),
+                                            label: const Text('Li e entendi'),
+                                            style: ElevatedButton.styleFrom(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 20,
+                                                    vertical: 12,
+                                                  ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -792,16 +978,47 @@ class _HomePageState extends State<HomePage>
                 ],
               ),
             ),
-      floatingActionButton: ScaleTransition(
-        scale: _fabScale ?? kAlwaysCompleteAnimation,
-        child: Tooltip(
-          message: 'Adicionar fornecedor',
-          preferBelow: false,
-          child: FloatingActionButton(
-            onPressed: () => _showProviderForm(),
-            tooltip: 'Adicionar fornecedor',
-            child: const Icon(Icons.add),
-          ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(right: 16.0, bottom: 8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Show a label-style button to let the user opt-out of the tip.
+            // After the user clicks it we persist the choice and hide the
+            // button. Use the Drawer -> "Reexibir tutorial" action to reset.
+            if (!_dontShowTipAgain)
+              TextButton(
+                onPressed: () async {
+                  // Persist that the user doesn't want the tip anymore.
+                  await SharedPreferencesService.setProvidersTutorialShown(
+                    true,
+                  );
+                  if (!mounted) return;
+                  setState(() {
+                    _dontShowTipAgain = true;
+                    // Ensure the overlay is closed and the small tip hidden.
+                    _showProvidersTutorial = false;
+                    _showOnboardingTip = false;
+                  });
+                  _fabController?.stop();
+                  _fabController?.reset();
+                },
+                child: const Text('Não exibir dica novamente'),
+              ),
+            const SizedBox(width: 12),
+            ScaleTransition(
+              scale: _fabScale ?? kAlwaysCompleteAnimation,
+              child: Tooltip(
+                message: 'Adicionar fornecedor',
+                preferBelow: false,
+                child: FloatingActionButton(
+                  onPressed: () => _showProviderForm(),
+                  tooltip: 'Adicionar fornecedor',
+                  child: const Icon(Icons.add),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
