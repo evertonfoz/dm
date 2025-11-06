@@ -1,0 +1,1 @@
+ /Users/evertoncoimbradearaujo/Downloads/MoodJournal-main/.dart_tool/flutter_build/a583ceecc57b9f6cec786335d3dacaad/dart_build_result.json: 
