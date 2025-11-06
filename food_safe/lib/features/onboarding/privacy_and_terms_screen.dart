@@ -31,7 +31,7 @@ class _PrivacyAndTermsScreenState extends State<PrivacyAndTermsScreen> {
   Future<void> _loadMarkdown() async {
     try {
       final data = await rootBundle.loadString(
-        'assets/use_terms_and_privacy.md',
+        'assets/md/use_terms_and_privacy.md',
       );
       if (!mounted) return;
       setState(() => _md = data);

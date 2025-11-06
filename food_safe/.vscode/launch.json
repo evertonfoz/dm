@@ -22,17 +22,6 @@
             "type": "dart",
             "flutterMode": "release"
         }
-        ,
-        {
-            "name": "food_safe (iOS Simulator - booted)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            // This preLaunchTask will run a script that finds the currently
-            // booted iOS Simulator and starts `flutter run -d <UDID>` in the
-            // integrated terminal. Use the task directly if you prefer
-            // 'Run Task...'.
-            "preLaunchTask": "Run on Booted iOS Simulator"
-        }
+        
     ]
 }

@@ -1,11 +1,11 @@
-# Prompt operacional: Implementação SharedPreferences do DAO local
+# Prompt operacional: Implementação SharedPreferences do DTO local
 
 Objetivo
 --------
-Gere um arquivo com a implementação do DAO local que persista DTOs usando SharedPreferences. O arquivo deve implementar estritamente as assinaturas da interface local (`upsertAll`, `listAll`, `getById`, `clear`) e usar JSON como formato de armazenamento.
+Gere um arquivo com a implementação do DTO local que persista DTOs usando SharedPreferences. O arquivo deve implementar estritamente as assinaturas da interface local (`upsertAll`, `listAll`, `getById`, `clear`) e usar JSON como formato de armazenamento.
 
 Parâmetros (substitua antes de executar)
-- SUFFIX: sufixo do DAO (ex.: Provider) — será usado para nomear a classe `<Suffix>LocalDaoSharedPrefs`.
+- SUFFIX: sufixo do DTO (ex.: Provider) — será usado para nomear a classe `<Suffix>LocalDtoSharedPrefs`.
 - ENTITY: nome da entidade/model (ex.: Provider) — usado nos tipos de retorno.
 - DTO_NAME: nome do DTO (ex.: ProviderDto) — tipo usado nos métodos.
 - DEST_DIR (opcional): diretório destino para o arquivo. Se não informado, use `lib/features/<entity_em_minusculas>/infrastructure/local/`.
@@ -21,15 +21,15 @@ Requisitos exatos (assinaturas que sua classe deve implementar)
 
 Instruções de implementação (passos concretos)
 ---------------------------------------------
-1. Crie o arquivo: `<DEST_DIR>/<entity_em_minusculas>_local_dao_shared_prefs.dart`.
+1. Crie o arquivo: `<DEST_DIR>/<entity_em_minusculas>_local_dto_shared_prefs.dart`.
 
 2. Importe o DTO e as dependências necessárias:
    - Use `IMPORT_PATH` se fornecido; caso contrário: `import '../dtos/<entity_em_minusculas>_dto.dart';`.
    - `import 'dart:convert';`
    - `import 'package:shared_preferences/shared_preferences.dart';`
-   - Import da interface local (ex.: `import 'providers_local_dao.dart';` ou caminho equivalente no seu projeto).
+  - Import da interface local (ex.: `import 'providers_local_dto.dart';` ou caminho equivalente no seu projeto).
 
-3. Declare a classe `<Suffix>LocalDaoSharedPrefs` que implemente a interface local correspondente (por exemplo `ProvidersLocalDao` / `<Suffix>LocalDao`).
+3. Declare a classe `<Suffix>LocalDtoSharedPrefs` que implemente a interface local correspondente (por exemplo `ProvidersLocalDto` / `<Suffix>LocalDto`).
 
 4. Implementação técnica (seguir este comportamento):
    - Declare uma constante `_cacheKey` com o valor de `CACHE_KEY` quando informado, ou `'<entity_em_minusculas>_cache_v1'` por padrão.
@@ -67,9 +67,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Substitua pelo IMPORT_PATH quando fornecido
 import '<IMPORT_PATH_or_../dtos/<entity_em_minusculas>_dto.dart>';
-import 'providers_local_dao.dart';
+import 'providers_local_dto.dart';
 
-class <Suffix>LocalDaoSharedPrefs implements <Suffix>LocalDao {
+class <Suffix>LocalDtoSharedPrefs implements <Suffix>LocalDto {
   static const _cacheKey = '<CACHE_KEY_or_<entity_em_minusculas>_cache_v1>';
 
   Future<SharedPreferences> get _prefs async => SharedPreferences.getInstance();
@@ -135,7 +135,7 @@ class <Suffix>LocalDaoSharedPrefs implements <Suffix>LocalDao {
 
 Saída esperada
 --------------
-- Arquivo criado: `<DEST_DIR>/<entity_em_minusculas>_local_dao_shared_prefs.dart` contendo a classe `<Suffix>LocalDaoSharedPrefs` com a implementação do comportamento acima e a constante `_cacheKey` usada para SharedPreferences.
+- Arquivo criado: `<DEST_DIR>/<entity_em_minusculas>_local_dto_shared_prefs.dart` contendo a classe `<Suffix>LocalDtoSharedPrefs` com a implementação do comportamento acima e a constante `_cacheKey` usada para SharedPreferences.
 
 Ao término
 ---------

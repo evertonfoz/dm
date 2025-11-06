@@ -1,15 +1,15 @@
 
-# Prompt operacional: Criar interface abstrata do DAO local
+# Prompt operacional: Criar interface abstrata do DTO local
 
 Objetivo
 --------
-Gere um arquivo de interface abstrata (classe abstrata) para o DAO local da entidade informada. O arquivo deve ser auto-contido e parametrizado por sufixo/entidade — ou seja, crie apenas a interface (não a implementação). Não faça referências a caminhos internos que os estudantes não terão acesso.
+Gere um arquivo de interface abstrata (classe abstrata) para o DTO local da entidade informada. O arquivo deve ser auto-contido e parametrizado por sufixo/entidade — ou seja, crie apenas a interface (não a implementação). Não faça referências a caminhos internos que os estudantes não terão acesso.
 
 Parâmetros (substitua antes de executar)
-- SUFFIX: sufixo do DAO (ex.: Provider)
+- SUFFIX: sufixo do DTO (ex.: Provider)
 - ENTITY: nome da entidade/model (ex.: Provider)
 - DTO_NAME: nome do DTO (ex.: ProviderDto)
-- DEST_DIR (opcional): diretório destino para o arquivo DAO. Se não informado, use `lib/features/<entity_em_minusculas>/infrastructure/local/`.
+- DEST_DIR (opcional): diretório destino para o arquivo DTO. Se não informado, use `lib/features/<entity_em_minusculas>/infrastructure/local/`.
 - IMPORT_PATH (opcional): caminho de import para o DTO/entidade (ex.: `../dtos/provider_dto.dart` ou `package:my_app/features/providers/infrastructure/dtos/provider_dto.dart`). Se não informado, use o import relativo padrão `../dtos/<entity_em_minusculas>_dto.dart`.
 
 Assinaturas esperadas (documentadas)
@@ -21,9 +21,9 @@ Assinaturas esperadas (documentadas)
 
 Instruções para gerar o arquivo de interface
 --------------------------------------------
-1. Crie o arquivo: `<DEST_DIR>/<entity_em_minusculas>_local_dao.dart` (ex.: `providers_local_dao.dart`).
+1. Crie o arquivo: `<DEST_DIR>/<entity_em_minusculas>_local_dto.dart` (ex.: `providers_local_dto.dart`).
 2. No arquivo, declare um import para o DTO. Se `IMPORT_PATH` for fornecido, use-o exatamente como informado; caso contrário use o import relativo padrão: `import '../dtos/<entity_em_minusculas>_dto.dart`.
-3. Declare uma classe abstrata chamada `<Suffix>LocalDao` (ex.: `ProvidersLocalDao`) contendo as quatro assinaturas acima com comentários em português explicando cada método (docstrings curtas).
+3. Declare uma classe abstrata chamada `<Suffix>LocalDto` (ex.: `ProvidersLocalDto`) contendo as quatro assinaturas acima com comentários em português explicando cada método (docstrings curtas).
 4. Mantenha apenas a interface: não inclua implementação, utilitários ou dependências externas.
 
 Exemplo de corpo (em pseudocódigo Dart):
@@ -32,7 +32,7 @@ Exemplo de corpo (em pseudocódigo Dart):
 // Exemplo de import; substitua por IMPORT_PATH quando fornecido
 import '<IMPORT_PATH_or_../dtos/<entity_em_minusculas>_dto.dart>';
 
-abstract class <Suffix>LocalDao {
+abstract class <Suffix>LocalDto {
    /// Upsert em lote por id (insere novos e atualiza existentes).
    Future<void> upsertAll(List<DTO_NAME> dtos);
 
@@ -49,7 +49,7 @@ abstract class <Suffix>LocalDao {
 
 Saída esperada
 --------------
-- Arquivo criado: `<DEST_DIR>/<entity_em_minusculas>_local_dao.dart` contendo a classe abstrata `<Suffix>LocalDao` com as assinaturas e docstrings.
+- Arquivo criado: `<DEST_DIR>/<entity_em_minusculas>_local_dto.dart` contendo a classe abstrata `<Suffix>LocalDto` com as assinaturas e docstrings.
 
 Ao término
 ---------

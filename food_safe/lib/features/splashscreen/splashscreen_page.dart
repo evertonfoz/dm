@@ -16,26 +16,43 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      if (kDebugMode) {
-        if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/home');
-        }
-        return;
-      }
-      final marketingConsent =
-          await SharedPreferencesService.getMarketingConsent();
-      if (marketingConsent == true) {
-        Future.delayed(const Duration(seconds: 3), () {
+      try {
+        if (kDebugMode) {
           if (mounted) {
             Navigator.of(context).pushReplacementNamed('/home');
           }
-        });
-        return;
-      }
-      if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const OnBoardingWelcomePage()),
-        );
+          return;
+        }
+        final marketingConsent =
+            await SharedPreferencesService.getMarketingConsent();
+        if (marketingConsent == true) {
+          Future.delayed(const Duration(seconds: 3), () {
+            if (mounted) {
+              Navigator.of(context).pushReplacementNamed('/home');
+            }
+          });
+          return;
+        }
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const OnBoardingWelcomePage()),
+          );
+        }
+      } catch (e, st) {
+        // Log the error in debug so we can see the actual exception when running on web
+        if (kDebugMode) {
+          // ignore: avoid_print
+          print('SplashScreen init error: $e');
+          // ignore: avoid_print
+          print(st);
+        }
+
+        // Fallback navigation to onboarding so the app remains usable
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const OnBoardingWelcomePage()),
+          );
+        }
       }
     });
   }

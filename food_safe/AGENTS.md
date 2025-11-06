@@ -68,6 +68,19 @@ Se quiser, posso:
 - localizar e substituir automaticamente ocorrências de comandos deprecados no repositório (fazer commits com as mudanças);
 - ou criar um pequeno script que escaneie e liste arquivos que usam comandos deprecados para você revisar.
 
+Nota para agentes/LLMs
+----------------------
+
+- Ao gerar ou modificar snippets de teste que chamem APIs marcadas com `@visibleForTesting` (por exemplo `SharedPreferences.setMockInitialValues`), preferir colocar o código real em `test/`.
+- Se um snippet for mantido fora de `test/` (ex.: documentação, `prompts/`), inclua localmente a diretiva de análise para silenciar o warning apenas nessa linha:
+
+```dart
+// ignore: invalid_use_of_visible_for_testing_member
+SharedPreferences.setMockInitialValues({});
+```
+
+Isso permite manter exemplos executáveis e evita ruído do analisador quando o código é propositalmente um mock para teste.
+
 Banco de dados - pasta `sqls/` (IMPORTANTE para agentes)
 -----------------------------------------------------
 O repositório contém uma pasta `sqls/` na raiz que armazena scripts SQL de definição de tabelas e índices usados para sincronização e validação de esquema. Agentes automatizados e revisores devem:

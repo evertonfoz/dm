@@ -46,6 +46,7 @@ flutter:
     - assets/images/onboarding/background_grey.png
     - assets/images/onboarding/
     - assets/policies/
+    - assets/md/use_terms_and_privacy.md
     - assets/images/splashscreen/
     - assets/images/splashscreen/splashscreen_light.png
     - assets/images/splashscreen/splashscreen_dark.png
