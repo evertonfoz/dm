@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode;
-import 'dart:io';
+// Conditional import: use real Platform.environment when dart:io is available,
+// otherwise use a safe stub (for web).
+import 'package:celilac_life/utils/platform_environment_stub.dart'
+    if (dart.library.io) 'package:celilac_life/utils/platform_environment_io.dart';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -80,7 +83,7 @@ Future<void> main() async {
     } catch (_) {}
     final fromAsset = assetEnv[key];
     if (fromAsset != null && fromAsset.isNotEmpty) return fromAsset;
-    final os = Platform.environment[key];
+    final os = platformEnvironment[key];
     if (os != null && os.isNotEmpty) return os;
     return null;
   }

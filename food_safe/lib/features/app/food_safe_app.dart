@@ -16,6 +16,7 @@ class FoodSafeApp extends StatelessWidget {
     String initialRoute = kDebugMode ? HomePage.routeName : '/';
     return MaterialApp(
       title: 'Food Safe',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         materialTapTargetSize: MaterialTapTargetSize.padded,
