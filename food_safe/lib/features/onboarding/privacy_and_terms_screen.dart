@@ -5,7 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 class PrivacyAndTermsScreen extends StatefulWidget {
   static const routeName = '/onboarding/privacy_and_use_terms';
 
-  const PrivacyAndTermsScreen({Key? key}) : super(key: key);
+  const PrivacyAndTermsScreen({super.key});
 
   @override
   State<PrivacyAndTermsScreen> createState() => _PrivacyAndTermsScreenState();
@@ -84,11 +84,21 @@ class _PrivacyAndTermsScreenState extends State<PrivacyAndTermsScreen> {
                 Checkbox(
                   value: _accepted,
                   onChanged: (v) => setState(() => _accepted = v ?? false),
+                  // Use a clearer/high-contrast fill color for the checked state
+                  fillColor: MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.primaryContainer,
+                  ),
                 ),
                 const Expanded(child: Text('Li e Concordo')),
                 ElevatedButton(
                   onPressed: _accepted ? _onContinue : null,
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
+                    foregroundColor: Theme.of(
+                      context,
+                    ).colorScheme.onPrimaryContainer,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40),
                     ),

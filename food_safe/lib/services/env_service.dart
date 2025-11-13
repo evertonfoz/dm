@@ -14,15 +14,15 @@ class EnvService {
 
   // Known compile-time environment values. Use explicit const fields because
   // String.fromEnvironment requires a constant identifier at compile-time.
-  static const _compile_SUPABASE_URL = String.fromEnvironment(
+  static const _compileSupabaseUrl = String.fromEnvironment(
     'SUPABASE_URL',
     defaultValue: '',
   );
-  static const _compile_SUPABASE_ANON_KEY = String.fromEnvironment(
+  static const _compileSupabaseAnonKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',
     defaultValue: '',
   );
-  static const _compile_SUPABASE_KEY = String.fromEnvironment(
+  static const _compileSupabaseKey = String.fromEnvironment(
     'SUPABASE_KEY',
     defaultValue: '',
   );
@@ -74,13 +74,13 @@ class EnvService {
   static String? _fromCompileTime(String key) {
     switch (key) {
       case 'SUPABASE_URL':
-        return _compile_SUPABASE_URL.isNotEmpty ? _compile_SUPABASE_URL : null;
+        return _compileSupabaseUrl.isNotEmpty ? _compileSupabaseUrl : null;
       case 'SUPABASE_ANON_KEY':
-        return _compile_SUPABASE_ANON_KEY.isNotEmpty
-            ? _compile_SUPABASE_ANON_KEY
+        return _compileSupabaseAnonKey.isNotEmpty
+            ? _compileSupabaseAnonKey
             : null;
       case 'SUPABASE_KEY':
-        return _compile_SUPABASE_KEY.isNotEmpty ? _compile_SUPABASE_KEY : null;
+        return _compileSupabaseKey.isNotEmpty ? _compileSupabaseKey : null;
       default:
         return null;
     }

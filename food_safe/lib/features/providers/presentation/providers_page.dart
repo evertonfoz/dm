@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../services/shared_preferences_services.dart';
 import '../infrastructure/local/providers_local_dao_shared_prefs.dart';
 import '../infrastructure/dtos/provider_dto.dart';
+import 'dialogs/provider_form_dialog.dart';
+import 'dialogs/provider_details_dialog.dart';
+import 'widgets/providers_fab_area.dart';
+import 'widgets/provider_list_view.dart';
 
 class ProvidersPage extends StatefulWidget {
   const ProvidersPage({Key? key}) : super(key: key);
@@ -91,88 +95,7 @@ class ProvidersPageState extends State<ProvidersPage>
   }
 
   void _showProviderForm({ProviderDto? provider, int? index}) async {
-    final result = await showDialog<ProviderDto>(
-      context: context,
-      builder: (context) {
-        final nameController = TextEditingController(
-          text: provider?.name ?? '',
-        );
-        final ratingController = TextEditingController(
-          text: provider?.rating.toString() ?? '5.0',
-        );
-        final distanceController = TextEditingController(
-          text: provider?.distance_km?.toString() ?? '',
-        );
-        final imageUrlController = TextEditingController(
-          text: provider?.image_url ?? '',
-        );
-        return AlertDialog(
-          title: Text(
-            provider == null ? 'Novo Fornecedor' : 'Editar Fornecedor',
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Nome'),
-                  autofocus: true,
-                ),
-                TextField(
-                  controller: ratingController,
-                  decoration: const InputDecoration(labelText: 'Nota (0-5)'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                ),
-                TextField(
-                  controller: distanceController,
-                  decoration: const InputDecoration(
-                    labelText: 'Distância (km)',
-                  ),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                ),
-                TextField(
-                  controller: imageUrlController,
-                  decoration: const InputDecoration(
-                    labelText: 'URL da Imagem (opcional)',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final name = nameController.text.trim();
-                final rating = double.tryParse(ratingController.text) ?? 5.0;
-                final distance = double.tryParse(distanceController.text);
-                final imageUrl = imageUrlController.text.trim().isEmpty
-                    ? null
-                    : imageUrlController.text.trim();
-                if (name.isEmpty) return;
-                final now = DateTime.now().toIso8601String();
-                final dto = ProviderDto(
-                  id: provider?.id ?? DateTime.now().millisecondsSinceEpoch,
-                  name: name,
-                  image_url: imageUrl,
-                  brand_color_hex: null,
-                  rating: rating,
-                  distance_km: distance,
-                  metadata: null,
-                  updated_at: now,
-                );
-                Navigator.of(context).pop(dto);
-              },
-              child: Text(provider == null ? 'Adicionar' : 'Salvar'),
-            ),
-          ],
-        );
-      },
-    );
+    final result = await showProviderFormDialog(context, provider: provider);
     if (result != null) {
       final dao = ProvidersLocalDaoSharedPrefs();
       List<ProviderDto> newList = List.from(_providers);
@@ -187,104 +110,11 @@ class ProvidersPageState extends State<ProvidersPage>
   }
 
   void _showProviderDetails(ProviderDto provider, int index) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(provider.name),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (provider.image_url != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      provider.image_url!,
-                      height: 120,
-                      width: 280,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          height: 120,
-                          width: 280,
-                          color: Colors.grey[200],
-                          child: const Icon(
-                            Icons.image_not_supported,
-                            size: 48,
-                          ),
-                        );
-                      },
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          height: 120,
-                          width: 280,
-                          color: Colors.grey[200],
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              Text('Nota: ${provider.rating.toStringAsFixed(1)}'),
-              if (provider.distance_km != null)
-                Text(
-                  'Distância: ${provider.distance_km!.toStringAsFixed(1)} km',
-                ),
-              Text('Atualizado em: ${provider.updated_at}'),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Fechar'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _showProviderForm(provider: provider, index: index);
-            },
-            child: const Text('Editar'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              final confirm = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Remover fornecedor?'),
-                  content: Text(
-                    'Tem certeza que deseja remover o fornecedor "${provider.name}"?',
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('Cancelar'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                      child: const Text('Remover'),
-                    ),
-                  ],
-                ),
-              );
-              if (confirm == true) {
-                await _removeProvider(index);
-              }
-            },
-            child: const Text('Remover', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
+    showProviderDetailsDialog(
+      context,
+      provider,
+      onEdit: () => _showProviderForm(provider: provider, index: index),
+      onRemove: () async => await _removeProvider(index),
     );
   }
 
@@ -542,47 +372,25 @@ class ProvidersPageState extends State<ProvidersPage>
               Positioned(
                 right: 0,
                 bottom: 0,
-                child: Padding(
-                  // add bottomSafe so FAB stays above system gesture area (home indicator on iPhone)
-                  padding: EdgeInsets.only(
-                    right: 16.0,
-                    bottom: 8.0 + bottomSafe,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (!_dontShowTipAgain)
-                        TextButton(
-                          onPressed: () async {
-                            await SharedPreferencesService.setProvidersTutorialShown(
-                              true,
-                            );
-                            if (!mounted) return;
-                            setState(() {
-                              _dontShowTipAgain = true;
-                              _showProvidersTutorial = false;
-                              _showOnboardingTip = false;
-                            });
-                            _fabController?.stop();
-                            _fabController?.reset();
-                          },
-                          child: const Text('Não exibir dica novamente'),
-                        ),
-                      const SizedBox(width: 12),
-                      ScaleTransition(
-                        scale: _fabScale ?? kAlwaysCompleteAnimation,
-                        child: Tooltip(
-                          message: 'Adicionar fornecedor',
-                          preferBelow: false,
-                          child: FloatingActionButton(
-                            onPressed: () => _showProviderForm(),
-                            tooltip: 'Adicionar fornecedor',
-                            child: const Icon(Icons.add),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                child: ProvidersFabArea(
+                  fabScale: _fabScale,
+                  dontShowTipAgain: _dontShowTipAgain,
+                  bottomSafe: bottomSafe,
+                  onDontShowTipAgain: () {
+                    SharedPreferencesService.setProvidersTutorialShown(
+                      true,
+                    ).then((_) {
+                      if (!mounted) return;
+                      setState(() {
+                        _dontShowTipAgain = true;
+                        _showProvidersTutorial = false;
+                        _showOnboardingTip = false;
+                      });
+                      _fabController?.stop();
+                      _fabController?.reset();
+                    });
+                  },
+                  onPressed: () => _showProviderForm(),
                 ),
               ),
             ],
@@ -591,198 +399,12 @@ class ProvidersPageState extends State<ProvidersPage>
             onRefresh: _loadProviders,
             child: Stack(
               children: [
-                ListView.builder(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: 8,
-                  ),
-                  itemCount: _providers.length,
-                  itemBuilder: (context, idx) {
-                    final p = _providers[idx];
-                    final isEven = idx % 2 == 0;
-                    final backgroundColor = isEven
-                        ? Colors.blue[50]
-                        : Colors.grey[100];
-
-                    return Dismissible(
-                      key: Key(p.id.toString()),
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 16),
-                        child: const Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
-                      direction: DismissDirection.endToStart,
-                      confirmDismiss: (direction) async {
-                        return await showDialog<bool>(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Remover fornecedor?'),
-                                content: Text(
-                                  'Tem certeza que deseja remover "${p.name}"?',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(false),
-                                    child: const Text('Cancelar'),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(true),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                    ),
-                                    child: const Text('Remover'),
-                                  ),
-                                ],
-                              ),
-                            ) ??
-                            false;
-                      },
-                      onDismissed: (direction) async {
-                        final providerToRemove = p;
-                        setState(() {
-                          _providers.removeAt(idx);
-                        });
-                        try {
-                          final dao = ProvidersLocalDaoSharedPrefs();
-                          await dao.clear();
-                          await dao.upsertAll(_providers);
-                        } catch (e) {
-                          print('Erro ao salvar: $e');
-                        }
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                '${providerToRemove.name} removido com sucesso',
-                              ),
-                              duration: const Duration(seconds: 2),
-                            ),
-                          );
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 2),
-                        child: Container(
-                          color: backgroundColor,
-                          child: GestureDetector(
-                            onTap: () => _showProviderDetails(p, idx),
-                            child: Row(
-                              children: [
-                                if (p.image_url != null)
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(16),
-                                      bottomLeft: Radius.circular(16),
-                                    ),
-                                    child: SizedBox(
-                                      width: 80,
-                                      height: 90,
-                                      child: Image.network(
-                                        p.image_url!,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stack) =>
-                                            Container(
-                                              color: Colors.grey[200],
-                                              child: const Icon(
-                                                Icons.store,
-                                                size: 32,
-                                              ),
-                                            ),
-                                        loadingBuilder:
-                                            (context, child, progress) {
-                                              if (progress == null)
-                                                return child;
-                                              return Container(
-                                                color: Colors.grey[200],
-                                                child: const Icon(
-                                                  Icons.store,
-                                                  size: 32,
-                                                ),
-                                              );
-                                            },
-                                      ),
-                                    ),
-                                  )
-                                else
-                                  SizedBox(
-                                    width: 80,
-                                    height: 90,
-                                    child: Container(
-                                      color: Colors.grey[200],
-                                      child: const Icon(Icons.store),
-                                    ),
-                                  ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 8,
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          p.name,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.titleMedium,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'Nota: ${p.rating.toStringAsFixed(1)}',
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodySmall,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      if (p.distance_km != null)
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            bottom: 8,
-                                          ),
-                                          child: Text(
-                                            '${p.distance_km!.toStringAsFixed(1)} km',
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.bodySmall,
-                                          ),
-                                        ),
-                                      IconButton(
-                                        icon: const Icon(Icons.edit),
-                                        tooltip: 'Editar',
-                                        onPressed: () => _showProviderForm(
-                                          provider: p,
-                                          index: idx,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                ProviderListView(
+                  providers: _providers,
+                  onTap: (p, idx) => _showProviderDetails(p, idx),
+                  onEdit: (p, idx) =>
+                      _showProviderForm(provider: p, index: idx),
+                  onRemove: (idx) async => await _removeProvider(idx),
                 ),
                 if (_showProvidersTutorial)
                   Positioned.fill(
@@ -905,6 +527,31 @@ class ProvidersPageState extends State<ProvidersPage>
                       ),
                     ),
                   ),
+                // Floating action area (opt-out + FAB) for NON-empty list too
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: ProvidersFabArea(
+                    fabScale: _fabScale,
+                    dontShowTipAgain: _dontShowTipAgain,
+                    bottomSafe: bottomSafe,
+                    onDontShowTipAgain: () {
+                      SharedPreferencesService.setProvidersTutorialShown(
+                        true,
+                      ).then((_) {
+                        if (!mounted) return;
+                        setState(() {
+                          _dontShowTipAgain = true;
+                          _showProvidersTutorial = false;
+                          _showOnboardingTip = false;
+                        });
+                        _fabController?.stop();
+                        _fabController?.reset();
+                      });
+                    },
+                    onPressed: () => _showProviderForm(),
+                  ),
+                ),
               ],
             ),
           );

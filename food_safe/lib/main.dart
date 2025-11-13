@@ -71,12 +71,15 @@ Future<void> main() async {
   );
 
   String? maybe(String key) {
-    if (key == 'SUPABASE_URL' && compileSupabaseUrl.isNotEmpty)
+    if (key == 'SUPABASE_URL' && compileSupabaseUrl.isNotEmpty) {
       return compileSupabaseUrl;
-    if (key == 'SUPABASE_ANON_KEY' && compileSupabaseAnonKey.isNotEmpty)
+    }
+    if (key == 'SUPABASE_ANON_KEY' && compileSupabaseAnonKey.isNotEmpty) {
       return compileSupabaseAnonKey;
-    if (key == 'SUPABASE_KEY' && compileSupabaseKey.isNotEmpty)
+    }
+    if (key == 'SUPABASE_KEY' && compileSupabaseKey.isNotEmpty) {
       return compileSupabaseKey;
+    }
     try {
       final v = dotenv.env[key];
       if (v != null && v.isNotEmpty) return v;

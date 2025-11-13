@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
+import '../../theme/color_schemes.dart';
+
 import '../home/home_page.dart';
 import '../home/profile_page.dart';
 import '../onboarding/onboarding_welcome_page.dart';
@@ -21,8 +23,33 @@ class FoodSafeApp extends StatelessWidget {
         useMaterial3: true,
         materialTapTargetSize: MaterialTapTargetSize.padded,
         visualDensity: VisualDensity.standard,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: lightColorScheme,
+        appBarTheme: AppBarTheme(
+          backgroundColor: lightColorScheme.primary,
+          // Use a high-contrast foreground for app bar titles.
+          // lightColorScheme.onPrimary was white which had poor contrast
+          // with the chosen primary color. onSurface provides better
+          // contrast without affecting dialog button colors.
+          foregroundColor: lightColorScheme.onSurface,
+          elevation: 0,
+          centerTitle: true,
+        ),
       ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        materialTapTargetSize: MaterialTapTargetSize.padded,
+        visualDensity: VisualDensity.standard,
+        colorScheme: darkColorScheme,
+        appBarTheme: AppBarTheme(
+          backgroundColor: darkColorScheme.primary,
+          // Align dark theme app bar foreground with onSurface for
+          // consistent high-contrast titles.
+          foregroundColor: darkColorScheme.onSurface,
+          elevation: 0,
+          centerTitle: true,
+        ),
+      ),
+      themeMode: ThemeMode.system,
       initialRoute: initialRoute,
       routes: {
         '/': (context) => const SplashScreenPage(),

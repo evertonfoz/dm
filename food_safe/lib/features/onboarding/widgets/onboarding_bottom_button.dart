@@ -17,6 +17,27 @@ class OnBoardingBottomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final cs = Theme.of(context).colorScheme;
+    // Defensive selection: prefer primaryContainer/onPrimaryContainer for good contrast
+    Color buttonBg = cs.primaryContainer;
+    Color buttonFg = cs.onPrimaryContainer;
+    // If selected bg is essentially very light (close to white), fallback to primary
+    try {
+      if (buttonBg.computeLuminance() > 0.95) {
+        buttonBg = cs.primary;
+        buttonFg = cs.onPrimary;
+      }
+    } catch (_) {}
+    // Ensure readable foreground: fall back to black/white if contrast looks poor
+    try {
+      final lumBg = buttonBg.computeLuminance();
+      // choose white on dark bg, black on light bg
+      final highContrastFg = lumBg > 0.5 ? Colors.black : Colors.white;
+      // If the theme-provided foreground is too close to bg luminance, override
+      if ((buttonFg.computeLuminance() - lumBg).abs() < 0.25) {
+        buttonFg = highContrastFg;
+      }
+    } catch (_) {}
     return SizedBox(
       height: getButtonHeight(buildContext: context),
       width: size.width * 0.6,
@@ -30,18 +51,21 @@ class OnBoardingBottomButton extends StatelessWidget {
             ).pushNamed('/onboarding/privacy_and_use_terms');
           },
           style: ElevatedButton.styleFrom(
-            elevation: 0,
+            elevation: 2,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(40)),
             ),
-            // backgroundColor: Theme.of(context).colorScheme.primary, // Ajuste conforme necessário
-            // foregroundColor: Theme.of(context).colorScheme.onPrimary, // Ajuste conforme necessário
+            backgroundColor: buttonBg,
+            foregroundColor: buttonFg,
+            side: BorderSide(color: cs.onBackground.withOpacity(0.08)),
+            shadowColor: cs.onBackground.withOpacity(0.06),
           ),
           child: Text(
             'Eu também!',
             style: TextStyle(
               fontSize: size.width * 0.04,
               fontWeight: FontWeight.bold,
+              color: buttonFg,
             ),
           ),
         ),

@@ -82,7 +82,7 @@ InputDecorationTheme lightInputDecorationTheme() {
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(5),
       borderSide: BorderSide(
-        color: lightColorScheme.primaryContainer.withOpacity(0.2),
+        color: lightColorScheme.primaryContainer.withAlpha((0.2 * 255).round()),
         width: 1,
       ),
     ),

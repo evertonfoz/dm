@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ProviderTypesSelectScreen extends StatelessWidget {
   static const routeName = '/onboarding/provider_types_select';
 
-  const ProviderTypesSelectScreen({Key? key}) : super(key: key);
+  const ProviderTypesSelectScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class ProviderTypesSelectScreen extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: Theme.of(
                           context,
-                        ).colorScheme.primary.withOpacity(0.08),
+                        ).colorScheme.primary.withAlpha((0.08 * 255).round()),
                       ),
                     ),
                     CircleAvatar(

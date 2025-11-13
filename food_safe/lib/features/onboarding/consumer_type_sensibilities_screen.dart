@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ConsumerTypeSensibilitiesScreen extends StatefulWidget {
   static const routeName = '/onboarding/consumer_type_sensibilities';
 
-  const ConsumerTypeSensibilitiesScreen({Key? key}) : super(key: key);
+  const ConsumerTypeSensibilitiesScreen({super.key});
 
   @override
   State<ConsumerTypeSensibilitiesScreen> createState() =>
@@ -25,10 +25,11 @@ class _ConsumerTypeSensibilitiesScreenState
 
   void _toggle(String key) {
     setState(() {
-      if (_selected.contains(key))
+      if (_selected.contains(key)) {
         _selected.remove(key);
-      else
+      } else {
         _selected.add(key);
+      }
     });
   }
 
@@ -56,7 +57,7 @@ class _ConsumerTypeSensibilitiesScreenState
                         shape: BoxShape.circle,
                         color: Theme.of(
                           context,
-                        ).colorScheme.primary.withOpacity(0.08),
+                        ).colorScheme.primary.withAlpha((0.08 * 255).round()),
                       ),
                     ),
                     CircleAvatar(

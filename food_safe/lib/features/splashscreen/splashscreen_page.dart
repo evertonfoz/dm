@@ -17,12 +17,12 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
     Future.microtask(() async {
       try {
-        if (kDebugMode) {
-          if (mounted) {
-            Navigator.of(context).pushReplacementNamed('/home');
-          }
-          return;
-        }
+        // if (kDebugMode) {
+        //   if (mounted) {
+        //     Navigator.of(context).pushReplacementNamed('/home');
+        //   }
+        //   return;
+        // }
         final marketingConsent =
             await SharedPreferencesService.getMarketingConsent();
         if (marketingConsent == true) {
