@@ -17,12 +17,12 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
     Future.microtask(() async {
       try {
-        // if (kDebugMode) {
-        //   if (mounted) {
-        //     Navigator.of(context).pushReplacementNamed('/home');
-        //   }
-        //   return;
-        // }
+        if (kDebugMode) {
+          if (mounted) {
+            Navigator.of(context).pushReplacementNamed('/home');
+          }
+          return;
+        }
         final marketingConsent =
             await SharedPreferencesService.getMarketingConsent();
         if (marketingConsent == true) {
@@ -89,14 +89,14 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     CircularProgressIndicator(
                       strokeWidth: 3,
                       valueColor: AlwaysStoppedAnimation(
-                        Theme.of(context).colorScheme.onBackground,
+                        Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 12),
                     Text(
                       'Carregando...',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ],

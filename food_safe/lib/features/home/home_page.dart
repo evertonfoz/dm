@@ -54,6 +54,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               showDialog(
                 context: context,
+                barrierDismissible: false,
                 builder: (context) => AlertDialog(
                   title: const Text('Como começar?'),
                   content: const Text(

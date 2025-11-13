@@ -50,19 +50,21 @@ Regras e restrições
 - A resposta deve considerar performance: indicar limites razoáveis de pageSize (por exemplo <= 100), sugerir cursor-based pagination para grandes volumes e limitar atributos carregados quando `include` não for solicitado.
 - Permissões: o código gerado e a especificação devem mencionar que a listagem respeita permissões/escopo do usuário (exibir apenas provedores que o usuário tem acesso).
 - Ao gerar código, respeite os padrões do repositório: estrutura de pastas (`lib/features/{FEATURE_FOLDER}/presentation`), idioma (português nas labels), tratamento de erros (`try/catch`) e feedback via `SnackBar`.
+ - Ao gerar código, respeite os padrões do repositório: estrutura de pastas (`lib/features/{FEATURE_FOLDER}/presentation`), idioma (português nas labels), tratamento de erros (`try/catch`) e feedback via `SnackBar`.
+ - Importante: todos os diálogos gerados devem ser não-dismissable ao tocar fora (use `showDialog(..., barrierDismissible: false)` ou equivalente). O fechamento deve ocorrer somente pelos botões/ações explícitas do diálogo.
 
 Escopo de geração de código (quando aplicável)
 ---
-O agente deve gerar um widget Flutter que contenha, no mínimo, os comportamentos e elementos presentes em `providers_page.dart`:
+O agente deve gerar um widget Flutter que implemente apenas a listagem (modo "listing-only"). No modo listing-only o widget deve conter, no mínimo:
 
 - Carregamento inicial via DAO (`listAll`) e indicação de loading (CircularProgressIndicator).
-- `RefreshIndicator` para pull-to-refresh que chama o carregamento.
-- `ListView.builder` com `Dismissible` para remoção por swipe, incluindo diálogo de confirmação.
+- (Pull-to-refresh foi extraído para um prompt separado. Veja `prompts/providers/11_agent_list_refresh.md`.)
+- `ListView.builder` para apresentar os itens (sem `Dismissible`, sem handlers de remoção por swipe neste arquivo).
 - Renderização condicional de imagem (`image_url`) com `Image.network`, `errorBuilder` e `loadingBuilder`.
 - Exibição de `rating` (formatado com uma casa decimal) e `distance_km` quando presentes.
-- FAB animado / área de ações (pode reutilizar componentes existentes como `ProvidersFabArea` se presente) para abrir o formulário de adicionar/editar.
-- Abertura de diálogo de formulário/detalhes (`showProviderFormDialog`, `showProviderDetailsDialog`) — se estes helpers já existirem, reutilizá-los; caso contrário, gerar o `AlertDialog`/dialog correspondente em um arquivo novo dentro da feature.
-- Integração com DAO local da feature: identificar e importar o DAO (por exemplo `ProvidersLocalDaoSharedPrefs`) e usar os métodos padrão (`listAll`, `upsertAll`, `clear`) ou adaptar para os métodos reais encontrados no projeto.
+- Integração com DAO local da feature: identificar e importar o DAO (por exemplo `ProvidersLocalDaoSharedPrefs`) e usar os métodos de leitura (`listAll`) — operações de escrita/remoção/edição devem ser mantidas fora deste arquivo e implementadas separadamente.
+
+Observação: funcionalidades adicionais (editar, remover por swipe, seleção com diálogo de ações) devem ser implementadas em arquivos/pedidos separados. Veja os prompts complementares criados ao lado para cada uma dessas responsabilidades.
 
 Contrato de DTO / Campos esperados
 ---

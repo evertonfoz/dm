@@ -213,6 +213,39 @@ Migration checklist
 
 I can run an automated pass (codemod) to replace literal `withOpacity(...)` occurrences and open a branch/PR if you want.
 
+
+## Material 3: prefer `onSurface` over deprecated `onBackground`
+
+Context
+-------
+Recent Material 3 updates deprecate `colorScheme.onBackground` in many usages in favor of `colorScheme.onSurface` (or another `onX` color that better reflects the surface role). The analyzer may report:
+
+```
+info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead.
+```
+
+Quick fix
+---------
+- When a widget uses `colorScheme.onBackground` for foreground content (text, icons) placed over app surfaces, prefer `colorScheme.onSurface`.
+- If you purposely targeted a background-specific contrast role, review `onSurfaceVariant` / `onPrimaryContainer` / `onSecondaryContainer` to pick the color that matches the surface semantics.
+
+Examples
+--------
+// before
+color: Theme.of(context).colorScheme.onBackground,
+
+// after
+color: Theme.of(context).colorScheme.onSurface,
+
+Migration checklist
+------------------
+1. Search the repo for `onBackground` usages and inspect the visual role (foreground vs background).
+2. Replace straightforward foreground usages with `onSurface`.
+3. For usages that intentionally targeted a very specific surface color, consider `onSurfaceVariant` or container-specific colors instead of a blind replacement.
+4. Run `flutter analyze` and then visually test affected screens to avoid contrast regressions.
+
+I can run an automated codemod to replace obvious `onBackground` -> `onSurface` occurrences and open a branch/PR, but I recommend doing this in small batches and reviewing visual changes per screen.
+
 ````
 AGENTS.md
 

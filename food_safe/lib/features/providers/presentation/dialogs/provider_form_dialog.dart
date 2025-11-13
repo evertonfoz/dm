@@ -10,6 +10,7 @@ Future<ProviderDto?> showProviderFormDialog(
 }) {
   return showDialog<ProviderDto>(
     context: context,
+    barrierDismissible: false,
     builder: (context) {
       final nameController = TextEditingController(text: provider?.name ?? '');
       final ratingController = TextEditingController(
@@ -23,10 +24,14 @@ Future<ProviderDto?> showProviderFormDialog(
       );
 
       final labelStyle = TextStyle(
-        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.9),
+        color: Theme.of(
+          context,
+        ).colorScheme.onSurface.withAlpha((0.9 * 255).round()),
       );
       final hintStyle = TextStyle(
-        color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
+        color: Theme.of(
+          context,
+        ).textTheme.bodySmall?.color?.withAlpha((0.6 * 255).round()),
       );
       final inputTextStyle = TextStyle(
         color: Theme.of(context).colorScheme.onSurface,

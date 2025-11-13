@@ -11,6 +11,7 @@ Future<void> showProviderDetailsDialog(
 }) {
   return showDialog<void>(
     context: context,
+    barrierDismissible: false,
     builder: (context) => AlertDialog(
       title: Text(provider.name),
       content: SingleChildScrollView(
@@ -78,6 +79,7 @@ Future<void> showProviderDetailsDialog(
             Navigator.of(context).pop();
             final confirm = await showDialog<bool>(
               context: context,
+              barrierDismissible: false,
               builder: (context) => AlertDialog(
                 title: const Text('Remover fornecedor?'),
                 content: Text(

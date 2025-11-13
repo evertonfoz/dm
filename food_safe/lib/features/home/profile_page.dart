@@ -61,6 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
       // show dialog asking to accept privacy
       await showDialog<void>(
         context: context,
+        barrierDismissible: false,
         builder: (context) => AlertDialog(
           title: const Text('Aviso de Privacidade'),
           content: const Text(

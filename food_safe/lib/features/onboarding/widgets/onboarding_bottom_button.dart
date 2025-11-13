@@ -57,8 +57,10 @@ class OnBoardingBottomButton extends StatelessWidget {
             ),
             backgroundColor: buttonBg,
             foregroundColor: buttonFg,
-            side: BorderSide(color: cs.onBackground.withOpacity(0.08)),
-            shadowColor: cs.onBackground.withOpacity(0.06),
+            side: BorderSide(
+              color: cs.onSurface.withAlpha((0.08 * 255).round()),
+            ),
+            shadowColor: cs.onSurface.withAlpha((0.06 * 255).round()),
           ),
           child: Text(
             'Eu também!',

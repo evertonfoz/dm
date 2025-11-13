@@ -85,7 +85,7 @@ class _PrivacyAndTermsScreenState extends State<PrivacyAndTermsScreen> {
                   value: _accepted,
                   onChanged: (v) => setState(() => _accepted = v ?? false),
                   // Use a clearer/high-contrast fill color for the checked state
-                  fillColor: MaterialStateProperty.all(
+                  fillColor: WidgetStateProperty.all(
                     Theme.of(context).colorScheme.primaryContainer,
                   ),
                 ),

@@ -42,6 +42,7 @@ class ProviderListView extends StatelessWidget {
           confirmDismiss: (direction) async {
             return await showDialog<bool>(
                   context: context,
+                  barrierDismissible: false,
                   builder: (context) => AlertDialog(
                     title: const Text('Remover fornecedor?'),
                     content: Text(

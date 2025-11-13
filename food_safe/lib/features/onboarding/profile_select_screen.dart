@@ -17,8 +17,6 @@ class ProfileSelectScreen extends StatelessWidget {
 
     // Using ProfileSelectButton widget for consistent onboarding buttons
 
-    final cs = Theme.of(context).colorScheme;
-
     return CeliLacScaffold(
       appBar: AppBar(
         title: const Text('Selecionar Perfil'),
@@ -64,7 +62,7 @@ class ProfileSelectScreen extends StatelessWidget {
                           builder: (ctx) {
                             // Use darkColorScheme.onSurface for guaranteed contrast
                             final textColor = darkColorScheme.onSurface
-                                .withOpacity(0.98);
+                                .withAlpha((0.98 * 255).round());
                             return Text(
                               'Como você quer usar o app?',
                               textAlign: TextAlign.center,
@@ -113,8 +111,8 @@ class ProfileSelectScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 2.0),
                 child: Builder(
                   builder: (ctx) {
-                    final verColor = darkColorScheme.onSurface.withOpacity(
-                      0.85,
+                    final verColor = darkColorScheme.onSurface.withAlpha(
+                      (0.85 * 255).round(),
                     );
                     return Text(
                       'Versão 1.0.0',
