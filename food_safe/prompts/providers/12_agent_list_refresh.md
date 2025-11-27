@@ -47,8 +47,53 @@ Notas adicionais
 ---
 - Recomenda-se delegar a lógica de recarga ao nível da página (onde o DAO e o estado de persistência estão) para manter os widgets puros/visuais.
 - Documente no prompt de listagem que o `onRefresh` é esperado caso queira ativar pull-to-refresh mais tarde.
- - Recomenda-se delegar a lógica de recarga ao nível da página (onde o DAO e o estado de persistência estão) para manter os widgets puros/visuais.
- - Documente no prompt de listagem que o `onRefresh` é esperado caso queira ativar pull-to-refresh mais tarde.
- - Observação: se o refresh abrir diálogos de erro/alerta, esses diálogos devem ser não-dismissable ao tocar fora (use `showDialog(..., barrierDismissible: false)`) para manter consistência com as diretrizes de UX.
+- Observação: se o refresh abrir diálogos de erro/alerta, esses diálogos devem ser não-dismissable ao tocar fora (use `showDialog(..., barrierDismissible: false)`) para manter consistência com as diretrizes de UX.
+
+**IMPORTANTE: RefreshIndicator na lista vazia**
+---
+⚠️ **Erro comum**: quando a lista está vazia (`_providers.isEmpty`), se apenas mostrar uma mensagem de "Nenhum item cadastrado" sem o `RefreshIndicator`, o usuário não conseguirá puxar para baixo para atualizar e buscar novos registros do servidor.
+
+**Solução**: envolva TAMBÉM a tela vazia com `RefreshIndicator`:
+
+```dart
+// Quando a lista está vazia, envolva em RefreshIndicator + ListView para permitir pull-to-refresh
+_providers.isEmpty
+  ? RefreshIndicator(
+      onRefresh: _loadProviders,
+      child: Stack(
+        children: [
+          // ListView é necessário para o RefreshIndicator funcionar
+          ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height - 200,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Nenhum fornecedor cadastrado ainda.',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // outros widgets (FAB, tutorial, etc.)
+        ],
+      ),
+    )
+  : RefreshIndicator(
+      // lista normal com itens
+    )
+```
+
+Rationale:
+- `AlwaysScrollableScrollPhysics()` garante que o gesto de pull funcione mesmo com conteúdo menor que a tela.
+- `ListView` com um `SizedBox` de altura suficiente permite o scroll necessário para o RefreshIndicator.
+- Isso permite que usuários busquem dados do servidor mesmo quando começam com cache vazio.
 
 ```

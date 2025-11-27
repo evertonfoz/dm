@@ -331,179 +331,193 @@ class ProvidersPageState extends State<ProvidersPage>
         : _providerError != null
         ? Center(child: Text(_providerError!))
         : _providers.isEmpty
-        ? Stack(
-            children: [
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        ? RefreshIndicator(
+            onRefresh: _loadProviders,
+            child: Stack(
+              children: [
+                // ListView is needed for RefreshIndicator to work
+                ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   children: [
-                    Text(
-                      'Nenhum fornecedor cadastrado ainda.',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height - 200,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Nenhum fornecedor cadastrado ainda.',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
-              if (_showOnboardingTip)
-                Positioned(
-                  right: 24,
-                  bottom: 110,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      if (!mounted) return;
-                      setState(() {
-                        _showProvidersTutorial = true;
-                      });
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        AnimatedBuilder(
-                          animation: _fabController ?? kAlwaysCompleteAnimation,
-                          builder: (context, child) {
-                            final v = _fabController?.value ?? 1.0;
-                            return Transform.translate(
-                              offset: Offset(0, 10 * (1 - v)),
-                              child: child,
-                            );
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Clique aqui para começar!',
-                                style: TextStyle(
-                                  color: Colors.blueAccent.shade700,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
+                if (_showOnboardingTip)
+                  Positioned(
+                    right: 24,
+                    bottom: 110,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        if (!mounted) return;
+                        setState(() {
+                          _showProvidersTutorial = true;
+                        });
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          AnimatedBuilder(
+                            animation:
+                                _fabController ?? kAlwaysCompleteAnimation,
+                            builder: (context, child) {
+                              final v = _fabController?.value ?? 1.0;
+                              return Transform.translate(
+                                offset: Offset(0, 10 * (1 - v)),
+                                child: child,
+                              );
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Clique aqui para começar!',
+                                  style: TextStyle(
+                                    color: Colors.blueAccent.shade700,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 8),
-                              Icon(
-                                Icons.arrow_downward,
-                                color: Colors.blueAccent,
-                                size: 28,
-                              ),
-                            ],
+                                const SizedBox(width: 8),
+                                Icon(
+                                  Icons.arrow_downward,
+                                  color: Colors.blueAccent,
+                                  size: 28,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              if (_showProvidersTutorial)
-                Positioned.fill(
-                  child: Container(
-                    color: Colors.black26,
-                    child: Center(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Card(
-                            elevation: 8,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue[50],
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Icon(
-                                      Icons.info_outline,
-                                      size: 48,
-                                      color: Colors.blue[700],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Text(
-                                    'Como gerenciar fornecedores',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.headlineSmall,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  _buildTutorialItem(
-                                    icon: Icons.edit,
-                                    title: 'Editar fornecedor',
-                                    description:
-                                        'Toque no ícone de lápis para editar as informações do fornecedor',
-                                  ),
-                                  const SizedBox(height: 12),
-                                  _buildTutorialItem(
-                                    icon: Icons.touch_app,
-                                    title: 'Ver detalhes',
-                                    description:
-                                        'Toque na linha do fornecedor para visualizar mais detalhes',
-                                  ),
-                                  const SizedBox(height: 12),
-                                  _buildTutorialItem(
-                                    icon: Icons.add_circle,
-                                    title: 'Adicionar fornecedor',
-                                    description:
-                                        'Toque no botão + flutuante para adicionar um novo fornecedor',
-                                  ),
-                                  const SizedBox(height: 12),
-                                  _buildTutorialItem(
-                                    icon: Icons.refresh,
-                                    title: 'Atualizar lista',
-                                    description:
-                                        'Puxe a tela para baixo para atualizar a lista de fornecedores',
-                                  ),
-                                  const SizedBox(height: 12),
-                                  _buildTutorialItem(
-                                    icon: Icons.swipe_left,
-                                    title: 'Remover fornecedor',
-                                    description:
-                                        'Deslize a linha para a esquerda para remover um fornecedor',
-                                  ),
-                                  const SizedBox(height: 24),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      TextButton(
-                                        onPressed: () {
-                                          if (!mounted) return;
-                                          setState(() {
-                                            _showProvidersTutorial = false;
-                                          });
-                                        },
-                                        child: const Text('Fechar'),
+                if (_showProvidersTutorial)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.black26,
+                      child: Center(
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Card(
+                              elevation: 8,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue[50],
+                                        borderRadius: BorderRadius.circular(12),
                                       ),
-                                      const SizedBox(width: 12),
-                                      ElevatedButton.icon(
-                                        onPressed: () async {
-                                          await SharedPreferencesService.setProvidersTutorialShown(
-                                            true,
-                                          );
-                                          if (!mounted) return;
-                                          setState(() {
-                                            _showProvidersTutorial = false;
-                                            _showOnboardingTip = false;
-                                          });
-                                          _fabController?.stop();
-                                          _fabController?.reset();
-                                        },
-                                        icon: const Icon(Icons.check),
-                                        label: const Text('Li e entendi'),
-                                        style: ElevatedButton.styleFrom(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 12,
+                                      child: Icon(
+                                        Icons.info_outline,
+                                        size: 48,
+                                        color: Colors.blue[700],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                      'Como gerenciar fornecedores',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.headlineSmall,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _buildTutorialItem(
+                                      icon: Icons.edit,
+                                      title: 'Editar fornecedor',
+                                      description:
+                                          'Toque no ícone de lápis para editar as informações do fornecedor',
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildTutorialItem(
+                                      icon: Icons.touch_app,
+                                      title: 'Ver detalhes',
+                                      description:
+                                          'Toque na linha do fornecedor para visualizar mais detalhes',
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildTutorialItem(
+                                      icon: Icons.add_circle,
+                                      title: 'Adicionar fornecedor',
+                                      description:
+                                          'Toque no botão + flutuante para adicionar um novo fornecedor',
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildTutorialItem(
+                                      icon: Icons.refresh,
+                                      title: 'Atualizar lista',
+                                      description:
+                                          'Puxe a tela para baixo para atualizar a lista de fornecedores',
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildTutorialItem(
+                                      icon: Icons.swipe_left,
+                                      title: 'Remover fornecedor',
+                                      description:
+                                          'Deslize a linha para a esquerda para remover um fornecedor',
+                                    ),
+                                    const SizedBox(height: 24),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            if (!mounted) return;
+                                            setState(() {
+                                              _showProvidersTutorial = false;
+                                            });
+                                          },
+                                          child: const Text('Fechar'),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        ElevatedButton.icon(
+                                          onPressed: () async {
+                                            await SharedPreferencesService.setProvidersTutorialShown(
+                                              true,
+                                            );
+                                            if (!mounted) return;
+                                            setState(() {
+                                              _showProvidersTutorial = false;
+                                              _showOnboardingTip = false;
+                                            });
+                                            _fabController?.stop();
+                                            _fabController?.reset();
+                                          },
+                                          icon: const Icon(Icons.check),
+                                          label: const Text('Li e entendi'),
+                                          style: ElevatedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 12,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -511,40 +525,40 @@ class ProvidersPageState extends State<ProvidersPage>
                       ),
                     ),
                   ),
-                ),
-              // Floating action area (opt-out + FAB)
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: ProvidersFabArea(
-                  fabScale: _fabScale,
-                  dontShowTipAgain: _dontShowTipAgain,
-                  bottomSafe: bottomSafe,
-                  onDontShowTipAgain: () {
-                    SharedPreferencesService.setProvidersTutorialShown(
-                      true,
-                    ).then((_) {
-                      if (!mounted) return;
-                      setState(() {
-                        _dontShowTipAgain = true;
-                        _showProvidersTutorial = false;
-                        _showOnboardingTip = false;
-                      });
-                      _fabController?.stop();
-                      _fabController?.reset();
-                    });
-                  },
-                  onPressed: () => _showProviderForm(),
-                ),
-              ),
-              if (_syncingProviders)
-                const Positioned(
-                  left: 0,
+                // Floating action area (opt-out + FAB)
+                Positioned(
                   right: 0,
-                  top: 0,
-                  child: LinearProgressIndicator(),
+                  bottom: 0,
+                  child: ProvidersFabArea(
+                    fabScale: _fabScale,
+                    dontShowTipAgain: _dontShowTipAgain,
+                    bottomSafe: bottomSafe,
+                    onDontShowTipAgain: () {
+                      SharedPreferencesService.setProvidersTutorialShown(
+                        true,
+                      ).then((_) {
+                        if (!mounted) return;
+                        setState(() {
+                          _dontShowTipAgain = true;
+                          _showProvidersTutorial = false;
+                          _showOnboardingTip = false;
+                        });
+                        _fabController?.stop();
+                        _fabController?.reset();
+                      });
+                    },
+                    onPressed: () => _showProviderForm(),
+                  ),
                 ),
-            ],
+                if (_syncingProviders)
+                  const Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: LinearProgressIndicator(),
+                  ),
+              ],
+            ),
           )
         : RefreshIndicator(
             onRefresh: _loadProviders,
