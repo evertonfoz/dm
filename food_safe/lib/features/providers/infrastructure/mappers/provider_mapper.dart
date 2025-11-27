@@ -8,10 +8,18 @@ class ProviderMapper {
         (md['tags'] as List?)?.whereType<String>().toSet() ?? <String>{};
     final featured = md['featured'] == true;
 
+    Uri? parsedUri;
+    if (d.image_url != null && d.image_url!.isNotEmpty) {
+      parsedUri = Uri.tryParse(d.image_url!);
+      if (parsedUri == null) {
+        print('[ProviderMapper] Failed to parse image_url: ${d.image_url}');
+      }
+    }
+
     return Provider(
       id: d.id,
       name: d.name,
-      imageUri: d.image_url != null ? Uri.tryParse(d.image_url!) : null,
+      imageUri: parsedUri,
       brandColorHex: d.brand_color_hex,
       rating: d.rating,
       distanceKm: d.distance_km,

@@ -8,7 +8,31 @@
         {
             "name": "food_safe",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "debugExternalPackageLibraries": false,
+            "debugSdkLibraries": false,
+            "evaluateToStringInDebugViews": false,
+            "stopOnEntry": false,
+            "vmAdditionalArgs": [
+                "--pause-isolates-on-start=false"
+            ],
+            "additionalSettings": {
+                "stopOnException": "none"
+            }
+        },
+        {
+            "name": "food_safe (no pause)",
+            "request": "launch",
+            "type": "dart",
+            "debugExternalPackageLibraries": false,
+            "debugSdkLibraries": false,
+            "stopOnEntry": false,
+            "vmAdditionalArgs": [
+                "--pause-isolates-on-start=false"
+            ],
+            "additionalSettings": {
+                "stopOnException": "none"
+            }
         },
         {
             "name": "food_safe (profile mode)",

@@ -20,6 +20,11 @@ abstract class ProvidersRemoteApi {
     PageCursor? cursor,
   });
 
-  // Futuro: escrita/edição no remoto, se o app vier a suportar:
-  // Future<void> upsertProviders(List<ProviderDto> dtos);
+  /// Upsert (create or update) providers on the remote side.
+  /// Returns the number of items acknowledged by the remote (best-effort).
+  Future<int> upsertProviders(List<ProviderDto> dtos);
+
+  /// Delete providers from remote by their IDs.
+  /// Returns the number of items deleted.
+  Future<int> deleteProviders(List<int> ids);
 }

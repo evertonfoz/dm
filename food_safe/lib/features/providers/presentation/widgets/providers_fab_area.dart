@@ -11,14 +11,14 @@ class ProvidersFabArea extends StatelessWidget {
   final String tooltip;
 
   const ProvidersFabArea({
-    Key? key,
+    super.key,
     required this.fabScale,
     required this.dontShowTipAgain,
     required this.bottomSafe,
     required this.onDontShowTipAgain,
     required this.onPressed,
     this.tooltip = 'Adicionar fornecedor',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

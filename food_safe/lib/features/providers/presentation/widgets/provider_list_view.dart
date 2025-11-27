@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 
-import '../../infrastructure/dtos/provider_dto.dart';
+import '../../domain/entities/provider.dart';
 import 'provider_list_item.dart';
 
 /// Widget que monta a ListView de providers. Recebe callbacks para ações
 /// (onTap, onEdit, onRemove) e não realiza nenhuma persistência por si só.
 class ProviderListView extends StatelessWidget {
-  final List<ProviderDto> providers;
-  final void Function(ProviderDto provider, int index)? onTap;
-  final void Function(ProviderDto provider, int index)? onEdit;
-  final Future<void> Function(int index)?
-  onRemove; // chamador realiza persistência
+  final List<Provider> providers;
+  final void Function(Provider provider, int index)? onTap;
+  final void Function(Provider provider, int index)? onEdit;
+  final void Function(int index)? onRemove; // chamador realiza persistência
 
   const ProviderListView({
-    Key? key,
+    super.key,
     required this.providers,
     this.onTap,
     this.onEdit,
     this.onRemove,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +64,11 @@ class ProviderListView extends StatelessWidget {
                 ) ??
                 false;
           },
-          onDismissed: (direction) async {
+          onDismissed: (direction) {
+            // Immediately invoke the callback to remove from state
+            // The parent (ProvidersPage) handles state update and persistence
             if (onRemove != null) {
-              await onRemove!(idx);
+              onRemove!(idx);
             }
           },
           child: Padding(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -47,6 +48,8 @@ class SupabaseProvidersRepository implements ProvidersRepository {
   /// Returns the number of changed records applied to cache.
   @override
   Future<int> syncFromServer() async {
+    if (kDebugMode)
+      print('SupabaseProvidersRepository.syncFromServer: starting');
     final prefs = await SharedPreferences.getInstance();
     final lastSync = prefs.getString(_lastSyncKey);
 
@@ -57,9 +60,9 @@ class SupabaseProvidersRepository implements ProvidersRepository {
       }
 
       // execute() is provided by the supabase client but analyzer typings
-      // may not always expose it depending on package versions. Use dynamic
-      // call to avoid static type issues here.
-      final dynamic response = await (query as dynamic).execute();
+      // may not always expose it depending on package versions. Use a
+      // compatibility helper to attempt common execution variants.
+      final dynamic response = await _executeQuery(query as dynamic);
       if (response == null) return 0;
 
       // response may have .error and .data depending on runtime; guard access
@@ -116,6 +119,32 @@ class SupabaseProvidersRepository implements ProvidersRepository {
       return applied;
     } catch (_) {
       return 0;
+    }
+  }
+
+  // Compatibility helper similar to the one used in the remote datasource:
+  // attempt `.execute()`, then `.select()`, then await the builder itself.
+  Future<dynamic> _executeQuery(dynamic builder) async {
+    // Try the most common variants in a safe order — prefer `.select()` -> `.execute()` -> await.
+    try {
+      return await builder.select();
+    } on NoSuchMethodError catch (_) {
+      // fall through
+    } catch (e) {
+      return {'error': e.toString()};
+    }
+
+    try {
+      return await builder.execute();
+    } on NoSuchMethodError catch (_) {
+    } catch (e) {
+      return {'error': e.toString()};
+    }
+
+    try {
+      return await builder;
+    } catch (e) {
+      return {'error': e.toString()};
     }
   }
 

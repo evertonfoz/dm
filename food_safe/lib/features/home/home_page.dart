@@ -17,8 +17,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String? _userName;
   String? _userEmail;
-  // Key to access the providers page widget (to trigger tutorial)
-  final GlobalKey<ProvidersPageState> _providersKey = GlobalKey();
+  // Callback to trigger tutorial in ProvidersPage
+  VoidCallback? _showProvidersTutorialCallback;
 
   @override
   void initState() {
@@ -97,10 +97,9 @@ class _HomePageState extends State<HomePage> {
               leading: const Icon(Icons.person),
               title: const Text('Editar perfil'),
               onTap: () async {
-                Navigator.of(context).pop();
-                final result = await Navigator.of(
-                  context,
-                ).pushNamed('/profile');
+                final navigator = Navigator.of(context);
+                navigator.pop();
+                final result = await navigator.pushNamed('/profile');
                 if (result == true) {
                   _loadUser();
                 }
@@ -126,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pop();
                 await SharedPreferencesService.setProvidersTutorialShown(false);
                 // Ask the ProvidersPresentation widget to re-show the tutorial
-                _providersKey.currentState?.showTutorialAgain();
+                _showProvidersTutorialCallback?.call();
               },
             ),
             const Divider(),
@@ -142,7 +141,11 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: ProvidersPage(key: _providersKey),
+      body: ProvidersPage(
+        onRegisterShowTutorial: (callback) {
+          _showProvidersTutorialCallback = callback;
+        },
+      ),
     );
   }
 
@@ -161,6 +164,7 @@ class _HomePageState extends State<HomePage> {
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   child: const Text('Deletar'),
                   onPressed: () async {
+                    final messenger = ScaffoldMessenger.of(context);
                     Navigator.of(context).pop();
                     final confirm = await showDialog<bool>(
                       context: context,
@@ -191,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                         });
                       }
                       if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        messenger.showSnackBar(
                           const SnackBar(
                             content: Text('Dados locais removidos.'),
                           ),

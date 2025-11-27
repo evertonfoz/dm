@@ -61,7 +61,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).colorScheme.brightness;
     final isDark = brightness == Brightness.dark;
-    final bg = Theme.of(context).colorScheme.background;
+    final bg = Theme.of(context).colorScheme.surface;
     final imagePath = isDark
         ? 'assets/images/splashscreen/splashscreen_dark.png'
         : 'assets/images/splashscreen/splashscreen_light.png';

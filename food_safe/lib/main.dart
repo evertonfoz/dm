@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kReleaseMode;
+import 'package:flutter/foundation.dart' show kReleaseMode, kDebugMode;
 // Conditional import: use real Platform.environment when dart:io is available,
 // otherwise use a safe stub (for web).
 import 'package:celilac_life/utils/platform_environment_stub.dart'
@@ -10,8 +10,47 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:celilac_life/utils/env_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:celilac_life/features/app/food_safe_app.dart';
+
+/// Custom LocalStorage implementation that avoids Hive migration issues
+/// and prevents TimeoutException that causes IDE pauses.
+/// See: https://github.com/supabase/supabase-flutter/issues/794
+class CustomLocalStorage extends LocalStorage {
+  final String persistSessionKey;
+
+  CustomLocalStorage({this.persistSessionKey = 'supabase-auth-token'});
+
+  @override
+  Future<void> initialize() async {
+    // SharedPreferences is ready to use immediately
+  }
+
+  @override
+  Future<String?> accessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(persistSessionKey);
+  }
+
+  @override
+  Future<bool> hasAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey(persistSessionKey);
+  }
+
+  @override
+  Future<void> persistSession(String persistSessionString) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(persistSessionKey, persistSessionString);
+  }
+
+  @override
+  Future<void> removePersistedSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(persistSessionKey);
+  }
+}
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -151,11 +190,49 @@ Future<void> main() async {
   } else {
     // anon key exists -> safe to initialize (provided we have URL)
     if (supabaseUrl != null && supabaseAnonKey.isNotEmpty) {
-      await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+      await Supabase.initialize(
+        url: supabaseUrl,
+        anonKey: supabaseAnonKey,
+        authOptions: FlutterAuthClientOptions(
+          localStorage: CustomLocalStorage(
+            persistSessionKey:
+                "sb-${Uri.parse(supabaseUrl).host.split(".").first}-auth-token",
+          ),
+        ),
+      );
     }
   }
 
   FlutterNativeSplash.remove();
+
+  // Global error handling (debug-only prints) to capture Flutter framework
+  // errors and uncaught zone/isolate errors. This prevents silent pauses in
+  // the debugger and ensures errors are printed to the console for diagnosis.
+  FlutterError.onError = (FlutterErrorDetails details) {
+    // Preserve default behavior (shows red screen in debug), but also print
+    // full details to the console for easier collection in logs.
+    FlutterError.presentError(details);
+    if (kDebugMode) {
+      try {
+        print('FlutterError caught: ${details.exceptionAsString()}');
+        if (details.stack != null) print(details.stack);
+      } catch (_) {}
+    }
+  };
+
+  // Capture errors from other isolates (engine / async errors)
+  WidgetsBinding.instance.platformDispatcher.onError =
+      (Object error, StackTrace stack) {
+        if (kDebugMode) {
+          try {
+            print('PlatformDispatcher.onError: $error');
+            print(stack);
+          } catch (_) {}
+        }
+        // Return true to indicate we've handled the error and avoid further
+        // propagation that might pause the debugger in some configurations.
+        return true;
+      };
 
   runApp(const FoodSafeApp());
 }

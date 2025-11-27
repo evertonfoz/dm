@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-import '../../infrastructure/dtos/provider_dto.dart';
+import '../../domain/entities/provider.dart';
 
 /// Widget para renderizar um item de provider na lista.
 /// Recebe callbacks para ações (tap e edit). Não realiza persistência.
 class ProviderListItem extends StatelessWidget {
-  final ProviderDto provider;
+  final Provider provider;
   final VoidCallback? onTap;
   final VoidCallback? onEdit;
 
   const ProviderListItem({
-    Key? key,
+    super.key,
     required this.provider,
     this.onTap,
     this.onEdit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class ProviderListItem extends StatelessWidget {
           onTap: onTap,
           child: Row(
             children: [
-              if (provider.image_url != null)
+              if (provider.imageUri != null)
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(16),
@@ -38,7 +38,7 @@ class ProviderListItem extends StatelessWidget {
                     width: 80,
                     height: 90,
                     child: Image.network(
-                      provider.image_url!,
+                      provider.imageUri!.toString(),
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stack) => Container(
                         color: Colors.grey[200],
@@ -91,11 +91,11 @@ class ProviderListItem extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (provider.distance_km != null)
+                    if (provider.distanceKm != null)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
-                          '${provider.distance_km!.toStringAsFixed(1)} km',
+                          '${provider.distanceKm!.toStringAsFixed(1)} km',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),

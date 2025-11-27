@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../services/shared_preferences_services.dart';
 import '../infrastructure/local/providers_local_dao_shared_prefs.dart';
-import '../infrastructure/dtos/provider_dto.dart';
+import '../infrastructure/remote/supabase_providers_remote_datasource.dart';
+import '../infrastructure/repositories/providers_repository_impl.dart';
+// DTO import no longer required in UI - domain entities used instead.
+import '../infrastructure/mappers/provider_mapper.dart';
+import '../domain/entities/provider.dart';
 import 'dialogs/provider_form_dialog.dart';
 import 'dialogs/provider_details_dialog.dart';
 import 'widgets/providers_fab_area.dart';
 import 'widgets/provider_list_view.dart';
 
 class ProvidersPage extends StatefulWidget {
-  const ProvidersPage({Key? key}) : super(key: key);
+  final void Function(VoidCallback callback)? onRegisterShowTutorial;
+
+  const ProvidersPage({super.key, this.onRegisterShowTutorial});
 
   @override
   ProvidersPageState createState() => ProvidersPageState();
@@ -18,7 +25,7 @@ class ProvidersPage extends StatefulWidget {
 class ProvidersPageState extends State<ProvidersPage>
     with SingleTickerProviderStateMixin {
   String? _providerError;
-  List<ProviderDto> _providers = [];
+  List<Provider> _providers = [];
   bool _loadingProviders = true;
 
   AnimationController? _fabController;
@@ -26,11 +33,23 @@ class ProvidersPageState extends State<ProvidersPage>
   bool _showOnboardingTip = false;
   bool _showProvidersTutorial = false;
   bool _dontShowTipAgain = false;
+  bool _syncingProviders = false;
+  // NOTE: sync indicator uses transient SnackBar; no dedicated field required.
 
   @override
   void initState() {
     super.initState();
-    _loadProvidersTutorialPreference().then((_) => _loadProviders());
+    // Register tutorial callback with parent if provided
+    widget.onRegisterShowTutorial?.call(showTutorialAgain);
+
+    _loadProvidersTutorialPreference().then((_) {
+      if (mounted) {
+        _loadProviders();
+      } else {
+        if (kDebugMode)
+          print('[initState] Widget unmounted before _loadProviders call');
+      }
+    });
     _fabController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
@@ -59,18 +78,82 @@ class ProvidersPageState extends State<ProvidersPage>
   }
 
   Future<void> _loadProviders() async {
+    if (!mounted) return;
+
     setState(() {
       _loadingProviders = true;
       _providerError = null;
     });
+
+    if (!mounted) return;
+
     try {
       final dao = ProvidersLocalDaoSharedPrefs();
-      var list = await dao.listAll();
+      var dtoList = await dao.listAll();
+
+      // convert to domain entities for UI
+      var list = dtoList.map(ProviderMapper.toEntity).toList();
+
+      // Apply cached data to UI immediately so users see content right away
       if (!mounted) return;
+
       setState(() {
         _providers = list;
         _loadingProviders = false;
       });
+
+      // Start a background sync regardless of local cache state so cached
+      // items are pushed to the remote and remote deltas are applied.
+      try {
+        if (!mounted) return;
+
+        setState(() => _syncingProviders = true);
+
+        final remote = SupabaseProvidersRemoteDatasource();
+        final repo = ProvidersRepositoryImpl(remoteApi: remote, localDao: dao);
+
+        final applied = await repo.syncFromServer();
+
+        // reload dto cache and convert
+        final reloaded = await dao.listAll();
+        list = reloaded.map(ProviderMapper.toEntity).toList();
+
+        if (kDebugMode && list.isNotEmpty) {
+          print(
+            '[_loadProviders] After sync - Provider: ${list.first.name}, imageUri: ${list.first.imageUri}',
+          );
+        }
+
+        if (!mounted) return;
+
+        setState(() => _syncingProviders = false);
+
+        if (applied > 0 && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Sincronização concluída ($applied itens)'),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      } catch (e, stackTrace) {
+        if (kDebugMode) {
+          print('[_loadProviders] Sync error: $e');
+          print(stackTrace);
+        }
+        if (mounted) {
+          setState(() => _syncingProviders = false);
+        }
+        // ignore sync errors; keep showing cached data
+      }
+
+      // Update UI with synced data if sync completed and brought changes
+      if (mounted && list.isNotEmpty) {
+        setState(() {
+          _providers = list;
+        });
+      }
+
       if (list.isEmpty) {
         if (!_dontShowTipAgain) {
           _showOnboardingTip = true;
@@ -86,52 +169,113 @@ class ProvidersPageState extends State<ProvidersPage>
         _fabController?.reset();
       }
     } catch (e) {
+      if (kDebugMode) print('[_loadProviders] Error: $e');
       if (!mounted) return;
       setState(() {
         _providerError = 'Erro ao carregar fornecedores';
         _loadingProviders = false;
       });
     }
+    // no-op: SnackBar lifecycle handled around sync block
   }
 
-  void _showProviderForm({ProviderDto? provider, int? index}) async {
+  void _showProviderForm({Provider? provider, int? index}) async {
     final result = await showProviderFormDialog(context, provider: provider);
     if (result != null) {
       final dao = ProvidersLocalDaoSharedPrefs();
-      List<ProviderDto> newList = List.from(_providers);
+      // Build new domain list and persist as DTOs
+      final List<Provider> newDomain = List.from(_providers);
       if (index != null) {
-        newList[index] = result;
+        newDomain[index] = result;
       } else {
-        newList.add(result);
+        newDomain.add(result);
       }
-      await dao.upsertAll(newList);
+      final newDtos = newDomain.map(ProviderMapper.toDto).toList();
+      await dao.upsertAll(newDtos);
+
+      if (kDebugMode) {
+        print(
+          '[_showProviderForm] Saved locally. Provider: ${result.name}, distance: ${result.distanceKm}, updatedAt: ${result.updatedAt}',
+        );
+      }
+
+      // Trigger sync to push changes to Supabase
+      if (!mounted) return;
+      setState(() => _syncingProviders = true);
+
+      try {
+        final remote = SupabaseProvidersRemoteDatasource();
+        final repo = ProvidersRepositoryImpl(remoteApi: remote, localDao: dao);
+        await repo.syncFromServer();
+
+        if (kDebugMode) print('[_showProviderForm] Sync after edit complete');
+      } catch (e) {
+        if (kDebugMode) print('[_showProviderForm] Sync error: $e');
+      } finally {
+        if (mounted) setState(() => _syncingProviders = false);
+      }
+
       await _loadProviders();
     }
   }
 
-  void _showProviderDetails(ProviderDto provider, int index) {
+  void _showProviderDetails(Provider provider, int index) {
     showProviderDetailsDialog(
       context,
       provider,
       onEdit: () => _showProviderForm(provider: provider, index: index),
-      onRemove: () async => await _removeProvider(index),
+      onRemove: () => _removeProvider(index),
     );
   }
 
   Future<void> _removeProvider(int index) async {
-    final dao = ProvidersLocalDaoSharedPrefs();
-    List<ProviderDto> newList = List.from(_providers);
-    newList.removeAt(index);
-    await dao.clear();
-    await dao.upsertAll(newList);
-    await _loadProviders();
+    // Immediately remove from state to update UI
+    final removedProvider = _providers[index];
+    if (mounted) {
+      setState(() {
+        _providers = List.from(_providers)..removeAt(index);
+      });
+    }
+
+    // Show success message immediately
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Fornecedor removido com sucesso'),
-          duration: Duration(seconds: 2),
+        SnackBar(
+          content: Text('${removedProvider.name} removido'),
+          duration: const Duration(seconds: 2),
         ),
       );
+    }
+
+    // Perform persistence in background
+    try {
+      final dao = ProvidersLocalDaoSharedPrefs();
+      final remote = SupabaseProvidersRemoteDatasource();
+      final repo = ProvidersRepositoryImpl(remoteApi: remote, localDao: dao);
+
+      // Mark as deleted for sync with server
+      await repo.markProviderAsDeleted(removedProvider.id);
+
+      // Update local cache
+      final newDtos = _providers.map(ProviderMapper.toDto).toList();
+      await dao.clear();
+      await dao.upsertAll(newDtos);
+
+      // Trigger sync to push deletion to Supabase
+      if (mounted) setState(() => _syncingProviders = true);
+
+      try {
+        await repo.syncFromServer();
+        if (kDebugMode) print('[_removeProvider] Sync after delete complete');
+      } catch (e) {
+        if (kDebugMode) print('[_removeProvider] Sync error: $e');
+      } finally {
+        if (mounted) setState(() => _syncingProviders = false);
+      }
+    } catch (e) {
+      if (kDebugMode) print('[_removeProvider] Persistence error: $e');
+      // Optionally: reload to restore state on error
+      await _loadProviders();
     }
   }
 
@@ -393,6 +537,13 @@ class ProvidersPageState extends State<ProvidersPage>
                   onPressed: () => _showProviderForm(),
                 ),
               ),
+              if (_syncingProviders)
+                const Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: LinearProgressIndicator(),
+                ),
             ],
           )
         : RefreshIndicator(
@@ -404,7 +555,7 @@ class ProvidersPageState extends State<ProvidersPage>
                   onTap: (p, idx) => _showProviderDetails(p, idx),
                   onEdit: (p, idx) =>
                       _showProviderForm(provider: p, index: idx),
-                  onRemove: (idx) async => await _removeProvider(idx),
+                  onRemove: (idx) => _removeProvider(idx),
                 ),
                 if (_showProvidersTutorial)
                   Positioned.fill(
@@ -552,6 +703,13 @@ class ProvidersPageState extends State<ProvidersPage>
                     onPressed: () => _showProviderForm(),
                   ),
                 ),
+                if (_syncingProviders)
+                  const Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: LinearProgressIndicator(),
+                  ),
               ],
             ),
           );

@@ -1,0 +1,46 @@
+fix: resolve IDE pause issues from supabase_flutter internal exceptions
+
+## Problem
+- IDE was pausing unexpectedly during Supabase initialization
+- Caused by TimeoutException from Hive migration (Issue #794)
+- Debugger was catching exceptions before silent catch blocks
+
+## Solutions Implemented
+
+### 1. Custom LocalStorage without Hive
+- Created `CustomLocalStorage` class that bypasses Hive completely
+- Uses SharedPreferences directly for session persistence
+- Eliminates timeout exceptions during initialization
+- No migration overhead or complexity
+
+### 2. VS Code Debug Configuration
+- Updated `.vscode/launch.json` with:
+  - `debugExternalPackageLibraries: false` - don't debug external packages
+  - `debugSdkLibraries: false` - don't debug SDK libraries
+  - `stopOnException: none` - don't pause on exceptions
+
+### 3. Modified Supabase Initialization
+- Updated `main.dart` to use CustomLocalStorage
+- Maintains proper session key naming convention
+- Preserves all security measures
+
+## Trade-offs
+- ⚠️ Existing Hive sessions will NOT be migrated automatically
+- Users will need to login again after this update
+- This is acceptable to eliminate debug interruptions
+
+## Benefits
+✅ No unexpected IDE pauses
+✅ Faster initialization
+✅ Cleaner debug experience
+✅ No Hive dependency for auth storage
+
+## Testing
+- Analyzed with `flutter analyze` - no issues
+- Compatible with current supabase_flutter ^2.10.3
+
+## References
+- https://github.com/supabase/supabase-flutter/issues/794
+- https://github.com/supabase/supabase-flutter/issues/799
+
+Co-authored-by: GitHub Copilot <noreply@github.com>

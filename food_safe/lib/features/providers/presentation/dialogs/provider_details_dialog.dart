@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../infrastructure/dtos/provider_dto.dart';
+import '../../domain/entities/provider.dart';
 
 /// Exibe diálogo de detalhes do fornecedor e delega ações para callbacks.
 Future<void> showProviderDetailsDialog(
   BuildContext context,
-  ProviderDto provider, {
+  Provider provider, {
   required VoidCallback onEdit,
   required Future<void> Function() onRemove,
 }) {
@@ -19,13 +19,13 @@ Future<void> showProviderDetailsDialog(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (provider.image_url != null)
+            if (provider.imageUri != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(
-                    provider.image_url!,
+                    provider.imageUri!.toString(),
                     height: 120,
                     width: 280,
                     fit: BoxFit.cover,
@@ -50,9 +50,9 @@ Future<void> showProviderDetailsDialog(
                 ),
               ),
             Text('Nota: ${provider.rating.toStringAsFixed(1)}'),
-            if (provider.distance_km != null)
-              Text('Distância: ${provider.distance_km!.toStringAsFixed(1)} km'),
-            Text('Atualizado em: ${provider.updated_at}'),
+            if (provider.distanceKm != null)
+              Text('Distância: ${provider.distanceKm!.toStringAsFixed(1)} km'),
+            Text('Atualizado em: ${provider.updatedAt.toIso8601String()}'),
           ],
         ),
       ),

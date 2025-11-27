@@ -25,42 +25,49 @@ class ListtilePolicyWidget extends StatelessWidget {
         color: isPrivacyPolicyRead ? Colors.green : Colors.red,
       ),
       title: Text(policyTitle),
-      trailing: TextButton(
-        onPressed: isPrivacyPolicyRead
-            ? null
-            : () {
-                Navigator.of(context)
-                    .push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return PolicyViewerPage(
-                            policyTitle: policyTitle,
-                            assetPath: assetPath,
-                          );
-                        },
-                      ),
-                    )
-                    .then((value) {
-                      bool didRead = value ?? false;
+      trailing: Builder(
+        builder: (context) {
+          final messenger = ScaffoldMessenger.of(context);
+          return TextButton(
+            onPressed: isPrivacyPolicyRead
+                ? null
+                : () {
+                    Navigator.of(context)
+                        .push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return PolicyViewerPage(
+                                policyTitle: policyTitle,
+                                assetPath: assetPath,
+                              );
+                            },
+                          ),
+                        )
+                        .then((value) {
+                          final bool didRead = value ?? false;
 
-                      SharedPreferencesService.setPrivacyPolicyAllRead(didRead);
-                      if (didRead) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Obrigado por aceitar a $policyTitle',
-                                ),
-                              ),
-                            )
-                            .closed
-                            .then((_) {
-                              onPolicyRead();
-                            });
-                      }
-                    });
-              },
-        child: Text(isPrivacyPolicyRead ? 'Lido' : 'Ler'),
+                          SharedPreferencesService.setPrivacyPolicyAllRead(
+                            didRead,
+                          );
+                          if (didRead) {
+                            messenger
+                                .showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Obrigado por aceitar a $policyTitle',
+                                    ),
+                                  ),
+                                )
+                                .closed
+                                .then((_) {
+                                  onPolicyRead();
+                                });
+                          }
+                        });
+                  },
+            child: Text(isPrivacyPolicyRead ? 'Lido' : 'Ler'),
+          );
+        },
       ),
     );
   }

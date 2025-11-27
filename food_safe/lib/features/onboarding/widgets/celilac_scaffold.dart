@@ -20,7 +20,7 @@ class CeliLacScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
         // showAlertBannerToDisableBackButton(context);
       },
       child: Scaffold(

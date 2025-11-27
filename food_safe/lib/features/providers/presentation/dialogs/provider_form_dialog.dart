@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../infrastructure/dtos/provider_dto.dart';
+import '../../domain/entities/provider.dart';
 
 /// Exibe o diálogo de formulário para criar/editar um ProviderDto.
 /// Retorna o [ProviderDto] criado/alterado ou `null` se cancelado.
-Future<ProviderDto?> showProviderFormDialog(
+Future<Provider?> showProviderFormDialog(
   BuildContext context, {
-  ProviderDto? provider,
+  Provider? provider,
 }) {
-  return showDialog<ProviderDto>(
+  return showDialog<Provider?>(
     context: context,
     barrierDismissible: false,
     builder: (context) {
@@ -17,10 +17,10 @@ Future<ProviderDto?> showProviderFormDialog(
         text: provider?.rating.toString() ?? '5.0',
       );
       final distanceController = TextEditingController(
-        text: provider?.distance_km?.toString() ?? '',
+        text: provider?.distanceKm?.toString() ?? '',
       );
       final imageUrlController = TextEditingController(
-        text: provider?.image_url ?? '',
+        text: provider?.imageUri?.toString() ?? '',
       );
 
       final labelStyle = TextStyle(
@@ -107,18 +107,19 @@ Future<ProviderDto?> showProviderFormDialog(
                   ? null
                   : imageUrlController.text.trim();
               if (name.isEmpty) return;
-              final now = DateTime.now().toIso8601String();
-              final dto = ProviderDto(
+              final now = DateTime.now();
+              final domain = Provider(
                 id: provider?.id ?? DateTime.now().millisecondsSinceEpoch,
                 name: name,
-                image_url: imageUrl,
-                brand_color_hex: null,
+                imageUri: imageUrl != null ? Uri.tryParse(imageUrl) : null,
+                brandColorHex: null,
                 rating: rating,
-                distance_km: distance,
-                metadata: null,
-                updated_at: now,
+                distanceKm: distance,
+                tags: {},
+                featured: false,
+                updatedAt: now,
               );
-              Navigator.of(context).pop(dto);
+              Navigator.of(context).pop(domain);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,

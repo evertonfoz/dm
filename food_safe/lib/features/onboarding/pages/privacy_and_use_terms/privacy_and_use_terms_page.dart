@@ -1,8 +1,6 @@
-// TODO: Implementar os widgets/constantes customizados abaixo para o onboarding:
-// FormPagesBodyPadding, FormPageHeader, kTitleEdgeInsets, kTitleFontWeight, CheckBoxECA, PrivacyAndUseTermsAccessButton
-// _listViewScrollController, _markDownScrollController, _termsWasRead, _floatActionButtonVisible, FaIcon, FontAwesomeIcons
-// ATENÇÃO: Os widgets/constantes abaixo ainda não estão implementados neste projeto:
-// FormPagesBodyPadding, FormPageHeader, kTitleEdgeInsets, kTitleFontWeight, CheckBoxECA, PrivacyAndUseTermsAccessButton
+// Placeholder notes: some onboarding-specific widgets/constants are not
+// implemented in this module (FormPagesBodyPadding, FormPageHeader,
+// kTitleEdgeInsets, kTitleFontWeight, CheckBoxECA, PrivacyAndUseTermsAccessButton).
 import 'package:flutter/material.dart';
 import '../../../../theme/color_schemes.dart';
 
@@ -14,12 +12,10 @@ class PrivacyAndUseTermsPage extends StatefulWidget {
 }
 
 class _PrivacyAndUseTermsPageState extends State<PrivacyAndUseTermsPage> {
-  // TODO: Substituir por _listViewScrollController se/quando implementar o onboarding completo
-  // TODO: Substituir por _markDownScrollController se/quando implementar o onboarding completo
+  // Scroll controllers and flags for the full onboarding flow (kept as
+  // placeholders until onboarding is implemented):
   // final ScrollController _markDownScrollController = ScrollController();
-  // TODO: Substituir por _termsWasRead se/quando implementar o onboarding completo
   // bool _termsWasRead = false;
-  // TODO: Substituir por _floatActionButtonVisible se/quando implementar o onboarding completo
   // bool _floatActionButtonVisible = true;
 
   @override
@@ -29,7 +25,7 @@ class _PrivacyAndUseTermsPageState extends State<PrivacyAndUseTermsPage> {
   }
 
   Future<void> _loadMarkdown() async {
-    // TODO: Reimplementar carregamento do markdown quando onboarding estiver pronto
+    // Markdown loading is deferred until the onboarding flow is implemented.
     // try {
     //   final data = await rootBundle.loadString(
     //     'assets/md/use_terms_and_privacy.md',
@@ -44,7 +40,7 @@ class _PrivacyAndUseTermsPageState extends State<PrivacyAndUseTermsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Substituir por layout onboarding definitivo
+    // Temporary placeholder layout while onboarding screens are under development.
     return Scaffold(
       backgroundColor: lightColorScheme.primary,
       body: Center(
@@ -59,7 +55,7 @@ class _PrivacyAndUseTermsPageState extends State<PrivacyAndUseTermsPage> {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 8),
-            // TODO: Substituir por botão customizado (PrivacyAndUseTermsAccessButton)
+            // Placeholder for the custom access button used in the final onboarding.
             ElevatedButton(
               onPressed: () {},
               child: const Text('Continuar (placeholder)'),
@@ -67,7 +63,7 @@ class _PrivacyAndUseTermsPageState extends State<PrivacyAndUseTermsPage> {
           ],
         ),
       ),
-      // TODO: Substituir por FloatingActionButton customizado
+      // FloatingActionButton used as a temporary action control.
       floatingActionButton: FloatingActionButton(
         backgroundColor: darkColorScheme.primary,
         onPressed: () {},

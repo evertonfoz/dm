@@ -24,16 +24,71 @@ class ProviderDto {
     required this.updated_at,
   });
 
-  factory ProviderDto.fromMap(Map<String, dynamic> m) => ProviderDto(
-    id: m['id'] as int,
-    name: m['name'] as String,
-    image_url: m['image_url'] as String?,
-    brand_color_hex: m['brand_color_hex'] as String?,
-    rating: (m['rating'] as num).toDouble(),
-    distance_km: (m['distance_km'] as num?)?.toDouble(),
-    metadata: m['metadata'] as Map<String, dynamic>?,
-    updated_at: m['updated_at'] as String,
-  );
+  factory ProviderDto.fromMap(Map<String, dynamic> m) {
+    print('[ProviderDto.fromMap] Raw map keys: ${m.keys.toList()}');
+    print('[ProviderDto.fromMap] Raw image_url value: ${m['image_url']}');
+
+    final imageUrl = m['image_url'] as String?;
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      print('[ProviderDto.fromMap] Parsed image_url: $imageUrl');
+    } else {
+      print('[ProviderDto.fromMap] image_url is null or empty');
+    }
+
+    return ProviderDto(
+      id: _parseId(m['id']),
+      name: m['name'] as String,
+      image_url: imageUrl,
+      brand_color_hex: m['brand_color_hex'] as String?,
+      rating: _parseDouble(m['rating']),
+      distance_km: _parseNullableDouble(m['distance_km']),
+      metadata: _parseMap(m['metadata']),
+      updated_at: _parseUpdatedAt(m['updated_at']),
+    );
+  }
+
+  static int _parseId(dynamic v) {
+    if (v is int) return v;
+    if (v is num) return v.toInt();
+    if (v is String) {
+      final p = int.tryParse(v);
+      if (p != null) return p;
+    }
+    throw FormatException('Invalid id value: $v');
+  }
+
+  static double _parseDouble(dynamic v) {
+    if (v == null) return 0.0;
+    if (v is double) return v;
+    if (v is int) return v.toDouble();
+    if (v is num) return v.toDouble();
+    if (v is String) {
+      return double.tryParse(v) ?? 0.0;
+    }
+    return 0.0;
+  }
+
+  static double? _parseNullableDouble(dynamic v) {
+    if (v == null) return null;
+    if (v is double) return v;
+    if (v is int) return v.toDouble();
+    if (v is num) return v.toDouble();
+    if (v is String) return double.tryParse(v);
+    return null;
+  }
+
+  static Map<String, dynamic>? _parseMap(dynamic v) {
+    if (v == null) return null;
+    if (v is Map) return Map<String, dynamic>.from(v);
+    return null;
+  }
+
+  static String _parseUpdatedAt(dynamic v) {
+    if (v == null) return DateTime.now().toUtc().toIso8601String();
+    if (v is String) return v;
+    if (v is DateTime) return v.toUtc().toIso8601String();
+    return v.toString();
+  }
 
   Map<String, dynamic> toMap() => {
     'id': id,
