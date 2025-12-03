@@ -1,5 +1,3 @@
-````markdown
-
 # Prompt operacional: Gerar DataSource remoto Supabase + Repository Impl (versão didática)
 
 > **Este prompt foi adaptado para fins didáticos. O código gerado deve conter comentários explicativos, exemplos de uso (em comentário), dicas práticas e checklist de erros comuns, facilitando o aprendizado e a implementação correta pelos alunos.**
@@ -162,4 +160,10 @@ final lista = await repo.listAll();
 */
 ```
 
-````
+# Observações adicionas
+
+1. Caso o prompt proponha criar algum arquivo e esse arquivo já existir no projeto. Renomeie-o para .backup. E em seguida o remova.
+2. Crie o novo arquivo
+3. Garanta que a definição da classe do arquivo esteja escrita uma única vez no código
+4. Caso o arquivo gerado ou arquivos manipulados por esse prompt seja grandes (avalie profissionalmete isso), procure refatorar, extraindo para arquivos organizados em subpastas
+5. Ao refatorar e organizar, remova os arquivos antigos. Não deixe o arquivo apenas como wrappers ou comentários orientando a remoção manual.

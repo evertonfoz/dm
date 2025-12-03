@@ -1,5 +1,3 @@
-````markdown
-
 # 17 - UI Domain Refactor: Providers (versão didática)
 
 > **Este prompt foi adaptado para fins didáticos. As alterações e refatorações devem conter comentários explicativos, dicas práticas, checklist de erros comuns, exemplos de logs esperados e referências aos arquivos de debug, facilitando o aprendizado e a implementação correta pelos alunos.**
@@ -113,4 +111,14 @@ If you want, I can:
 - Apply the minor lint fixes (rename `_remove_provider` -> `_removeProvider` and update callers).
 - Run `flutter analyze` and fix the `use_super_parameters` occurrences by converting `({Key? key}) : super(key: key)` to `({super.key})` across the changed widgets.
 
-````
+
+
+
+
+# Observações adicionas
+
+1. Caso o prompt proponha criar algum arquivo e esse arquivo já existir no projeto. Renomeie-o para .backup. E em seguida o remova.
+2. Crie o novo arquivo
+3. Garanta que a definição da classe do arquivo esteja escrita uma única vez no código
+4. Caso o arquivo gerado ou arquivos manipulados por esse prompt seja grandes (avalie profissionalmete isso), procure refatorar, extraindo para arquivos organizados em subpastas
+5. Ao refatorar e organizar, remova os arquivos antigos. Não deixe o arquivo apenas como wrappers ou comentários orientando a remoção manual.

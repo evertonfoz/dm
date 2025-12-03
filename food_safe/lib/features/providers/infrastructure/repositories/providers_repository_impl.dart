@@ -34,7 +34,9 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
     if (!deleted.contains(id.toString())) {
       deleted.add(id.toString());
       await prefs.setStringList(_deletedIdsKey, deleted);
-      if (kDebugMode) print('Marked provider $id as deleted (pending sync)');
+      if (kDebugMode) {
+        debugPrint('Marked provider $id as deleted (pending sync)');
+      }
     }
   }
 
@@ -49,7 +51,9 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
   Future<void> _clearDeletedIds() async {
     final prefs = await _prefs;
     await prefs.remove(_deletedIdsKey);
-    if (kDebugMode) print('Cleared deleted IDs list after successful sync');
+    if (kDebugMode) {
+      debugPrint('Cleared deleted IDs list after successful sync');
+    }
   }
 
   @override
@@ -60,7 +64,9 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
 
   @override
   Future<int> syncFromServer() async {
-    if (kDebugMode) print('ProvidersRepositoryImpl.syncFromServer: starting');
+    if (kDebugMode) {
+      debugPrint('ProvidersRepositoryImpl.syncFromServer: starting');
+    }
     final prefs = await _prefs;
     final lastSyncIso = prefs.getString(_lastSyncKey);
     DateTime? since;
@@ -77,26 +83,31 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
 
     if (since != null) {
       // PULL-first strategy: server data is newer, apply it first
-      if (kDebugMode)
-        print('  [1/3] About to fetch remote deltas (pull-first)...');
+      if (kDebugMode) {
+        debugPrint('  [1/3] About to fetch remote deltas (pull-first)...');
+      }
       final page = await remoteApi.fetchProviders(since: since, limit: 500);
-      if (kDebugMode)
-        print('  [1/3] Remote fetch complete: ${page.items.length} items');
+      if (kDebugMode) {
+        debugPrint('  [1/3] Remote fetch complete: ${page.items.length} items');
+      }
       items.addAll(page.items);
 
       // Apply remote items to local cache (remote wins)
       if (items.isNotEmpty) {
         await localDao.upsertAll(items);
-        if (kDebugMode) print('  [1/3] Remote data applied to local cache');
+        if (kDebugMode) {
+          debugPrint('  [1/3] Remote data applied to local cache');
+        }
       }
 
       // Push deletions first (but keep the list for filtering upserts)
       final deletedIds = await _getDeletedIds();
       if (deletedIds.isNotEmpty) {
-        if (kDebugMode)
-          print(
+        if (kDebugMode) {
+          debugPrint(
             '  [2a/4] About to delete ${deletedIds.length} items from remote...',
           );
+        }
         try {
           await remoteApi.deleteProviders(deletedIds);
           // Also remove from local cache to prevent them from coming back
@@ -107,21 +118,27 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
           if (filteredLocal.length < local.length) {
             await localDao.clear();
             await localDao.upsertAll(filteredLocal);
-            if (kDebugMode)
-              print(
+            if (kDebugMode) {
+              debugPrint(
                 '  [2a/4] Removed ${local.length - filteredLocal.length} items from local cache',
               );
+            }
           }
-          if (kDebugMode) print('  [2a/4] Delete complete');
+          if (kDebugMode) {
+            debugPrint('  [2a/4] Delete complete');
+          }
         } catch (e) {
-          if (kDebugMode)
-            print('  [2a/4] Delete failed (will retry next sync): $e');
+          if (kDebugMode) {
+            debugPrint('  [2a/4] Delete failed (will retry next sync): $e');
+          }
         }
       }
 
       // Now push local modifications (they may overwrite remote if truly newer)
       // BUT exclude any IDs that are in the deleted list
-      if (kDebugMode) print('  [2b/4] About to push local modifications...');
+      if (kDebugMode) {
+        debugPrint('  [2b/4] About to push local modifications...');
+      }
       try {
         final local = await localDao.listAll();
         // Filter out deleted items before upserting (use the saved deletedIds)
@@ -129,20 +146,23 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
             ? local
             : local.where((dto) => !deletedIds.contains(dto.id)).toList();
 
-        if (kDebugMode)
-          print(
+        if (kDebugMode) {
+          debugPrint(
             '  [2b/4] Local cache has: ${local.length} items (${localToSync.length} to sync after filtering deletions)',
           );
+        }
         if (localToSync.isNotEmpty) {
           pushedCount = await remoteApi.upsertProviders(localToSync);
-          if (kDebugMode)
-            print(
+          if (kDebugMode) {
+            debugPrint(
               '  [2b/4] Push complete: pushed $pushedCount items to remote',
             );
+          }
         }
       } catch (e) {
-        if (kDebugMode)
-          print('  [2b/4] Push failed (will retry next sync): $e');
+        if (kDebugMode) {
+          debugPrint('  [2b/4] Push failed (will retry next sync): $e');
+        }
       }
 
       // Clear deleted IDs list after successful sync
@@ -154,17 +174,20 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
       if (items.isNotEmpty) {
         final newest = _computeNewest(items);
         await prefs.setString(_lastSyncKey, newest.toIso8601String());
-        if (kDebugMode) print('  [3/3] LastSync marker updated');
+        if (kDebugMode) {
+          debugPrint('  [3/3] LastSync marker updated');
+        }
       }
     } else {
       // PUSH-first strategy: initial sync, send local data first
       // Push deletions first (but keep the list for filtering upserts)
       final deletedIds = await _getDeletedIds();
       if (deletedIds.isNotEmpty) {
-        if (kDebugMode)
-          print(
+        if (kDebugMode) {
+          debugPrint(
             '  [1a/4] About to delete ${deletedIds.length} items from remote (initial sync)...',
           );
+        }
         try {
           await remoteApi.deleteProviders(deletedIds);
           // Also remove from local cache to prevent them from coming back
@@ -175,20 +198,27 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
           if (filteredLocal.length < local.length) {
             await localDao.clear();
             await localDao.upsertAll(filteredLocal);
-            if (kDebugMode)
-              print(
+            if (kDebugMode) {
+              debugPrint(
                 '  [1a/4] Removed ${local.length - filteredLocal.length} items from local cache',
               );
+            }
           }
-          if (kDebugMode) print('  [1a/4] Delete complete');
+          if (kDebugMode) {
+            debugPrint('  [1a/4] Delete complete');
+          }
         } catch (e) {
-          if (kDebugMode)
-            print('  [1a/4] Delete failed (will retry next sync): $e');
+          if (kDebugMode) {
+            debugPrint('  [1a/4] Delete failed (will retry next sync): $e');
+          }
         }
       }
 
-      if (kDebugMode)
-        print('  [1b/4] About to push local modifications (initial sync)...');
+      if (kDebugMode) {
+        debugPrint(
+          '  [1b/4] About to push local modifications (initial sync)...',
+        );
+      }
       try {
         final local = await localDao.listAll();
         // Filter out deleted items before upserting (use the saved deletedIds)
@@ -196,20 +226,23 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
             ? local
             : local.where((dto) => !deletedIds.contains(dto.id)).toList();
 
-        if (kDebugMode)
-          print(
+        if (kDebugMode) {
+          debugPrint(
             '  [1b/4] Local cache has: ${local.length} items (${localToSync.length} to sync after filtering deletions)',
           );
+        }
         if (localToSync.isNotEmpty) {
           pushedCount = await remoteApi.upsertProviders(localToSync);
-          if (kDebugMode)
-            print(
+          if (kDebugMode) {
+            debugPrint(
               '  [1b/4] Push complete: pushed $pushedCount items to remote',
             );
+          }
         }
       } catch (e) {
-        if (kDebugMode)
-          print('  [1b/4] Push failed (will retry next sync): $e');
+        if (kDebugMode) {
+          debugPrint('  [1b/4] Push failed (will retry next sync): $e');
+        }
       }
 
       // Clear deleted IDs list after successful sync
@@ -218,27 +251,35 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
       }
 
       // Then pull all from server
-      if (kDebugMode) print('  [2/3] About to fetch all from remote...');
+      if (kDebugMode) {
+        debugPrint('  [2/3] About to fetch all from remote...');
+      }
       final page = await remoteApi.fetchProviders(limit: 500);
-      if (kDebugMode)
-        print('  [2/3] Remote fetch complete: ${page.items.length} items');
+      if (kDebugMode) {
+        debugPrint('  [2/3] Remote fetch complete: ${page.items.length} items');
+      }
       items.addAll(page.items);
 
       // Apply to local cache
       if (items.isNotEmpty) {
         await localDao.upsertAll(items);
-        if (kDebugMode) print('  [2/3] Remote data applied to local cache');
+        if (kDebugMode) {
+          debugPrint('  [2/3] Remote data applied to local cache');
+        }
 
         final newest = _computeNewest(items);
         await prefs.setString(_lastSyncKey, newest.toIso8601String());
-        if (kDebugMode) print('  [3/3] LastSync marker updated');
+        if (kDebugMode) {
+          debugPrint('  [3/3] LastSync marker updated');
+        }
       }
     }
 
-    if (kDebugMode)
-      print(
+    if (kDebugMode) {
+      debugPrint(
         'ProvidersRepositoryImpl.syncFromServer: complete (pushed: $pushedCount, pulled: ${items.length})',
       );
+    }
     return items.length;
   }
 

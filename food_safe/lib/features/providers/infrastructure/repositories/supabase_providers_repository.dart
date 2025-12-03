@@ -48,8 +48,9 @@ class SupabaseProvidersRepository implements ProvidersRepository {
   /// Returns the number of changed records applied to cache.
   @override
   Future<int> syncFromServer() async {
-    if (kDebugMode)
-      print('SupabaseProvidersRepository.syncFromServer: starting');
+    if (kDebugMode) {
+      debugPrint('SupabaseProvidersRepository.syncFromServer: starting');
+    }
     final prefs = await SharedPreferences.getInstance();
     final lastSync = prefs.getString(_lastSyncKey);
 

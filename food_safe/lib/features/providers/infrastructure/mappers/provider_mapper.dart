@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
+
 import '../../domain/entities/provider.dart';
 import '../dtos/provider_dto.dart';
 
@@ -11,8 +13,10 @@ class ProviderMapper {
     Uri? parsedUri;
     if (d.image_url != null && d.image_url!.isNotEmpty) {
       parsedUri = Uri.tryParse(d.image_url!);
-      if (parsedUri == null) {
-        print('[ProviderMapper] Failed to parse image_url: ${d.image_url}');
+      if (parsedUri == null && kDebugMode) {
+        debugPrint(
+          '[ProviderMapper] Failed to parse image_url: ${d.image_url}',
+        );
       }
     }
 

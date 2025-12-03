@@ -24,7 +24,7 @@ class SupabaseProvidersRemoteDatasource implements ProvidersRemoteApi {
   }) async {
     final int offset = _parseOffset(cursor?.value);
     if (kDebugMode) {
-      print(
+      debugPrint(
         'SupabaseProvidersRemoteDatasource.fetchProviders: since=$since limit=$limit offset=$offset',
       );
     }
@@ -52,9 +52,12 @@ class SupabaseProvidersRemoteDatasource implements ProvidersRemoteApi {
       } else if (response is List) {
         data = response;
       } else if (response is Map) {
-        if (response.containsKey('error')) error = response['error'];
-        if (response.containsKey('data'))
+        if (response.containsKey('error')) {
+          error = response['error'];
+        }
+        if (response.containsKey('data')) {
           data = response['data'] as List<dynamic>?;
+        }
       } else {
         try {
           error = response.error;
@@ -102,9 +105,11 @@ class SupabaseProvidersRemoteDatasource implements ProvidersRemoteApi {
       final List<Map<String, dynamic>> payload = dtos
           .map((d) => d.toMap())
           .toList();
-      print(
-        'SupabaseProvidersRemoteDatasource.upsertProviders: sending ${payload.length} items',
-      );
+      if (kDebugMode) {
+        debugPrint(
+          'SupabaseProvidersRemoteDatasource.upsertProviders: sending ${payload.length} items',
+        );
+      }
       final dynamic response = await _executeQuery(
         (_client.from('providers').upsert(payload) as dynamic),
       );
@@ -148,25 +153,34 @@ class SupabaseProvidersRemoteDatasource implements ProvidersRemoteApi {
 
       if (error != null) {
         final eStr = error.toString();
-        print('Supabase upsert response error: $eStr');
+        if (kDebugMode) {
+          debugPrint('Supabase upsert response error: $eStr');
+        }
         if (eStr.contains('row-level security') ||
             eStr.contains('violates row-level security') ||
             eStr.toLowerCase().contains('permission denied') ||
             eStr.contains('42501')) {
-          print(
-            'Supabase upsert diagnostic: the request was denied by Row-Level Security (RLS).',
-          );
-          print(
-            '  - Fix options: grant anonymous INSERT/UPDATE policies for table `providers` (for testing),',
-          );
-          print('    or authenticate users and use per-user RLS policies.');
+          if (kDebugMode) {
+            debugPrint(
+              'Supabase upsert diagnostic: the request was denied by Row-Level Security (RLS).',
+            );
+            debugPrint(
+              '  - Fix options: grant anonymous INSERT/UPDATE policies for table `providers` (for testing),',
+            );
+            debugPrint(
+              '    or authenticate users and use per-user RLS policies.',
+            );
+          }
         }
       } else {
-        if (kDebugMode) print('Supabase upsert response error: <none>');
+        if (kDebugMode) {
+          debugPrint('Supabase upsert response error: <none>');
+        }
       }
 
-      if (kDebugMode)
-        print('Supabase upsert response data length: ${data?.length}');
+      if (kDebugMode) {
+        debugPrint('Supabase upsert response data length: ${data?.length}');
+      }
       if (error != null) return 0;
       if (data == null) return 0;
       return data.length;
@@ -259,30 +273,38 @@ class SupabaseProvidersRemoteDatasource implements ProvidersRemoteApi {
 
       if (error != null) {
         final eStr = error.toString();
-        print('Supabase delete response error: $eStr');
+        if (kDebugMode) {
+          debugPrint('Supabase delete response error: $eStr');
+        }
         if (eStr.contains('row-level security') ||
             eStr.contains('violates row-level security') ||
             eStr.toLowerCase().contains('permission denied') ||
             eStr.contains('42501')) {
-          print(
-            'Supabase delete diagnostic: the request was denied by Row-Level Security (RLS).',
-          );
-          print(
-            '  - Fix options: grant anonymous DELETE policies for table `providers` (for testing),',
-          );
-          print('    or authenticate users and use per-user RLS policies.');
+          if (kDebugMode) {
+            debugPrint(
+              'Supabase delete diagnostic: the request was denied by Row-Level Security (RLS).',
+            );
+            debugPrint(
+              '  - Fix options: grant anonymous DELETE policies for table `providers` (for testing),',
+            );
+            debugPrint(
+              '    or authenticate users and use per-user RLS policies.',
+            );
+          }
         }
         return 0;
       }
 
       if (kDebugMode) {
-        print('Supabase delete response data length: ${data?.length}');
+        debugPrint('Supabase delete response data length: ${data?.length}');
       }
       // Return count of deleted items
       return ids.length;
     } catch (e) {
       if (kDebugMode) {
-        print('SupabaseProvidersRemoteDatasource.deleteProviders error: $e');
+        debugPrint(
+          'SupabaseProvidersRemoteDatasource.deleteProviders error: $e',
+        );
       }
       return 0;
     }

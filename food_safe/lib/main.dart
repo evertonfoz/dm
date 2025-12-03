@@ -214,8 +214,10 @@ Future<void> main() async {
     FlutterError.presentError(details);
     if (kDebugMode) {
       try {
-        print('FlutterError caught: ${details.exceptionAsString()}');
-        if (details.stack != null) print(details.stack);
+        debugPrint('FlutterError caught: ${details.exceptionAsString()}');
+        if (details.stack != null) {
+          debugPrint('${details.stack}');
+        }
       } catch (_) {}
     }
   };
@@ -225,8 +227,8 @@ Future<void> main() async {
       (Object error, StackTrace stack) {
         if (kDebugMode) {
           try {
-            print('PlatformDispatcher.onError: $error');
-            print(stack);
+            debugPrint('PlatformDispatcher.onError: $error');
+            debugPrint('$stack');
           } catch (_) {}
         }
         // Return true to indicate we've handled the error and avoid further

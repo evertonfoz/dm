@@ -46,8 +46,9 @@ class ProvidersPageState extends State<ProvidersPage>
       if (mounted) {
         _loadProviders();
       } else {
-        if (kDebugMode)
-          print('[initState] Widget unmounted before _loadProviders call');
+        if (kDebugMode) {
+          debugPrint('[initState] Widget unmounted before _loadProviders call');
+        }
       }
     });
     _fabController = AnimationController(
@@ -119,7 +120,7 @@ class ProvidersPageState extends State<ProvidersPage>
         list = reloaded.map(ProviderMapper.toEntity).toList();
 
         if (kDebugMode && list.isNotEmpty) {
-          print(
+          debugPrint(
             '[_loadProviders] After sync - Provider: ${list.first.name}, imageUri: ${list.first.imageUri}',
           );
         }
@@ -138,8 +139,8 @@ class ProvidersPageState extends State<ProvidersPage>
         }
       } catch (e, stackTrace) {
         if (kDebugMode) {
-          print('[_loadProviders] Sync error: $e');
-          print(stackTrace);
+          debugPrint('[_loadProviders] Sync error: $e');
+          debugPrint('$stackTrace');
         }
         if (mounted) {
           setState(() => _syncingProviders = false);
@@ -169,7 +170,9 @@ class ProvidersPageState extends State<ProvidersPage>
         _fabController?.reset();
       }
     } catch (e) {
-      if (kDebugMode) print('[_loadProviders] Error: $e');
+      if (kDebugMode) {
+        debugPrint('[_loadProviders] Error: $e');
+      }
       if (!mounted) return;
       setState(() {
         _providerError = 'Erro ao carregar fornecedores';
@@ -194,7 +197,7 @@ class ProvidersPageState extends State<ProvidersPage>
       await dao.upsertAll(newDtos);
 
       if (kDebugMode) {
-        print(
+        debugPrint(
           '[_showProviderForm] Saved locally. Provider: ${result.name}, distance: ${result.distanceKm}, updatedAt: ${result.updatedAt}',
         );
       }
@@ -208,9 +211,13 @@ class ProvidersPageState extends State<ProvidersPage>
         final repo = ProvidersRepositoryImpl(remoteApi: remote, localDao: dao);
         await repo.syncFromServer();
 
-        if (kDebugMode) print('[_showProviderForm] Sync after edit complete');
+        if (kDebugMode) {
+          debugPrint('[_showProviderForm] Sync after edit complete');
+        }
       } catch (e) {
-        if (kDebugMode) print('[_showProviderForm] Sync error: $e');
+        if (kDebugMode) {
+          debugPrint('[_showProviderForm] Sync error: $e');
+        }
       } finally {
         if (mounted) setState(() => _syncingProviders = false);
       }
@@ -266,14 +273,20 @@ class ProvidersPageState extends State<ProvidersPage>
 
       try {
         await repo.syncFromServer();
-        if (kDebugMode) print('[_removeProvider] Sync after delete complete');
+        if (kDebugMode) {
+          debugPrint('[_removeProvider] Sync after delete complete');
+        }
       } catch (e) {
-        if (kDebugMode) print('[_removeProvider] Sync error: $e');
+        if (kDebugMode) {
+          debugPrint('[_removeProvider] Sync error: $e');
+        }
       } finally {
         if (mounted) setState(() => _syncingProviders = false);
       }
     } catch (e) {
-      if (kDebugMode) print('[_removeProvider] Persistence error: $e');
+      if (kDebugMode) {
+        debugPrint('[_removeProvider] Persistence error: $e');
+      }
       // Optionally: reload to restore state on error
       await _loadProviders();
     }

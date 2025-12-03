@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String? _userName;
   String? _userEmail;
+  bool _isDarkMode = false;
   // Callback to trigger tutorial in ProvidersPage
   VoidCallback? _showProvidersTutorialCallback;
 
@@ -129,6 +130,16 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             const Divider(),
+            SwitchListTile(
+              secondary: const Icon(Icons.dark_mode_outlined),
+              title: const Text('Tema escuro'),
+              value: _isDarkMode,
+              onChanged: (value) {
+                setState(() {
+                  _isDarkMode = value;
+                });
+              },
+            ),
             ListTile(
               leading: const Icon(Icons.info_outline),
               title: const Text('Política de Privacidade'),

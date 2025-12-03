@@ -41,10 +41,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       } catch (e, st) {
         // Log the error in debug so we can see the actual exception when running on web
         if (kDebugMode) {
-          // ignore: avoid_print
-          print('SplashScreen init error: $e');
-          // ignore: avoid_print
-          print(st);
+          debugPrint('SplashScreen init error: $e');
+          debugPrint('$st');
         }
 
         // Fallback navigation to onboarding so the app remains usable

@@ -1,5 +1,3 @@
-````markdown
-
 # Prompt operacional: Integrar sincronização Supabase na `ProvidersPage` (versão didática)
 
 > **Este prompt foi adaptado para fins didáticos. As alterações geradas devem conter comentários explicativos, dicas práticas, checklist de erros comuns, exemplos de logs esperados e referências aos arquivos de debug, facilitando o aprendizado e a implementação correta pelos alunos.**
@@ -80,4 +78,12 @@ Notas de implementação
 
 **Solução**: sempre envolva a tela vazia com `RefreshIndicator` + `ListView` com `AlwaysScrollableScrollPhysics()` para permitir pull-to-refresh mesmo sem itens na lista. Veja o prompt 12 (12_agent_list_refresh.md) para exemplo completo de implementação.
 
-````
+
+
+# Observações adicionas
+
+1. Caso o prompt proponha criar algum arquivo e esse arquivo já existir no projeto. Renomeie-o para .backup. E em seguida o remova.
+2. Crie o novo arquivo
+3. Garanta que a definição da classe do arquivo esteja escrita uma única vez no código
+4. Caso o arquivo gerado ou arquivos manipulados por esse prompt seja grandes (avalie profissionalmete isso), procure refatorar, extraindo para arquivos organizados em subpastas
+5. Ao refatorar e organizar, remova os arquivos antigos. Não deixe o arquivo apenas como wrappers ou comentários orientando a remoção manual.

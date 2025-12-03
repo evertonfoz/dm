@@ -1,6 +1,8 @@
 // Allow snake_case field names that mirror the database columns.
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
+
 import '../../domain/entities/provider.dart';
 
 class ProviderDto {
@@ -25,14 +27,10 @@ class ProviderDto {
   });
 
   factory ProviderDto.fromMap(Map<String, dynamic> m) {
-    print('[ProviderDto.fromMap] Raw map keys: ${m.keys.toList()}');
-    print('[ProviderDto.fromMap] Raw image_url value: ${m['image_url']}');
-
     final imageUrl = m['image_url'] as String?;
-    if (imageUrl != null && imageUrl.isNotEmpty) {
-      print('[ProviderDto.fromMap] Parsed image_url: $imageUrl');
-    } else {
-      print('[ProviderDto.fromMap] image_url is null or empty');
+    if (kDebugMode) {
+      debugPrint('[ProviderDto.fromMap] Raw map keys: ${m.keys.toList()}');
+      debugPrint('[ProviderDto.fromMap] image_url: $imageUrl');
     }
 
     return ProviderDto(

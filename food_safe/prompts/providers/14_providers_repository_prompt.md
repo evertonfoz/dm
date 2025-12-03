@@ -150,3 +150,9 @@ Notas finais e recomendações
 - Antes de usar o prompt para gerar implementações, assegure-se de que a entidade `ENTITY` possui `toMap`/`fromMap` se a implementação local depender de serialização (isso é comum nos DAOs do projeto).
 - Para gerar implementações locais (SharedPreferences/DAO) ou remotas (API), reutilize os prompts existentes (`01_repository_local_dao_prompt.md`, `02_repository_local_dao_shared_prefs_prompt.md`) adaptando `ENTITY`/`SUFFIX`.
 - Se desejar, posso agora usar este prompt para gerar o arquivo Dart (interface) no repositório e rodar uma análise rápida — diga se devo prosseguir.
+
+# Observações adicionas
+
+1. Caso o prompt proponha criar algum arquivo e esse arquivo já existir no projeto. Renomeie-o para .backup. E em seguida o remova.
+2. Crie o novo arquivo
+3. Garanta que a definição da classe do arquivo esteja escrita uma única vez no código
