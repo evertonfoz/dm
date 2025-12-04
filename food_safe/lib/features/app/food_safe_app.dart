@@ -19,36 +19,36 @@ class FoodSafeApp extends StatelessWidget {
     return MaterialApp(
       title: 'Food Safe',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        materialTapTargetSize: MaterialTapTargetSize.padded,
-        visualDensity: VisualDensity.standard,
-        colorScheme: lightColorScheme,
-        appBarTheme: AppBarTheme(
-          backgroundColor: lightColorScheme.primary,
-          // Use a high-contrast foreground for app bar titles.
-          // lightColorScheme.onPrimary was white which had poor contrast
-          // with the chosen primary color. onSurface provides better
-          // contrast without affecting dialog button colors.
-          foregroundColor: lightColorScheme.onSurface,
-          elevation: 0,
-          centerTitle: true,
-        ),
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        materialTapTargetSize: MaterialTapTargetSize.padded,
-        visualDensity: VisualDensity.standard,
-        colorScheme: darkColorScheme,
-        appBarTheme: AppBarTheme(
-          backgroundColor: darkColorScheme.primary,
-          // Align dark theme app bar foreground with onSurface for
-          // consistent high-contrast titles.
-          foregroundColor: darkColorScheme.onSurface,
-          elevation: 0,
-          centerTitle: true,
-        ),
-      ),
+      // theme: ThemeData(
+      //   useMaterial3: true,
+      //   materialTapTargetSize: MaterialTapTargetSize.padded,
+      //   visualDensity: VisualDensity.standard,
+      //   colorScheme: lightColorScheme,
+      //   appBarTheme: AppBarTheme(
+      //     backgroundColor: lightColorScheme.primary,
+      //     // Use a high-contrast foreground for app bar titles.
+      //     // lightColorScheme.onPrimary was white which had poor contrast
+      //     // with the chosen primary color. onSurface provides better
+      //     // contrast without affecting dialog button colors.
+      //     foregroundColor: lightColorScheme.onSurface,
+      //     elevation: 0,
+      //     centerTitle: true,
+      //   ),
+      // ),
+      // darkTheme: ThemeData(
+      //   useMaterial3: true,
+      //   materialTapTargetSize: MaterialTapTargetSize.padded,
+      //   visualDensity: VisualDensity.standard,
+      //   colorScheme: darkColorScheme,
+      //   appBarTheme: AppBarTheme(
+      //     backgroundColor: darkColorScheme.primary,
+      //     // Align dark theme app bar foreground with onSurface for
+      //     // consistent high-contrast titles.
+      //     foregroundColor: darkColorScheme.onSurface,
+      //     elevation: 0,
+      //     centerTitle: true,
+      //   ),
+      // ),
       themeMode: ThemeMode.system,
       initialRoute: initialRoute,
       routes: {
