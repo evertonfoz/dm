@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'constants.dart';
 import 'privacy_and_terms_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -19,7 +20,7 @@ class WelcomeScreen extends StatelessWidget {
           // Optional full-screen background image (covers entire scaffold)
           Positioned.fill(
             child: Image.asset(
-              'assets/images/onboarding/background_on_boarding.png',
+              kBackgroundOnBoarding,
               fit: BoxFit.cover,
             ),
           ),
@@ -31,7 +32,7 @@ class WelcomeScreen extends StatelessWidget {
                   height: topImageHeight,
                   child: Center(
                     child: Image.asset(
-                      'assets/images/onboarding/on_boarding_01.png',
+                      kOnBoardingPage01,
                       fit: BoxFit.contain,
                       width: size.width * 0.9,
                     ),

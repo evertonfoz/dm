@@ -12,9 +12,9 @@ class OnBoardingTitleText extends StatelessWidget {
       child: Text(
         'Uhuu! Que bom que você está aqui!',
         textAlign: TextAlign.center,
-        style: TextStyle(
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
           fontSize: size.width * 0.04,
-          color: Theme.of(context).colorScheme.primary,
+          color: const Color(0xFF424242),
           fontWeight: FontWeight.bold,
         ),
       ),

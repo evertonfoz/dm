@@ -1,0 +1,14 @@
+{
+    "dart.debugExternalPackageLibraries": false,
+    "dart.debugSdkLibraries": false,
+    "dart.showIgnoreQuickFixes": false,
+    "dart.previewFlutterUiGuides": true,
+    "dart.previewFlutterUiGuidesCustomTracking": true,
+    "dart.evaluateGettersInDebugViews": false,
+    "dart.evaluateToStringInDebugViews": false,
+    "dart.debugBreakOnException": false,
+    "files.watcherExclude": {
+        "**/.dart_tool/**": true,
+        "**/.fvm/**": true
+    }
+}

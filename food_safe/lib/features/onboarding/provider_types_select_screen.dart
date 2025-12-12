@@ -1,28 +1,22 @@
-// TODOs — Itens necessários do projeto original
-// 1) Arquivo de constantes de onboarding (ex.: `on_boarding/constants.dart`) que define:
-//    - `kProfessionalImage` (caminho do asset para o avatar)
-//    - quaisquer outras constantes visuais usadas nesta página
-// 2) Widgets que vinham do projeto original (trazer estes arquivos):
-//    - `widgets/header.dart` (ProviderTypeSelectHeader)
-//    - `widgets/options.dart` (ProviderTypesOptions)
-//    - `widgets/save.dart` (ProviderTypesSaveButton)
-// 3) Ícone de voltar compartilhado:
-//    - `app_libraries/shared/icons/back_icon.dart` (BackIconToAllPages)
-// 4) Esquemas de cores e tema:
-//    - `app_libraries/theme/color_schemes.dart` ou `../../theme/color_schemes.dart` com `lightColorScheme`/`darkColorScheme`
-// 5) Responsividade / helpers utilizados no original:
-//    - Extensões `screenHeight` / `screenWidth` (ex.: do `responsive_builder` ou helpers do projeto). Se não trouxer, adaptaremos para `MediaQuery`.
-// 6) Navegação modular (opcional):
-//    - `package:flutter_modular/flutter_modular.dart` — se preferir usar o `Modular.to.navigate(...)` como no original,
-//      caso contrário substitua por `Navigator.of(context).pushNamed(...)`.
-// 7) Assets de imagem usados nos cards (se diferente do `kProfessionalImage`).
-// 8) Notas visuais/esperadas:
-//    - A página usa um fundo oval grande (`Container` com `borderRadius`) e um avatar circular sobreposto;
-//    - Verificar dimensões relativas (`40.screenHeight`, `73.screenHeight`, `100.screenWidth`) e mapear para as extensões originais ou trocar por `MediaQuery`.
-// Ação necessária para prosseguir: por favor traga os arquivos listados (1 a 4) ou confirme que quer que eu adapte
-// as chamadas `screenHeight/screenWidth` para `MediaQuery` e substituir `Modular.to.navigate` por `Navigator`.
-
 import 'package:flutter/material.dart';
+import 'constants.dart';
+
+// TODOs — Itens pendentes do projeto original
+// ✅ 1) Arquivo de constantes: RESOLVIDO - usando constants.dart
+// ⏳ 2) Widgets que vinham do projeto original (trazer estes arquivos):
+//    - widgets/header.dart (ProviderTypeSelectHeader)
+//    - widgets/options.dart (ProviderTypesOptions)
+//    - widgets/save.dart (ProviderTypesSaveButton)
+// ⏳ 3) Ícone de voltar compartilhado:
+//    - app_libraries/shared/icons/back_icon.dart (BackIconToAllPages)
+// ✅ 4) Esquemas de cores: DISPONÍVEL - usando ../../theme/color_schemes.dart
+// ⏳ 5) Responsividade / helpers:
+//    - Extensões screenHeight / screenWidth ou adaptar para MediaQuery
+// ✅ 6) Navegação: RESOLVIDO - usando Navigator padrão
+// ⏳ 7) Assets de imagem: Verificar se há imagens específicas por tipo de fornecedor
+// ⏳ 8) Melhorias visuais esperadas:
+//    - Fundo oval grande com avatar circular sobreposto (atualmente simplificado)
+//    - Verificar dimensões relativas e layout original
 
 class ProviderTypesSelectScreen extends StatelessWidget {
   static const routeName = '/onboarding/provider_types_select';
@@ -90,7 +84,7 @@ class ProviderTypesSelectScreen extends StatelessWidget {
                       height: 112,
                       child: ClipOval(
                         child: Image.asset(
-                          'assets/images/onboarding/profissional_gastronomico.png',
+                          kProfessionalImage,
                           fit: BoxFit.cover,
                           // align slightly upwards to favor head placement in the crop
                           alignment: Alignment(0, -0.4),
@@ -109,7 +103,7 @@ class ProviderTypesSelectScreen extends StatelessWidget {
               const SizedBox(height: 14),
               providerCard(
                 'Restaurante / Comércio',
-                'assets/images/onboarding/profissional_gastronomico.png',
+                kProfessionalImage,
                 () {
                   Navigator.of(
                     context,
@@ -119,7 +113,7 @@ class ProviderTypesSelectScreen extends StatelessWidget {
               const SizedBox(height: 12),
               providerCard(
                 'Serviço de catering',
-                'assets/images/onboarding/profissional_gastronomico.png',
+                kProfessionalImage,
                 () {
                   Navigator.of(
                     context,
@@ -129,7 +123,7 @@ class ProviderTypesSelectScreen extends StatelessWidget {
               const SizedBox(height: 12),
               providerCard(
                 'Indústria / Fornecedor',
-                'assets/images/onboarding/profissional_gastronomico.png',
+                kProfessionalImage,
                 () {
                   Navigator.of(
                     context,

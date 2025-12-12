@@ -15,14 +15,17 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
+    // TEMPORÁRIO: Navegação automática comentada para debug
+    // TODO: Descomentar quando voltar ao fluxo normal
+    /*
     Future.microtask(() async {
       try {
-        if (kDebugMode) {
-          if (mounted) {
-            Navigator.of(context).pushReplacementNamed('/home');
-          }
-          return;
-        }
+        // if (kDebugMode) {
+        //   if (mounted) {
+        //     Navigator.of(context).pushReplacementNamed('/home');
+        //   }
+        //   return;
+        // }
         final marketingConsent =
             await SharedPreferencesService.getMarketingConsent();
         if (marketingConsent == true) {
@@ -53,6 +56,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         }
       }
     });
+    */
   }
 
   @override

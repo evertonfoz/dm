@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'constants.dart';
 import 'widgets/celilac_scaffold.dart';
 import 'widgets/onboarding_background.dart';
 import 'widgets/onboarding_top_image.dart';
@@ -26,14 +27,14 @@ class _OnBoardingWelcomePageState extends State<OnBoardingWelcomePage> {
       body: Stack(
         children: <Widget>[
           OnBoardingBackground(
-            url: 'assets/images/onboarding/background_on_boarding.png',
+            url: kBackgroundOnBoarding,
           ),
           SafeArea(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const <Widget>[
                 OnBoardingTopImage(
-                  url: 'assets/images/onboarding/on_boarding_01.png',
+                  url: kOnBoardingPage01,
                 ),
                 OnBoardingTitleText(),
                 OnBoardingText(),

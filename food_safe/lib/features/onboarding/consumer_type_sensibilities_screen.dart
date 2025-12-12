@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'constants.dart';
 
 class ConsumerTypeSensibilitiesScreen extends StatefulWidget {
   static const routeName = '/onboarding/consumer_type_sensibilities';
@@ -63,7 +64,7 @@ class _ConsumerTypeSensibilitiesScreenState
                     CircleAvatar(
                       radius: 48,
                       backgroundImage: AssetImage(
-                        'assets/images/onboarding/sensitivity.png',
+                        kSensitivity,
                       ),
                     ),
                   ],

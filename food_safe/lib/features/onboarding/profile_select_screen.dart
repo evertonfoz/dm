@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'constants.dart';
 import 'widgets/celilac_scaffold.dart';
 import 'widgets/profile_select_button.dart';
 import '../../theme/color_schemes.dart';
@@ -52,7 +53,7 @@ class ProfileSelectScreen extends StatelessWidget {
                           height: isSmall ? 80 : 120,
                           child: Center(
                             child: Image.asset(
-                              'assets/images/onboarding/image_splashscreen.png',
+                              kCelilacLogo,
                               fit: BoxFit.contain,
                             ),
                           ),

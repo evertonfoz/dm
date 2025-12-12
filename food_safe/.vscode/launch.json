@@ -1,11 +1,16 @@
 {
+    "version": "0.2.0",
     "configurations": [
-    {
-        "name": "Flutter",
-        "type": "dart",
-        "request": "launch",
-        "program": "lib/main.dart",
-        "stopOnEntry": false
-    }
+        {
+            "name": "Flutter",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define-from-file=.env"
+            ],
+            "flutterMode": "debug",
+            "stopOnEntry": false
+        }
     ]
 }
