@@ -16,28 +16,28 @@
 ## 📋 PROMPT BASE - COPIE E ADAPTE
 
 ```
-Vou ensinar aos alunos [NOME_DA_FEATURE] em Flutter. Em uma aplicação mobile normal, [DESCRIÇÃO_CONTEXTO_FEATURE]. O que mais julga importante nesse processo?
+Vou ensinar aos alunos RESPONSIVIDADE E DESIGN ADAPTATIVO em Flutter. Em uma aplicação mobile normal, é essencial que a interface se adapte adequadamente a diferentes tamanhos de tela (smartphones, tablets, foldables) e orientações (portrait/landscape), garantindo uma experiência de usuário consistente e profissional. O que mais julga importante nesse processo?
 
 Eu preciso de:
 1. Material teórico completo e bem estruturado
-2. [TIPO_DE_VISUAL_NECESSÁRIO]
-3. Boas práticas de implementação
-4. Prompts para que os alunos possam usar para criar [ARTEFATOS_FINAIS]
+2. Diagramas visuais mostrando breakpoints e adaptações de layout
+3. Boas práticas de implementação responsiva
+4. Prompts para que os alunos possam usar para criar interfaces adaptativas profissionais
 
 CONTEXTO DO PÚBLICO:
 - Alunos de graduação em Computação
-- Nível: [BÁSICO/INTERMEDIÁRIO/AVANÇADO]
-- Já conhecem: [PRÉ-REQUISITOS]
-- Foco: Aplicação prática e profissional
+- Nível: INTERMEDIÁRIO
+- Já conhecem: Dart básico, Widgets fundamentais do Flutter (Container, Row, Column, Stack), Conceitos de layout básico
+- Foco: Aplicação prática e profissional para diferentes dispositivos
 
 ESTRUTURA DESEJADA:
-1. Fundamentos teóricos de [NOME_DA_FEATURE]
-2. Arquitetura e organização do código
-3. Interface de usuário e UX
+1. Fundamentos teóricos de responsividade e design adaptativo
+2. Arquitetura e organização do código responsivo
+3. Interface de usuário e UX para múltiplos dispositivos
 4. Implementação prática passo a passo
-5. Integração com [BACKEND/SERVIÇOS/APIS]
-6. [TÓPICOS_ESPECÍFICOS_DA_FEATURE]
-7. Boas práticas e padrões
+5. Integração com MediaQuery, LayoutBuilder e breakpoints
+6. Widgets especializados (Expanded, Flexible, FractionallySizedBox, AspectRatio)
+7. Boas práticas e padrões (Mobile-first, Design System)
 8. Erros comuns e troubleshooting
 9. Desafios práticos com critérios de avaliação
 
@@ -45,11 +45,43 @@ REQUISITOS DE QUALIDADE:
 - Código totalmente comentado em português
 - Exemplos práticos e reais
 - Comparações "errado vs correto"
-- Material preparado para Gamma.app (slides)
-- Foco em conceitos visuais, não código extenso
+- Material preparado para Gamma.app (slides) - FOCO EM CONCEITOS VISUAIS
+- Evitar código extenso nos slides, priorizar diagramas e exemplos concisos
+
+ESTRATÉGIA DE GERAÇÃO:
+Para evitar estouro de cota, vou solicitar o material em ETAPAS:
+- Etapa 1: Estrutura e tópicos (para validação)
+- Etapa 2: Conteúdo teórico (slides 1-5)
+- Etapa 3: Implementação prática (slides 6-10)
+- Etapa 4: Boas práticas e exercícios (slides finais)
 
 Você consegue antes me trazer os pontos que pretende abordar, por favor, para eu analisar, comentar e validar?
 ```
+
+---
+
+## ⚡️ PROMPT RÁPIDO (ECONOMIA DE TOKENS)
+
+Use esta versão quando quiser validar a estrutura primeiro e evitar respostas longas logo de cara:
+
+```
+Preciso planejar material sobre [NOME_DA_FEATURE] em Flutter. Público: alunos de graduação, nível [BÁSICO/INTERMEDIÁRIO/AVANÇADO], já sabem [PRÉ-REQUISITOS].
+
+Objetivo: receber APENAS uma lista de tópicos e formatos sugeridos (sem detalhar conteúdo nem escrever texto didático ainda).
+
+Peça confirmação antes de expandir: "Posso detalhar?".
+
+Checklist mínimo:
+- Teoria essencial
+- Arquitetura e UI/UX
+- Passo a passo prático
+- Integração com [SERVIÇOS/APIs]
+- Boas práticas, erros comuns, desafios avaliativos
+- Materiais visuais: [TIPO_DE_VISUAL_NECESSÁRIO]
+- Prompts finais para gerar [ARTEFATOS]
+```
+
+Depois de validar a lista curta, você pode pedir: "Agora detalhe cada tópico em bullets breves" e só então solicitar versões completas. Assim você controla o tamanho das respostas.
 
 ---
 
@@ -534,19 +566,3 @@ REQUISITOS DE QUALIDADE:
 
 Você consegue antes me trazer os pontos que pretende abordar, por favor, para eu analisar, comentar e validar?
 ```
-
----
-
-## 🎉 CONCLUSÃO
-
-Este template permite que você **replique o sucesso** do material de autenticação para **qualquer feature Flutter** que queira ensinar!
-
-**Mantenha sempre:**
-- ✅ Validação prévia (roadmap antes do conteúdo)
-- ✅ Estrutura em 10-14 seções
-- ✅ Código comentado em português
-- ✅ Material preparado para slides
-- ✅ Foco em conceitos sobre sintaxe
-- ✅ Desafios práticos ao final
-
-Boa sorte com seus próximos materiais didáticos! 🚀📚
