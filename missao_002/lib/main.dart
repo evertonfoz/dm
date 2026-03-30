@@ -57,7 +57,29 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Ação do botão
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Botão de ação pressionado!',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              duration: Duration(seconds: 2),
+              backgroundColor: Colors.amber,
+
+              action: SnackBarAction(
+                textColor: Colors.black,
+                backgroundColor: Colors.white,
+                label: "OK",
+                onPressed: () {
+                  return;
+                },
+              ),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
