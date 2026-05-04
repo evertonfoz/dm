@@ -22,7 +22,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   // loading flag was left as `true`, causing the CircularProgressIndicator
   // to be shown permanently. Set to false so the `DailyGoalListPage` is
   // rendered.
-  bool _isLoading = false;
+  final bool _isLoading = false;
   // bool _hasEntryToday = false;
 
   @override

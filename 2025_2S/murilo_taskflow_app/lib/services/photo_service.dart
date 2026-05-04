@@ -7,7 +7,6 @@ import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'io.dart';
-import 'dart:typed_data';
 
 // Conditional import for web image compressor
 import 'web_image_compress_stub.dart'

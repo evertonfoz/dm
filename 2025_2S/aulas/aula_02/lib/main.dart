@@ -31,8 +31,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _counter = 0;
-  int _contador = 0;
-  List _tarefas = [
+  final int _contador = 0;
+  final List _tarefas = [
     'Aprender Flutter',
     'Praticar Dart',
     'Construir um app',

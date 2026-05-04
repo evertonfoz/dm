@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen>
                   16,
                   8,
                 ), // Reduzido padding top de 8 para 4
-                child: Container(
+                child: SizedBox(
                   height: 44, // Reduzido de 48 para 44
                   child: TextField(
                     controller: _searchController,
@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ),
               ),
-              Container(
+              SizedBox(
                 height: 48, // Altura fixa para o TabBar
                 child: TabBar(
                   controller: _tabController,

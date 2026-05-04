@@ -273,8 +273,8 @@ class _PolicyViewerScreenState extends State<PolicyViewerScreen> {
                     child: FloatingActionButton.small(
                       heroTag: 'scroll_down',
                       onPressed: _scrollPageDown,
-                      child: const Icon(Icons.arrow_downward),
                       tooltip: 'Mostrar conteúdo abaixo',
+                      child: const Icon(Icons.arrow_downward),
                     ),
                   ),
 
@@ -286,8 +286,8 @@ class _PolicyViewerScreenState extends State<PolicyViewerScreen> {
                     child: FloatingActionButton.small(
                       heroTag: 'scroll_up_overlay',
                       onPressed: _scrollPageUp,
-                      child: const Icon(Icons.arrow_upward),
                       tooltip: 'Mostrar conteúdo acima',
+                      child: const Icon(Icons.arrow_upward),
                     ),
                   ),
               ],

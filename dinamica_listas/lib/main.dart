@@ -50,8 +50,33 @@ class _AgendaAppState extends State<AgendaApp> {
                         Text(
                           "${compromissos[index].data.hour}:${compromissos[index].data.minute.toString().padLeft(2, '0')}",
                         ),
+                        Text(
+                          compromissos[index].concluido
+                              ? 'Concluído'
+                              : 'Pendente',
+                          style: TextStyle(
+                            color: compromissos[index].concluido
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        ),
                       ],
                     ),
+                    onTap: () {
+                      setState(() {
+                        compromissos[index].concluido =
+                            !compromissos[index].concluido;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            compromissos[index].concluido
+                                ? 'Compromisso "${compromissos[index].titulo}" concluído!'
+                                : 'Compromisso "${compromissos[index].titulo}" marcado como pendente.',
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),

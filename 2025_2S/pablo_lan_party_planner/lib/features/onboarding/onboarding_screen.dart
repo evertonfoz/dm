@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme.dart';
-import '../../models/event.dart';
-import '../consent/consent_history_screen.dart';
-import '../events/event_crud_screen.dart';
 import 'marketing_consent_page.dart';
 import 'consentimento_resumo_page.dart';
 import 'leitura_md_page.dart';
@@ -22,29 +19,33 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool _termosLidos = false;
 
   void _irParaPolitica() async {
-    await Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => LeituraMdPage(
-        titulo: 'Política de Privacidade',
-        assetPath: 'privacidade.md',
-        onLeuTudo: () {
-          setState(() => _politicaLida = true);
-          Navigator.of(context).pop();
-        },
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => LeituraMdPage(
+          titulo: 'Política de Privacidade',
+          assetPath: 'privacidade.md',
+          onLeuTudo: () {
+            setState(() => _politicaLida = true);
+            Navigator.of(context).pop();
+          },
+        ),
       ),
-    ));
+    );
   }
 
   void _irParaTermos() async {
-    await Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => LeituraMdPage(
-        titulo: 'Termos de Uso',
-        assetPath: 'termos.md',
-        onLeuTudo: () {
-          setState(() => _termosLidos = true);
-          Navigator.of(context).pop();
-        },
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => LeituraMdPage(
+          titulo: 'Termos de Uso',
+          assetPath: 'termos.md',
+          onLeuTudo: () {
+            setState(() => _termosLidos = true);
+            Navigator.of(context).pop();
+          },
+        ),
       ),
-    ));
+    );
   }
 
   void _avancarConsentimento() async {
@@ -67,7 +68,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('PNGs/logoIASemfundo.png', width: 120, height: 120),
+                  Image.asset(
+                    'PNGs/logoIASemfundo.png',
+                    width: 120,
+                    height: 120,
+                  ),
                   const SizedBox(height: 24),
                   Text(
                     'Bem-vindo!',
@@ -175,7 +180,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: pages[_currentPage],
       bottomNavigationBar: (_currentPage > 0 && _currentPage < 3)
           ? Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32),
+              padding: const EdgeInsets.symmetric(
+                vertical: 16.0,
+                horizontal: 32,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

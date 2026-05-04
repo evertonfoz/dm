@@ -1,8 +1,4 @@
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
-
-import '../../services/shared_preferences_services.dart';
-import '../onboarding/onboarding_welcome_page.dart';
 
 class SplashScreenPage extends StatefulWidget {
   const SplashScreenPage({super.key});

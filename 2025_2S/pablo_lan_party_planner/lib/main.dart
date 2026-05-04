@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme.dart';
-import 'features/onboarding/onboarding_screen.dart';
 import 'features/home/home_page.dart';
 
 void main() {
