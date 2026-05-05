@@ -63,6 +63,7 @@ class _PetReorderPageState extends State<PetReorderPage> {
         padding: const EdgeInsets.all(8.0),
         child: ReorderableListView.builder(
           itemCount: pets.length,
+          buildDefaultDragHandles: false, // Desabilita o trailing padrão
           itemBuilder: (context, index) {
             final pet = pets[index];
             return PetCard(
@@ -77,7 +78,10 @@ class _PetReorderPageState extends State<PetReorderPage> {
                 );
               },
               onInfoTap: () => _showPetInfoDialog(context, pet),
-              // trailing: const Icon(Icons.drag_handle),
+              trailing: ReorderableDragStartListener(
+                index: index,
+                child: const Icon(Icons.drag_handle),
+              ),
             );
           },
           onReorder: _reorderPets,

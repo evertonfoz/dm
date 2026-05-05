@@ -24,19 +24,19 @@ class PetCard extends StatelessWidget {
         leading: CircleAvatar(child: Text(pet.name[0])),
         title: Text(pet.name),
         subtitle: Text('${pet.specie.name} - ${pet.age} anos'),
-        trailing:
-            trailing ??
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (pet.isPriority)
-                  const Icon(Icons.priority_high, color: Colors.red),
-                IconButton(
-                  icon: const Icon(Icons.info_outline),
-                  onPressed: onInfoTap,
-                ),
-              ],
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (pet.isPriority)
+              const Icon(Icons.priority_high, color: Colors.red),
+            IconButton(
+              icon: const Icon(Icons.info_outline),
+              onPressed: onInfoTap,
             ),
+            trailing ??
+                Container(), // Exibe o trailing personalizado ou um container vazio
+          ],
+        ),
         onTap: onTap,
       ),
     );
