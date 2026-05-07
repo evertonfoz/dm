@@ -1,0 +1,1 @@
+enum PetAttendanceStatus { waiting, done }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/pet_entity.dart';
+import '../models/entities/pet_entity.dart';
 
 class PetDetailsPage extends StatelessWidget {
   final PetEntity pet;
