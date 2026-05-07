@@ -22,4 +22,26 @@ class PetEntity {
     required this.isPriority,
     required this.attendanceStatus,
   });
+
+  PetEntity copyWith({
+    int? petId,
+    String? name,
+    SpecieEntity? specie,
+    int? age,
+    String? tutorName,
+    String? service,
+    bool? isPriority,
+    PetAttendanceStatus? attendanceStatus,
+  }) {
+    return PetEntity(
+      petId: petId ?? this.petId,
+      name: name ?? this.name,
+      specie: specie ?? this.specie,
+      age: age ?? this.age,
+      tutorName: tutorName ?? this.tutorName,
+      service: service ?? this.service,
+      isPriority: isPriority ?? this.isPriority,
+      attendanceStatus: attendanceStatus ?? this.attendanceStatus,
+    );
+  }
 }
