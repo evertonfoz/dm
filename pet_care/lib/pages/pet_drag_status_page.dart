@@ -33,7 +33,7 @@ class _PetDragStatusPageState extends State<PetDragStatusPage> {
         .toList();
   }
 
-  void updatePetStatus(PetEntity selectedPet, PetAttendanceStatus newStatus) {
+  void _updatePetStatus(PetEntity selectedPet, PetAttendanceStatus newStatus) {
     setState(() {
       pets = pets.map((pet) {
         if (pet.petId == selectedPet.petId) {
@@ -44,7 +44,7 @@ class _PetDragStatusPageState extends State<PetDragStatusPage> {
     });
   }
 
-  void showStatusChangedMessage(PetEntity pet, PetAttendanceStatus status) {
+  void _showStatusChangedMessage(PetEntity pet, PetAttendanceStatus status) {
     final message = status == PetAttendanceStatus.done
         ? '${pet.name} foi movido para atendidos.'
         : '${pet.name} voltou para aguardando.';
@@ -54,9 +54,46 @@ class _PetDragStatusPageState extends State<PetDragStatusPage> {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  void handlePetDropped(PetEntity pet, PetAttendanceStatus newStatus) {
-    updatePetStatus(pet, newStatus);
-    showStatusChangedMessage(pet, newStatus);
+  Future<bool> _confirmMoveToDone(PetEntity pet) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Concluir atendimento'),
+          content: Text(
+            'Deseja marcar o atendimento de '
+            '${pet.name} como concluído?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Confirmar'),
+            ),
+          ],
+        );
+      },
+    );
+    return result ?? false;
+  }
+
+  Future<void> _handlePetDropped(
+    PetEntity pet,
+    PetAttendanceStatus newStatus,
+  ) async {
+    if (newStatus == PetAttendanceStatus.done) {
+      final confirmed = await _confirmMoveToDone(pet);
+
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    _updatePetStatus(pet, newStatus);
+    _showStatusChangedMessage(pet, newStatus);
   }
 
   @override
@@ -76,7 +113,7 @@ class _PetDragStatusPageState extends State<PetDragStatusPage> {
                   pets: waitingPets,
                   status: PetAttendanceStatus.waiting,
                   onPetDropped: (pet) {
-                    handlePetDropped(pet, PetAttendanceStatus.waiting);
+                    _handlePetDropped(pet, PetAttendanceStatus.done);
                   },
                 ),
                 const SizedBox(height: 16),
@@ -85,7 +122,7 @@ class _PetDragStatusPageState extends State<PetDragStatusPage> {
                   pets: donePets,
                   status: PetAttendanceStatus.done,
                   onPetDropped: (pet) {
-                    handlePetDropped(pet, PetAttendanceStatus.done);
+                    _handlePetDropped(pet, PetAttendanceStatus.done);
                   },
                 ),
               ],
@@ -102,7 +139,7 @@ class _PetDragStatusPageState extends State<PetDragStatusPage> {
                     pets: waitingPets,
                     status: PetAttendanceStatus.waiting,
                     onPetDropped: (pet) {
-                      handlePetDropped(pet, PetAttendanceStatus.waiting);
+                      _handlePetDropped(pet, PetAttendanceStatus.waiting);
                     },
                   ),
                 ),
@@ -113,7 +150,7 @@ class _PetDragStatusPageState extends State<PetDragStatusPage> {
                     pets: donePets,
                     status: PetAttendanceStatus.done,
                     onPetDropped: (pet) {
-                      handlePetDropped(pet, PetAttendanceStatus.done);
+                      _handlePetDropped(pet, PetAttendanceStatus.done);
                     },
                   ),
                 ),
