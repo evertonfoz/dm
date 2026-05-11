@@ -7,6 +7,7 @@ class VerticalLayoutExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      // scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(16),
       children: const [
         InfoPanel(title: 'Painel A', description: 'Aparece primeiro.'),
