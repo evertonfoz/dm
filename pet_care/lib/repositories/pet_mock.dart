@@ -1,4 +1,5 @@
-import '../models/pet_entity.dart';
+import '../models/entities/pet_attendance_status.dart';
+import '../models/entities/pet_entity.dart';
 import '../models/specie_entity.dart';
 
 const List<PetEntity> petMock = [
@@ -10,6 +11,7 @@ const List<PetEntity> petMock = [
     service: 'Banho e Tosa',
     isPriority: true,
     tutorName: 'João',
+    attendanceStatus: PetAttendanceStatus.waiting,
   ),
   PetEntity(
     petId: 2,
@@ -19,6 +21,7 @@ const List<PetEntity> petMock = [
     service: 'Vacinação',
     isPriority: false,
     tutorName: 'Maria',
+    attendanceStatus: PetAttendanceStatus.waiting,
   ),
   PetEntity(
     petId: 3,
@@ -28,5 +31,16 @@ const List<PetEntity> petMock = [
     service: 'Consulta Veterinária',
     isPriority: false,
     tutorName: 'Carlos',
+    attendanceStatus: PetAttendanceStatus.done,
+  ),
+  PetEntity(
+    petId: 4,
+    name: 'Bolt',
+    specie: SpecieEntity(specieId: '1', name: 'Cachorro'),
+    age: 4,
+    service: 'Banho e Tosa',
+    isPriority: true,
+    tutorName: 'Ana',
+    attendanceStatus: PetAttendanceStatus.done,
   ),
 ];

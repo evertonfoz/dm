@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
+import '../pages/responsive_home_page.dart';
 
-import 'pages/pet_home_page.dart';
-
-void main() {
-  runApp(const PetCareAgendaApp());
-}
-
-class PetCareAgendaApp extends StatelessWidget {
-  const PetCareAgendaApp({super.key});
+class ResponsiveApp extends StatelessWidget {
+  const ResponsiveApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'PetCare Agenda',
+      title: 'Layout Responsivo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        useMaterial3: true,
       ),
-      home: PetHomePage(), // const PetListPage(),
+      home: const ResponsiveHomePage(),
     );
   }
 }

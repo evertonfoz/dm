@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pet_care/models/pet_entity.dart';
+import 'package:pet_care/models/entities/pet_entity.dart';
 
 import '../components/pet_card.dart';
 import '../components/section_title.dart';

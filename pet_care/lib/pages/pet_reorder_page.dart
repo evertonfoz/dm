@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_care/components/pet_card.dart';
 import 'package:pet_care/repositories/pet_mock.dart';
 
-import '../models/pet_entity.dart';
+import '../models/entities/pet_entity.dart';
 import 'pet_details_page.dart';
 
 class PetReorderPage extends StatefulWidget {
@@ -23,10 +23,14 @@ class _PetReorderPageState extends State<PetReorderPage> {
 
   void _reorderPets(int oldIndex, int newIndex) {
     setState(() {
-      if (newIndex > oldIndex) newIndex -= 1;
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
       final pet = pets.removeAt(oldIndex);
       pets.insert(newIndex, pet);
     });
+
+    _showPriorityWarningIfNeeded();
   }
 
   void _showPetInfoDialog(BuildContext context, PetEntity pet) {
@@ -51,6 +55,37 @@ class _PetReorderPageState extends State<PetReorderPage> {
             child: const Text('Fechar'),
           ),
         ],
+      ),
+    );
+  }
+
+  bool _hasPriorityAfterNonPriority() {
+    var foundNonPriority = false;
+
+    for (final pet in pets) {
+      if (!pet.isPriority) {
+        foundNonPriority = true;
+      }
+
+      if (foundNonPriority && pet.isPriority) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  void _showPriorityWarningIfNeeded() {
+    if (!_hasPriorityAfterNonPriority()) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Atenção: há atendimento prioritário '
+          'abaixo de atendimento comum.',
+        ),
       ),
     );
   }

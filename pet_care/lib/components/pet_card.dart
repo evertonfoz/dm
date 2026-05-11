@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/pet_entity.dart';
+import '../models/entities/pet_entity.dart';
 
 class PetCard extends StatelessWidget {
   final PetEntity pet;
@@ -23,7 +23,7 @@ class PetCard extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(child: Text(pet.name[0])),
         title: Text(pet.name),
-        subtitle: Text('${pet.specie.name} - ${pet.age} anos'),
+        subtitle: Text('${pet.specie.name} - ${pet.age} anos - ${pet.service}'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
