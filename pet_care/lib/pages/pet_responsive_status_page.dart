@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_care/models/entities/pet_entity.dart';
 
 import '../components/pet_status_section.dart';
-import '../models/entities/pet_attendance_status.dart';
+import '../models/enums/pet_attendance_status_enum.dart';
 import '../repositories/pet_mock.dart';
 
 class PetResponsiveStatusPage extends StatelessWidget {

@@ -1,4 +1,4 @@
-import '../models/entities/pet_attendance_status.dart';
+import '../models/enums/pet_attendance_status_enum.dart';
 import '../models/entities/pet_entity.dart';
 import '../models/specie_entity.dart';
 

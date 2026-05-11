@@ -16,6 +16,7 @@ class PetDraggableCard extends StatelessWidget {
         return LongPressDraggable<PetEntity>(
           data: pet,
           feedback: Material(
+            color: Colors.amber,
             elevation: 6,
             borderRadius: BorderRadius.circular(12),
             child: SizedBox(

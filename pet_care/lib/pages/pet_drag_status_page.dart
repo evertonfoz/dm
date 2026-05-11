@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_care/models/entities/pet_entity.dart';
 import 'package:pet_care/repositories/pet_mock.dart';
 
-import '../models/entities/pet_attendance_status.dart';
+import '../models/enums/pet_attendance_status_enum.dart';
 import '../components/pet_drop_area.dart';
 
 class PetDragStatusPage extends StatefulWidget {

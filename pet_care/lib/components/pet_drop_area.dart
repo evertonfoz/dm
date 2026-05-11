@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pet_care/models/entities/pet_entity.dart';
 
-import '../models/entities/pet_attendance_status.dart';
+import '../models/enums/pet_attendance_status_enum.dart';
 import 'pet_draggable_card.dart';
 
 class PetDropArea extends StatelessWidget {
