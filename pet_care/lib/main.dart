@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'pages/pet_home_page.dart';
+import 'pages/crud/pet_form_page.dart';
 
 void main() {
   runApp(const PetCareAgendaApp());
@@ -17,7 +17,7 @@ class PetCareAgendaApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       ),
-      home: PetHomePage(), // const PetListPage(),
+      home: PetFormPage(), // const PetListPage(),
     );
   }
 }

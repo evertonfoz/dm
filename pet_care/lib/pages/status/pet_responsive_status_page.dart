@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pet_care/models/entities/pet_entity.dart';
 
-import '../components/pet_status_section.dart';
-import '../models/entities/pet_attendance_status.dart';
-import '../repositories/pet_mock.dart';
+import '../../components/pet_status_section.dart';
+import '../../models/entities/pet_attendance_status.dart';
+import '../../repositories/pet_mock.dart';
 
 class PetResponsiveStatusPage extends StatelessWidget {
   const PetResponsiveStatusPage({super.key});

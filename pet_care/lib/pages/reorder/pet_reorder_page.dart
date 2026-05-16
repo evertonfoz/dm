@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pet_care/components/pet_card.dart';
 import 'package:pet_care/repositories/pet_mock.dart';
 
-import '../models/entities/pet_entity.dart';
-import 'pet_details_page.dart';
+import '../../models/entities/pet_entity.dart';
+import '../agenda/pet_details_page.dart';
 
 class PetReorderPage extends StatefulWidget {
   const PetReorderPage({super.key});

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pet_care/models/entities/pet_entity.dart';
 
-import '../components/pet_card.dart';
-import '../components/section_title.dart';
-import '../repositories/pet_mock.dart';
+import '../../components/pet_card.dart';
+import '../../components/section_title.dart';
+import '../../repositories/pet_mock.dart';
 import 'pet_details_page.dart';
 
 class PetListPage extends StatelessWidget {

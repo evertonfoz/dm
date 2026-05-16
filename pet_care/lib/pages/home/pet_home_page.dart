@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'pet_drag_status_page.dart';
-import 'pet_reorder_page.dart';
+import '../status/pet_drag_status_page.dart';
+import '../reorder/pet_reorder_page.dart';
 
 class PetHomePage extends StatelessWidget {
   const PetHomePage({super.key});

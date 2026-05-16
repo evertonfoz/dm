@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pet_care/models/entities/pet_entity.dart';
 import 'package:pet_care/repositories/pet_mock.dart';
 
-import '../models/entities/pet_attendance_status.dart';
-import '../components/pet_drop_area.dart';
+import '../../models/entities/pet_attendance_status.dart';
+import '../../components/pet_drop_area.dart';
 
 class PetDragStatusPage extends StatefulWidget {
   const PetDragStatusPage({super.key});
