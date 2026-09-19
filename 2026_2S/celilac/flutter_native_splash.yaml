@@ -1,0 +1,20 @@
+flutter_native_splash:
+  color: "#F2F2F2"
+  color_dark: "#0B384B"
+  image: assets/brand/logo_celilac.png
+  android: true
+  ios: true
+  android_12:
+    color: "#F2F2F2"
+    color_dark: "#0B384B"
+    image: assets/brand/logo_celilac.png
+
+# flutter_native_splash:
+#   background_image: assets/images/splashscreen_light.png
+#   background_image_dark: assets/images/splashscreen_dark.png
+#   android: true
+#   ios: true
+#   android_12:
+#     color: "#F2F2F2"
+#     color_dark: "#0B384B"
+#     image: assets/brand/logo_celilac.png

@@ -1,0 +1,127 @@
+// import 'package:flutter/material.dart';
+// import 'package:pet_care/components/pet_card.dart';
+// import 'package:pet_care/repositories/pet_mock.dart';
+
+// import '../../models/entities/pet_entity.dart';
+// import '../crud/pet_details_page.dart';
+
+// class PetReorderPage extends StatefulWidget {
+//   const PetReorderPage({super.key});
+
+//   @override
+//   State<PetReorderPage> createState() => _PetReorderPageState();
+// }
+
+// class _PetReorderPageState extends State<PetReorderPage> {
+//   late final List<PetEntity> pets;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     pets = List.from(petMock);
+//   }
+
+//   void _reorderPets(int oldIndex, int newIndex) {
+//     setState(() {
+//       if (newIndex > oldIndex) {
+//         newIndex -= 1;
+//       }
+//       final pet = pets.removeAt(oldIndex);
+//       pets.insert(newIndex, pet);
+//     });
+
+//     _showPriorityWarningIfNeeded();
+//   }
+
+//   void _showPetInfoDialog(BuildContext context, PetEntity pet) {
+//     showDialog(
+//       context: context,
+//       barrierDismissible: false,
+//       builder: (context) => AlertDialog(
+//         title: Text('Informações de ${pet.name}'),
+//         content: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Text('Espécie: ${pet.specie?.name}'),
+//             Text('Idade: ${pet.age} anos'),
+//             Text('Serviço: ${pet.service}'),
+//             Text('Prioritário: ${pet.isPriority == true ? "Sim" : "Não"}'),
+//           ],
+//         ),
+//         actions: [
+//           TextButton(
+//             onPressed: () => Navigator.pop(context),
+//             child: const Text('Fechar'),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   bool _hasPriorityAfterNonPriority() {
+//     var foundNonPriority = false;
+
+//     for (final pet in pets) {
+//       if (pet.isPriority != true) {
+//         foundNonPriority = true;
+//       }
+
+//       if (foundNonPriority && pet.isPriority == true) {
+//         return true;
+//       }
+//     }
+
+//     return false;
+//   }
+
+//   void _showPriorityWarningIfNeeded() {
+//     if (!_hasPriorityAfterNonPriority()) {
+//       return;
+//     }
+
+//     ScaffoldMessenger.of(context).showSnackBar(
+//       const SnackBar(
+//         content: Text(
+//           'Atenção: há atendimento prioritário '
+//           'abaixo de atendimento comum.',
+//         ),
+//       ),
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: const Text('Reordenar Atendimentos')),
+//       body: Padding(
+//         padding: const EdgeInsets.all(8.0),
+//         child: ReorderableListView.builder(
+//           itemCount: pets.length,
+//           buildDefaultDragHandles: false, // Desabilita o trailing padrão
+//           itemBuilder: (context, index) {
+//             final pet = pets[index];
+//             return PetCard(
+//               key: ValueKey(pet.petId),
+//               pet: pet,
+//               onTap: () {
+//                 Navigator.push(
+//                   context,
+//                   MaterialPageRoute(
+//                     builder: (context) => PetDetailsPage(pet: pet),
+//                   ),
+//                 );
+//               },
+//               onInfoTap: () => _showPetInfoDialog(context, pet),
+//               trailing: ReorderableDragStartListener(
+//                 index: index,
+//                 child: const Icon(Icons.drag_handle),
+//               ),
+//             );
+//           },
+//           onReorder: _reorderPets,
+//         ),
+//       ),
+//     );
+//   }
+// }

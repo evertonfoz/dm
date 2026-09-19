@@ -3,24 +3,24 @@ import 'package:pet_care/models/entities/pet_attendance_status.dart';
 import '../specie_entity.dart';
 
 class PetEntity {
-  final int petId;
+  int? petId;
   final String name;
-  final SpecieEntity specie;
-  final int age;
+  SpecieEntity? specie;
+  int? age;
   final String tutorName;
-  final String service;
-  final bool isPriority;
-  final PetAttendanceStatus attendanceStatus;
+  String? service;
+  bool? isPriority;
+  PetAttendanceStatus? attendanceStatus;
 
-  const PetEntity({
-    required this.petId,
+  PetEntity({
+    this.petId,
     required this.name,
-    required this.specie,
-    required this.age,
+    this.specie,
+    this.age,
     required this.tutorName,
-    required this.service,
-    required this.isPriority,
-    required this.attendanceStatus,
+    this.service,
+    this.isPriority,
+    this.attendanceStatus,
   });
 
   PetEntity copyWith({
@@ -42,6 +42,33 @@ class PetEntity {
       service: service ?? this.service,
       isPriority: isPriority ?? this.isPriority,
       attendanceStatus: attendanceStatus ?? this.attendanceStatus,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'petId': petId,
+      'name': name,
+      'specie': specie?.toMap(),
+      'age': age,
+      'tutorName': tutorName,
+      'service': service,
+      'isPriority': isPriority,
+      'attendanceStatus': attendanceStatus?.toMap(),
+    };
+  }
+
+  factory PetEntity.fromMap(Map<String, dynamic> map) {
+    return PetEntity(
+      petId: map['petId'],
+      name: map['name'],
+      // specie: SpecieEntity.fromMap(map['specie']),
+      age: map['age'],
+      tutorName: map['tutorName'],
+      service: map['service'],
+      isPriority: map['isPriority'],
+      attendanceStatus: PetAttendanceStatus.done,
+      // attendanceStatus: PetAttendanceStatus.fromMap(map['attendanceStatus']),
     );
   }
 }

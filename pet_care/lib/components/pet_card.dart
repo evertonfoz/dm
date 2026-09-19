@@ -23,11 +23,13 @@ class PetCard extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(child: Text(pet.name[0])),
         title: Text(pet.name),
-        subtitle: Text('${pet.specie.name} - ${pet.age} anos - ${pet.service}'),
+        subtitle: Text(
+          '${pet.specie?.name} - ${pet.age} anos - ${pet.service}',
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (pet.isPriority)
+            if (pet.isPriority == true)
               const Icon(Icons.priority_high, color: Colors.red),
             IconButton(
               icon: const Icon(Icons.info_outline),
