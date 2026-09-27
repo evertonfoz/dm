@@ -1,5 +1,8 @@
+import 'package:celilac/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
+import '../../../app/common/widgets/gold_accent.dart';
+import '../../../app/common/widgets/image_card.dart';
 import '../../home/presentation/pages/home_page.dart';
 import '../data/onboarding_storage.dart';
 import '../domain/onboarding_item.dart';
@@ -13,21 +16,21 @@ class OnboardingPage extends StatefulWidget {
       description:
           'Descubra produtos e estabelecimentos '
           'considerando suas necessidades alimentares.',
-      icon: Icons.search,
+      imagePath: 'assets/images/onboarding/discovery.png',
     ),
     OnboardingItem(
       title: 'Entenda antes de escolher',
       description:
           'Consulte informações alimentares e conheça '
           'melhor as opções disponíveis.',
-      icon: Icons.fact_check_outlined,
+      imagePath: 'assets/images/onboarding/discovery.png',
     ),
     OnboardingItem(
       title: 'Uma experiência mais relevante',
       description:
           'Seu perfil alimentar poderá ajudar o CeliLac '
           'a apresentar opções mais adequadas.',
-      icon: Icons.person_outline,
+      imagePath: 'assets/images/onboarding/discovery.png',
     ),
   ];
 
@@ -35,18 +38,54 @@ class OnboardingPage extends StatefulWidget {
   State<OnboardingPage> createState() => _OnboardingPageState();
 }
 
-class _OnboardingPageState extends State<OnboardingPage> {
-  final PageController _controller = PageController();
+class _OnboardingPageState extends State<OnboardingPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _introController;
+  late final Animation<double> _contentFade;
+  late final Animation<Offset> _contentSlide;
+  late final Animation<double> _actionFade;
+
+  final PageController _pageController = PageController();
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
+
+    _introController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _contentFade = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _introController,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+      ),
+    );
+    _contentSlide =
+        Tween<Offset>(begin: const Offset(0.0, 0.05), end: Offset.zero).animate(
+          CurvedAnimation(parent: _introController, curve: Curves.easeOutCubic),
+        );
+
+    _actionFade = CurvedAnimation(
+      parent: _introController,
+      curve: const Interval(0.4, 1.0, curve: Curves.easeOut),
+    );
+
+    _introController.forward();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _introController.dispose();
+    super.dispose();
   }
 
   Future<void> _nextPage() async {
     if (_currentPage < OnboardingPage.items.length - 1) {
-      await _controller.nextPage(
+      await _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -68,28 +107,90 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
+  Widget _buildTopBar() {
+    final isLastPage = _currentPage == OnboardingPage.items.length - 1;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: AnimatedOpacity(
+            opacity: isLastPage ? 0.0 : 1.0,
+            duration: const Duration(milliseconds: 200),
+            child: TextButton(
+              onPressed: _finishOnboarding,
+              child: const Text(
+                'Pular',
+                style: TextStyle(
+                  color: AppColors.navy,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView.builder(
-        controller: _controller,
-        onPageChanged: (index) {
-          setState(() => _currentPage = index);
-        },
-        itemCount: OnboardingPage.items.length,
-        itemBuilder: (context, index) {
-          return _OnboardingContent(item: OnboardingPage.items[index]);
-        },
+      body: Column(
+        children: [
+          FadeTransition(opacity: _actionFade, child: _buildTopBar()),
+          Expanded(
+            child: FadeTransition(
+              opacity: _contentFade,
+              child: SlideTransition(
+                position: _contentSlide,
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() => _currentPage = index);
+                  },
+                  itemCount: OnboardingPage.items.length,
+                  itemBuilder: (context, index) {
+                    return _OnboardingContent(
+                      item: OnboardingPage.items[index],
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          FadeTransition(
+            opacity: _actionFade,
+            child: _PageIndicator(
+              currentPage: _currentPage,
+              totalPages: OnboardingPage.items.length,
+            ),
+          ),
+        ],
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: ElevatedButton(
-            onPressed: _nextPage,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(24),
+        child: FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.navy,
+            foregroundColor: Colors.white,
+            // padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          onPressed: _nextPage,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            transitionBuilder: (child, animation) {
+              return FadeTransition(opacity: animation, child: child);
+            },
             child: Text(
               _currentPage < OnboardingPage.items.length - 1
                   ? 'Próximo'
                   : 'Começar',
+              key: ValueKey<int>(_currentPage),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
         ),
@@ -105,26 +206,75 @@ class _OnboardingContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
-      padding: const EdgeInsets.all(32),
+      padding: EdgeInsets.symmetric(horizontal: 32),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(item.icon, size: 96),
+          // const Spacer(),
           const SizedBox(height: 32),
+          Flexible(
+            flex: 6,
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: IllustrationCard(
+                imagePath: item.imagePath,
+                boxShaddowAlpha: 0.22,
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
           Text(
             item.title,
+            style: textTheme.headlineSmall?.copyWith(
+              color: AppColors.navy,
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineSmall,
           ),
+          const SizedBox(height: 12),
+          const GoldAccent(),
           const SizedBox(height: 16),
           Text(
             item.description,
+            style: textTheme.bodyMedium?.copyWith(
+              color: AppColors.navy.withValues(alpha: 0.7),
+              height: 1.4,
+            ),
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge,
           ),
         ],
       ),
+    );
+  }
+}
+
+class _PageIndicator extends StatelessWidget {
+  const _PageIndicator({required this.currentPage, required this.totalPages});
+
+  final int currentPage;
+  final int totalPages;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(totalPages, (index) {
+        final isActive = index == currentPage;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+          width: isActive ? 24.0 : 8.0,
+          height: 8.0,
+          decoration: BoxDecoration(
+            color: isActive
+                ? AppColors.gold
+                : AppColors.navy.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(999),
+          ),
+        );
+      }),
     );
   }
 }
