@@ -5,7 +5,8 @@
       "Bash(sips -g pixelWidth -g pixelHeight assets/brand/logo_celilac.png)",
       "Bash(flutter --version)",
       "Bash(flutter analyze *)",
-      "Bash(grep -v '^\\\\s*$')"
+      "Bash(grep -v '^\\\\s*$')",
+      "Bash(git mv *)"
     ]
   }
 }
