@@ -23,14 +23,14 @@ class OnboardingPage extends StatefulWidget {
       description:
           'Consulte informações alimentares e conheça '
           'melhor as opções disponíveis.',
-      imagePath: 'assets/images/onboarding/discovery.png',
+      imagePath: 'assets/images/onboarding/information.png',
     ),
     OnboardingItem(
       title: 'Uma experiência mais relevante',
       description:
           'Seu perfil alimentar poderá ajudar o CeliLac '
           'a apresentar opções mais adequadas.',
-      imagePath: 'assets/images/onboarding/discovery.png',
+      imagePath: 'assets/images/onboarding/profile.png',
     ),
   ];
 
