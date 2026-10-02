@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../../app/common/widgets/gold_accent.dart';
 import '../../../app/common/widgets/image_card.dart';
-import '../../home/presentation/pages/home_page.dart';
+import '../../../app/routes/fade_route.dart';
+import '../../../app/shell/app_shell.dart';
 import '../data/onboarding_storage.dart';
 import '../domain/onboarding_item.dart';
 
@@ -102,9 +103,7 @@ class _OnboardingPageState extends State<OnboardingPage>
       return;
     }
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const HomePage()),
-    );
+    Navigator.of(context).pushReplacement(fadeRoute(const AppShell()));
   }
 
   Widget _buildTopBar() {

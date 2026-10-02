@@ -2,8 +2,9 @@ import 'package:celilac/app/common/widgets/image_card.dart';
 import 'package:flutter/material.dart';
 
 import '../../../app/common/widgets/gold_accent.dart';
+import '../../../app/routes/fade_route.dart';
+import '../../../app/shell/app_shell.dart';
 import '../../../app/theme/app_colors.dart';
-import '../../home/presentation/pages/home_page.dart';
 import '../../onboarding/data/onboarding_storage.dart';
 import '../../onboarding/presentation/onboarding_page.dart';
 
@@ -83,36 +84,16 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       return;
     }
 
-    _goTo(const OnboardingPage());
+    final completed = await OnboardingStorage().isCompleted();
+    if (!mounted) {
+      return;
+    }
 
-    // final storage = OnboardingStorage();
-    // final completed = await storage.isCompleted();
-
-    // if (!mounted) {
-    //   return;
-    // }
-
-    // if (completed) {
-    //   Navigator.of(context).pushReplacement(
-    //     MaterialPageRoute<void>(builder: (_) => const HomePage()),
-    //   );
-    //   return;
-    // }
-
-    // Navigator.of(context).pushReplacement(
-    //   MaterialPageRoute<void>(builder: (_) => const OnboardingPage()),
-    // );
+    _goTo(completed ? const AppShell() : const OnboardingPage());
   }
 
   void _goTo(Widget page) {
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder<void>(
-        transitionDuration: const Duration(milliseconds: 500),
-        pageBuilder: (_, _, _) => page,
-        transitionsBuilder: (_, animation, _, child) =>
-            FadeTransition(opacity: animation, child: child),
-      ),
-    );
+    Navigator.of(context).pushReplacement(fadeRoute(page));
   }
 
   @override
