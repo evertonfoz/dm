@@ -1,25 +1,24 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
+import '../../../../app/common/widgets/section_header.dart';
+import '../../../../app/common/widgets/status_message.dart';
+import '../../../../app/theme/app_layout.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../establishments/domain/establishment.dart';
-import '../../../establishments/domain/establishment_repository.dart';
+import '../../../establishments/domain/entities/establishment.dart';
+import '../../../establishments/domain/repositories/establishment_repository.dart';
+import '../../../establishments/presentation/pages/establishment_details_page.dart';
 import '../../../establishments/presentation/widgets/establishment_card.dart';
 import '../greeting.dart';
 import '../widgets/category_shortcuts.dart';
 import '../widgets/home_header.dart';
-import '../widgets/nearby_states.dart';
+import '../widgets/nearby_loading.dart';
 import '../widgets/profile_prompt_card.dart';
 import '../widgets/search_entry.dart';
-import '../widgets/section_header.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.repository});
 
   final EstablishmentRepository repository;
-
-  static const double maxContentWidth = 600;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -57,12 +56,21 @@ class _HomePageState extends State<HomePage> {
       );
   }
 
+  void _openDetails(Establishment establishment) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => EstablishmentDetailsPage(
+          establishment: establishment,
+          repository: widget.repository,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final horizontalPadding = math.max(
-      AppSpacing.lg,
-      (screenWidth - HomePage.maxContentWidth) / 2,
+    final horizontalPadding = AppLayout.horizontalPadding(
+      MediaQuery.sizeOf(context).width,
     );
 
     return RefreshIndicator(
@@ -148,7 +156,7 @@ class _HomePageState extends State<HomePage> {
 
         if (snapshot.hasError) {
           return SliverToBoxAdapter(
-            child: NearbyMessage(
+            child: StatusMessage(
               icon: Icons.cloud_off_outlined,
               message: 'Não foi possível carregar os estabelecimentos.',
               actionLabel: 'Tentar novamente',
@@ -161,7 +169,7 @@ class _HomePageState extends State<HomePage> {
 
         if (establishments.isEmpty) {
           return const SliverToBoxAdapter(
-            child: NearbyMessage(
+            child: StatusMessage(
               icon: Icons.search_off_outlined,
               message: 'Ainda não encontramos opções perto de você.',
             ),
@@ -174,7 +182,7 @@ class _HomePageState extends State<HomePage> {
             final establishment = establishments[index];
             return EstablishmentCard(
               establishment: establishment,
-              onTap: () => _showComingSoon('O detalhe do estabelecimento'),
+              onTap: () => _openDetails(establishment),
             );
           },
           separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),

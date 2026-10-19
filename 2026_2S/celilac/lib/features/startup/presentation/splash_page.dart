@@ -32,7 +32,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
     _introController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
+      duration: const Duration(milliseconds: 350),
     );
 
     _logoFade = CurvedAnimation(

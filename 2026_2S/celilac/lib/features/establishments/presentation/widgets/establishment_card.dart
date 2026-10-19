@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/common/formatters.dart';
 import '../../../../app/theme/app_colors.dart';
-import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../domain/establishment.dart';
-import '../establishment_category_icon.dart';
+import '../../domain/entities/establishment.dart';
+import '../establishment_hero_tag.dart';
 import 'dietary_badge.dart';
+import 'establishment_logo.dart';
 
 class EstablishmentCard extends StatelessWidget {
   const EstablishmentCard({
@@ -37,17 +37,9 @@ class EstablishmentCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: AppColors.gold.withValues(alpha: 0.18),
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                  ),
-                  child: Icon(
-                    establishment.category.icon,
-                    color: AppColors.navy,
-                  ),
+                Hero(
+                  tag: establishmentHeroTag(establishment.id),
+                  child: EstablishmentLogo(establishment: establishment),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(

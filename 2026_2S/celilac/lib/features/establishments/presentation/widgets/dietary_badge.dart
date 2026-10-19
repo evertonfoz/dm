@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../domain/dietary_option.dart';
+import '../../domain/entities/dietary_option.dart';
 
 class DietaryBadge extends StatelessWidget {
   const DietaryBadge({super.key, required this.option});

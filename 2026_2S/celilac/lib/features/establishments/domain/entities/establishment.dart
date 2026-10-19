@@ -10,6 +10,7 @@ class Establishment {
     required this.distanceInKm,
     required this.rating,
     required this.dietaryOptions,
+    this.logoSource,
   });
 
   final String id;
@@ -19,4 +20,5 @@ class Establishment {
   final double distanceInKm;
   final double rating;
   final Set<DietaryOption> dietaryOptions;
+  final String? logoSource;
 }

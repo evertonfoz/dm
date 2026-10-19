@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../domain/establishment_category.dart';
+import '../domain/entities/establishment_category.dart';
 
 extension EstablishmentCategoryIcon on EstablishmentCategory {
   IconData get icon => switch (this) {
