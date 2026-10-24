@@ -123,13 +123,19 @@ test/
 ├── support/
 │   ├── memory_profile_repository.dart           ← novo: repositório em memória
 │   └── pump_app.dart                            ← novo: monta a tela com ProfileScope
+├── app/
+│   └── app_shell_test.dart                      ← novo: aba Perfil no shell
 ├── features/profile/
 │   ├── dietary_profile_test.dart                ← novo
 │   ├── dietary_profile_json_test.dart           ← novo
+│   ├── local_profile_repository_test.dart       ← novo: SharedPreferences em memória
 │   ├── profile_match_test.dart                  ← novo
 │   ├── profile_controller_test.dart             ← novo
+│   ├── profile_scope_test.dart                  ← novo: of × read
 │   ├── profile_form_page_test.dart              ← novo
 │   └── profile_page_test.dart                   ← novo
+├── features/startup/
+│   └── splash_page_test.dart                    ← novo: perfil carregado na Splash
 └── features/home/home_page_test.dart            ← (alterado) perfil + acessibilidade permanente
 ```
 
@@ -736,6 +742,30 @@ class RestrictionsField extends FormField<Set<DietaryOption>> { ... }
 
 **Conceitos:** o mesmo dado (perfil) mudando duas telas vivas ao mesmo tempo; dado derivado calculado no `build`; acessibilidade de um selo.
 
+## 7.4 Registro da implementação (24/10/2026)
+
+- **`HomeHeader`** ganhou `String? name`: "Boa tarde, Ana!" ou "Boa tarde!".
+- **`HomePage`**:
+  - `final profile = ProfileScope.of(context).profile;` no `build`: a Home se redesenha quando o perfil é salvo no formulário ou na aba Perfil.
+  - Cartão de perfil e o espaço **antes** dele dentro do mesmo `if (!profile.isComplete) ...[ ... ]`. Sem o cartão, a busca fica a `xl` das categorias, sem buraco.
+  - "Completar perfil" abre `ProfileFormPage.route()` (o "em breve" saiu).
+  - Abaixo de "Perto de você", com perfil: "Primeiro, os que atendem ao seu perfil."
+  - `_buildNearby(profile)`: `sortByProfile(snapshot.data, profile)` **dentro do `builder`** e `meetsProfile` para cada cartão. O `FutureBuilder` recebe o mesmo `Future`; só a ordem muda, sem nova busca.
+- **Selo "Atende ao seu perfil"** (`establishment_card.dart`):
+  - O cartão recebe `bool matchesProfile = false`, e o selo é um widget **privado** do próprio cartão (`_ProfileMatchBadge`). **Decisão de arquitetura:** `establishments/` continua sem importar nada de `profile/`; quem calcula o `bool` é a Home, que junta os dois assuntos (Parte 0.5). Bom ponto para o material: "quem decide" × "quem mostra".
+  - **Posição (ajustada depois do teste no app):** abaixo da linha inteira do cartão, alinhado à **direita**, na mesma vertical da nota (★). O conteúdo do cartão virou `Column(crossAxisAlignment: end, children: [Row(...), if (matchesProfile) selo])`. Alinhar à direita só dentro da coluna de texto não bastaria: ela termina antes da nota, e o selo ficaria "solto" no meio. Bom exemplo para o material de como a estrutura de `Row`/`Column` define o que dá para alinhar com o quê.
+  - Visual: fundo navy cheio com texto branco, diferente dos selos dourados das opções alimentares (o selo fala da **pessoa**, não do lugar); ícone + texto, para não depender só da cor; dentro do `MergeSemantics` do cartão, então o leitor de tela lê "Atende ao seu perfil" junto com o resto.
+- **Testes da Home** (`home_page_test.dart`, reescrito com `pumpWithProfile`, 13 casos):
+  - "Completar perfil" abre o formulário (substitui o teste do "em breve").
+  - Perfil completo: nome na saudação, sem o cartão, com a frase de ordem.
+  - Sem perfil: ordem por distância, sem selo. Com perfil "Lactose": Empório Teste (1,2 km) **acima** do Café Teste (350 m), com selo. A ordem é conferida pela posição vertical (`tester.getTopLeft(...).dy`).
+  - **Integração:** abrir o formulário pela Home, marcar "Lactose", salvar → cartão some, lista reordenada, selo aparece e `nearbyCalls == 1`.
+  - 200% em 320×640 com perfil (o selo deixa o cartão mais alto) e acessibilidade sem e com perfil.
+- **Atenção para o material:**
+  - `tester.ensureVisible` só encontra o que **já foi construído**. Com o cartão de perfil na tela, o segundo estabelecimento ficava fora da área construída da lista (`SliverList` constrói sob demanda) e o teste falhava com "Bad state: No element". Solução: `tester.scrollUntilVisible(finder, 200)`, que rola até o item existir. Liga com a Parte 4.1 da Home ("por que slivers?").
+  - Os testes antigos da Home passaram a rodar em `pt_BR`; o `pageBack()` virou `tap(find.byTooltip('Voltar'))`, como no formulário.
+- `flutter analyze` sem avisos; 99 testes passando.
+
 ---
 
 # Parte 8: Qualidade
@@ -792,12 +822,14 @@ class RestrictionsField extends FormField<Set<DietaryOption>> { ... }
 
 ## Pendências que este material resolve
 
-- [ ] Ilustrações próprias no onboarding (Splash, Parte 5.4)
-- [ ] `navy 70%`, espaçamentos fora da grade, splash escura (herdadas)
-- [ ] Acessibilidade permanente da Home (Detalhe, Parte 9)
-- [ ] `HomeHeader(name:)` (Home, Parte 8)
-- [ ] Desafio 2 da Home: esconder o cartão de perfil
-- [ ] "em breve" do perfil (Home) e aba Perfil
+- [x] Ilustrações próprias no onboarding (Splash, Parte 5.4)
+- [x] `navy 70%` e espaçamentos fora da grade (herdadas)
+- [ ] Splash nativa escura com app só claro: **mantida** até existir `AppTheme.dark`
+- [x] Acessibilidade permanente da Home (Detalhe, Parte 9)
+- [x] `HomeHeader(name:)` (Home, Parte 8)
+- [x] Desafio 2 da Home: esconder o cartão de perfil
+- [x] "em breve" do perfil (Home) e aba Perfil
+- [x] (encontrada no caminho) texto de status da Splash transbordava com fonte ampliada
 
 ## Desafios propostos
 

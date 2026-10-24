@@ -5,9 +5,10 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key, required this.greeting});
+  const HomeHeader({super.key, required this.greeting, this.name});
 
   final String greeting;
+  final String? name;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class HomeHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '$greeting!',
+          name == null ? '$greeting!' : '$greeting, $name!',
           style: textTheme.headlineSmall?.copyWith(
             color: AppColors.navy,
             fontWeight: FontWeight.bold,

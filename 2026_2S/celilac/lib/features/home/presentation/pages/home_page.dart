@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/common/widgets/section_header.dart';
 import '../../../../app/common/widgets/status_message.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_layout.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../establishments/domain/entities/establishment.dart';
 import '../../../establishments/domain/repositories/establishment_repository.dart';
 import '../../../establishments/presentation/pages/establishment_details_page.dart';
 import '../../../establishments/presentation/widgets/establishment_card.dart';
+import '../../../profile/domain/entities/dietary_profile.dart';
+import '../../../profile/domain/profile_match.dart';
+import '../../../profile/presentation/pages/profile_form_page.dart';
+import '../../../profile/presentation/profile_scope.dart';
 import '../greeting.dart';
 import '../widgets/category_shortcuts.dart';
 import '../widgets/home_header.dart';
@@ -56,6 +61,10 @@ class _HomePageState extends State<HomePage> {
       );
   }
 
+  void _openProfileForm() {
+    Navigator.of(context).push(ProfileFormPage.route());
+  }
+
   void _openDetails(Establishment establishment) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -72,6 +81,8 @@ class _HomePageState extends State<HomePage> {
     final horizontalPadding = AppLayout.horizontalPadding(
       MediaQuery.sizeOf(context).width,
     );
+    // of: a Home se redesenha quando o perfil é salvo em outra tela.
+    final profile = ProfileScope.of(context).profile;
 
     return RefreshIndicator(
       onRefresh: _refresh,
@@ -104,13 +115,17 @@ class _HomePageState extends State<HomePage> {
             ),
             sliver: SliverList.list(
               children: [
-                HomeHeader(greeting: greetingFor(DateTime.now())),
+                HomeHeader(
+                  greeting: greetingFor(DateTime.now()),
+                  name: profile.name,
+                ),
                 const SizedBox(height: AppSpacing.lg),
                 SearchEntry(onTap: () => _showComingSoon('A busca')),
-                const SizedBox(height: AppSpacing.lg),
-                ProfilePromptCard(
-                  onPressed: () => _showComingSoon('O perfil alimentar'),
-                ),
+                // O espaço some junto com o cartão, sem buraco na tela.
+                if (!profile.isComplete) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  ProfilePromptCard(onPressed: _openProfileForm),
+                ],
                 const SizedBox(height: AppSpacing.xl),
                 const SectionHeader(title: 'Categorias'),
                 const SizedBox(height: AppSpacing.sm),
@@ -124,6 +139,13 @@ class _HomePageState extends State<HomePage> {
                   actionLabel: 'Ver todos',
                   onAction: () => _showComingSoon('A lista completa'),
                 ),
+                if (profile.isComplete)
+                  Text(
+                    'Primeiro, os que atendem ao seu perfil.',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.navy.withValues(alpha: 0.8),
+                    ),
+                  ),
                 const SizedBox(height: AppSpacing.sm),
               ],
             ),
@@ -135,14 +157,14 @@ class _HomePageState extends State<HomePage> {
               horizontalPadding,
               AppSpacing.xl,
             ),
-            sliver: _buildNearby(),
+            sliver: _buildNearby(profile),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildNearby() {
+  Widget _buildNearby(DietaryProfile profile) {
     return FutureBuilder<List<Establishment>>(
       future: _nearbyFuture,
       builder: (context, snapshot) {
@@ -165,7 +187,12 @@ class _HomePageState extends State<HomePage> {
           );
         }
 
-        final establishments = snapshot.data ?? const <Establishment>[];
+        // Só a ordem muda com o perfil: os dados são os mesmos, sem nova
+        // busca no repositório.
+        final establishments = sortByProfile(
+          snapshot.data ?? const <Establishment>[],
+          profile,
+        );
 
         if (establishments.isEmpty) {
           return const SliverToBoxAdapter(
@@ -182,6 +209,7 @@ class _HomePageState extends State<HomePage> {
             final establishment = establishments[index];
             return EstablishmentCard(
               establishment: establishment,
+              matchesProfile: meetsProfile(establishment, profile),
               onTap: () => _openDetails(establishment),
             );
           },
