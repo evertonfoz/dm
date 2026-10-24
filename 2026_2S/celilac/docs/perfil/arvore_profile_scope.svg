@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="600" viewBox="0 0 860 600" font-family="Roboto, Helvetica, Arial, sans-serif">
+<rect width="100%" height="100%" fill="white"/>
+<defs>
+  <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="#263D4F"/>
+  </marker>
+</defs>
+
+<text x="40" y="36" font-size="15" fill="#263D4F" font-weight="bold">Onde fica o ProfileScope</text>
+<text x="40" y="56" font-size="12" fill="#263D4F">acima do MaterialApp: todas as rotas da pilha ficam abaixo dele</text>
+
+<!-- CeliLacApp -->
+<rect x="250" y="76" width="260" height="46" rx="8" fill="#F2F2F2" stroke="#263D4F" stroke-opacity="0.35"/>
+<text x="380" y="96" font-size="13" fill="#263D4F" font-weight="bold" text-anchor="middle">CeliLacApp (StatefulWidget)</text>
+<text x="380" y="113" font-size="11" fill="#263D4F" text-anchor="middle">cria o ProfileController e faz o dispose</text>
+<line x1="380" y1="122" x2="380" y2="140" stroke="#263D4F" stroke-width="1.5" marker-end="url(#seta)"/>
+
+<!-- ProfileScope -->
+<rect x="250" y="142" width="260" height="46" rx="8" fill="#D9A53A" fill-opacity="0.22" stroke="#D9A53A" stroke-width="2"/>
+<text x="380" y="162" font-size="13" fill="#263D4F" font-weight="bold" text-anchor="middle">ProfileScope</text>
+<text x="380" y="179" font-size="11" fill="#263D4F" text-anchor="middle">InheritedNotifier&lt;ProfileController&gt;</text>
+<line x1="380" y1="188" x2="380" y2="206" stroke="#263D4F" stroke-width="1.5" marker-end="url(#seta)"/>
+
+<!-- MaterialApp -->
+<rect x="250" y="208" width="260" height="36" rx="8" fill="#F2F2F2" stroke="#263D4F" stroke-opacity="0.35"/>
+<text x="380" y="231" font-size="13" fill="#263D4F" font-weight="bold" text-anchor="middle">MaterialApp</text>
+<line x1="380" y1="244" x2="380" y2="262" stroke="#263D4F" stroke-width="1.5" marker-end="url(#seta)"/>
+
+<!-- Navigator -->
+<rect x="250" y="264" width="260" height="46" rx="8" fill="#F2F2F2" stroke="#263D4F" stroke-opacity="0.35"/>
+<text x="380" y="284" font-size="13" fill="#263D4F" font-weight="bold" text-anchor="middle">Navigator</text>
+<text x="380" y="301" font-size="11" fill="#263D4F" text-anchor="middle">a pilha de rotas</text>
+
+<!-- ramos para as rotas -->
+<line x1="380" y1="310" x2="380" y2="326" stroke="#263D4F" stroke-width="1.5"/>
+<line x1="140" y1="326" x2="700" y2="326" stroke="#263D4F" stroke-width="1.5"/>
+<line x1="140" y1="326" x2="140" y2="344" stroke="#263D4F" stroke-width="1.5" marker-end="url(#seta)"/>
+<line x1="420" y1="326" x2="420" y2="344" stroke="#263D4F" stroke-width="1.5" marker-end="url(#seta)"/>
+<line x1="700" y1="326" x2="700" y2="344" stroke="#263D4F" stroke-width="1.5" marker-end="url(#seta)"/>
+
+<!-- Rota 1: AppShell -->
+<rect x="30" y="346" width="220" height="46" rx="8" fill="#F2F2F2" stroke="#263D4F" stroke-opacity="0.35"/>
+<text x="140" y="366" font-size="13" fill="#263D4F" font-weight="bold" text-anchor="middle">rota 1: AppShell</text>
+<text x="140" y="383" font-size="11" fill="#263D4F" text-anchor="middle">IndexedStack com as abas</text>
+<line x1="140" y1="392" x2="140" y2="408" stroke="#263D4F" stroke-width="1.5"/>
+<line x1="80" y1="408" x2="200" y2="408" stroke="#263D4F" stroke-width="1.5"/>
+<line x1="80" y1="408" x2="80" y2="424" stroke="#263D4F" stroke-width="1.5" marker-end="url(#seta)"/>
+<line x1="200" y1="408" x2="200" y2="424" stroke="#263D4F" stroke-width="1.5" marker-end="url(#seta)"/>
+
+<rect x="30" y="426" width="100" height="62" rx="8" fill="white" stroke="#263D4F" stroke-opacity="0.35"/>
+<text x="80" y="447" font-size="12" fill="#263D4F" font-weight="bold" text-anchor="middle">HomePage</text>
+<rect x="38" y="458" width="84" height="20" rx="10" fill="#263D4F"/>
+<text x="80" y="472" font-size="10" fill="white" font-weight="bold" text-anchor="middle">of</text>
+
+<rect x="150" y="426" width="100" height="62" rx="8" fill="white" stroke="#263D4F" stroke-opacity="0.35"/>
+<text x="200" y="447" font-size="12" fill="#263D4F" font-weight="bold" text-anchor="middle">ProfilePage</text>
+<rect x="158" y="458" width="84" height="20" rx="10" fill="#263D4F"/>
+<text x="200" y="472" font-size="10" fill="white" font-weight="bold" text-anchor="middle">of</text>
+
+<!-- Rota 2: formulário -->
+<rect x="310" y="346" width="220" height="80" rx="8" fill="white" stroke="#263D4F" stroke-opacity="0.35"/>
+<text x="420" y="366" font-size="13" fill="#263D4F" font-weight="bold" text-anchor="middle">rota 2: ProfileFormPage</text>
+<text x="420" y="383" font-size="11" fill="#263D4F" text-anchor="middle">empilhada com push, cobre a barra</text>
+<rect x="378" y="394" width="84" height="20" rx="10" fill="white" stroke="#263D4F"/>
+<text x="420" y="408" font-size="10" fill="#263D4F" font-weight="bold" text-anchor="middle">read</text>
+
+<!-- Rota 3: detalhe -->
+<rect x="590" y="346" width="220" height="80" rx="8" fill="white" stroke="#263D4F" stroke-opacity="0.35"/>
+<text x="700" y="366" font-size="13" fill="#263D4F" font-weight="bold" text-anchor="middle">rota 3: Detalhe</text>
+<text x="700" y="383" font-size="11" fill="#263D4F" text-anchor="middle">também enxerga o perfil</text>
+<text x="700" y="410" font-size="11" fill="#263D4F" font-style="italic" text-anchor="middle">(Desafio 1)</text>
+
+<!-- Legenda -->
+<rect x="310" y="452" width="20" height="14" rx="7" fill="#263D4F"/>
+<text x="338" y="463" font-size="12" fill="#263D4F"><tspan font-weight="bold">of</tspan>: lê e se inscreve; o widget se redesenha quando o perfil muda (no build)</text>
+<rect x="310" y="476" width="20" height="14" rx="7" fill="white" stroke="#263D4F"/>
+<text x="338" y="487" font-size="12" fill="#263D4F"><tspan font-weight="bold">read</tspan>: só lê, sem se inscrever (initState e callbacks)</text>
+
+<!-- Contraexemplo -->
+<rect x="30" y="512" width="780" height="64" rx="8" fill="#B3261E" fill-opacity="0.06" stroke="#B3261E" stroke-opacity="0.5" stroke-dasharray="5 4"/>
+<text x="46" y="536" font-size="12" fill="#263D4F" font-weight="bold">E se o ProfileScope ficasse dentro do AppShell?</text>
+<text x="46" y="556" font-size="12" fill="#263D4F">Ele seria filho da rota 1. As rotas 2 e 3 são irmãs da rota 1 na pilha, e não filhas: o formulário não acharia o</text>
+<text x="46" y="570" font-size="12" fill="#263D4F">perfil e o ProfileScope.read falharia. Por isso o lugar dele é acima do MaterialApp, que é quem cria o Navigator.</text>
+</svg>

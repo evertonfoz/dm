@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="560" viewBox="0 0 760 560" font-family="Roboto, Helvetica, Arial, sans-serif">
+<rect width="100%" height="100%" fill="white"/>
+
+<text x="40" y="36" font-size="15" fill="#263D4F" font-weight="bold">Onde colocar o botão "Salvar perfil"</text>
+<text x="40" y="56" font-size="12" fill="#263D4F">com o teclado aberto, o Scaffold encolhe o body, mas não move o bottomNavigationBar</text>
+
+<!-- ===== Esquerda: bottomNavigationBar ===== -->
+<text x="190" y="88" font-size="13" fill="#263D4F" font-weight="bold" text-anchor="middle">bottomNavigationBar</text>
+<rect x="80" y="100" width="220" height="420" rx="22" fill="#F2F2F2" stroke="#263D4F" stroke-width="2"/>
+<!-- AppBar -->
+<text x="100" y="132" font-size="12" fill="#263D4F" font-weight="bold">← Perfil alimentar</text>
+<!-- campo focado -->
+<rect x="100" y="150" width="180" height="34" rx="4" fill="white" stroke="#263D4F" stroke-width="2"/>
+<text x="110" y="172" font-size="12" fill="#263D4F">Ana</text><line x1="134" y1="160" x2="134" y2="176" stroke="#D9A53A" stroke-width="2"/>
+<rect x="100" y="198" width="180" height="70" rx="10" fill="white"/>
+<!-- botão (fica embaixo de tudo) -->
+<rect x="100" y="468" width="180" height="34" rx="17" fill="#263D4F"/>
+<text x="190" y="490" font-size="12" fill="white" font-weight="bold" text-anchor="middle">Salvar perfil</text>
+<!-- teclado por cima -->
+<rect x="81" y="300" width="218" height="200" fill="#D5D8DC"/>
+<path d="M81,500 Q81,519 101,519 L279,519 Q299,519 299,500 Z" fill="#D5D8DC"/>
+<g fill="white">
+  <rect x="90" y="314" width="18" height="26" rx="4"/><rect x="111" y="314" width="18" height="26" rx="4"/><rect x="132" y="314" width="18" height="26" rx="4"/><rect x="153" y="314" width="18" height="26" rx="4"/><rect x="174" y="314" width="18" height="26" rx="4"/><rect x="195" y="314" width="18" height="26" rx="4"/><rect x="216" y="314" width="18" height="26" rx="4"/><rect x="237" y="314" width="18" height="26" rx="4"/><rect x="258" y="314" width="18" height="26" rx="4"/><rect x="279" y="314" width="12" height="26" rx="4"/>
+  <rect x="98" y="348" width="18" height="26" rx="4"/><rect x="119" y="348" width="18" height="26" rx="4"/><rect x="140" y="348" width="18" height="26" rx="4"/><rect x="161" y="348" width="18" height="26" rx="4"/><rect x="182" y="348" width="18" height="26" rx="4"/><rect x="203" y="348" width="18" height="26" rx="4"/><rect x="224" y="348" width="18" height="26" rx="4"/><rect x="245" y="348" width="18" height="26" rx="4"/><rect x="266" y="348" width="18" height="26" rx="4"/>
+  <rect x="119" y="382" width="18" height="26" rx="4"/><rect x="140" y="382" width="18" height="26" rx="4"/><rect x="161" y="382" width="18" height="26" rx="4"/><rect x="182" y="382" width="18" height="26" rx="4"/><rect x="203" y="382" width="18" height="26" rx="4"/><rect x="224" y="382" width="18" height="26" rx="4"/><rect x="245" y="382" width="18" height="26" rx="4"/>
+  <rect x="130" y="416" width="120" height="26" rx="4"/>
+</g>
+<!-- o botão escondido, em tracejado -->
+<rect x="100" y="468" width="180" height="34" rx="17" fill="none" stroke="#B3261E" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="190" y="490" font-size="11" fill="#B3261E" font-weight="bold" text-anchor="middle">botão atrás do teclado</text>
+<text x="190" y="544" font-size="12" fill="#B3261E" font-weight="bold" text-anchor="middle">✗ a pessoa precisa fechar o teclado</text>
+
+<!-- ===== Direita: botão dentro do body ===== -->
+<text x="570" y="88" font-size="13" fill="#263D4F" font-weight="bold" text-anchor="middle">body: Column + Expanded</text>
+<rect x="460" y="100" width="220" height="420" rx="22" fill="#F2F2F2" stroke="#263D4F" stroke-width="2"/>
+<text x="480" y="132" font-size="12" fill="#263D4F" font-weight="bold">← Perfil alimentar</text>
+<!-- Expanded (área que rola) -->
+<rect x="472" y="142" width="196" height="106" rx="6" fill="none" stroke="#D9A53A" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="664" y="244" font-size="9" fill="#9A6E12" font-weight="bold" text-anchor="end">Expanded (rola)</text>
+<rect x="480" y="150" width="180" height="34" rx="4" fill="white" stroke="#263D4F" stroke-width="2"/>
+<text x="490" y="172" font-size="12" fill="#263D4F">Ana</text><line x1="514" y1="160" x2="514" y2="176" stroke="#D9A53A" stroke-width="2"/>
+<rect x="480" y="198" width="180" height="34" rx="10" fill="white"/>
+<!-- botão logo acima do teclado -->
+<rect x="480" y="256" width="180" height="34" rx="17" fill="#263D4F"/>
+<text x="570" y="278" font-size="12" fill="white" font-weight="bold" text-anchor="middle">Salvar perfil</text>
+<!-- teclado -->
+<rect x="461" y="300" width="218" height="200" fill="#D5D8DC"/>
+<path d="M461,500 Q461,519 481,519 L659,519 Q679,519 679,500 Z" fill="#D5D8DC"/>
+<g fill="white">
+  <rect x="470" y="314" width="18" height="26" rx="4"/><rect x="491" y="314" width="18" height="26" rx="4"/><rect x="512" y="314" width="18" height="26" rx="4"/><rect x="533" y="314" width="18" height="26" rx="4"/><rect x="554" y="314" width="18" height="26" rx="4"/><rect x="575" y="314" width="18" height="26" rx="4"/><rect x="596" y="314" width="18" height="26" rx="4"/><rect x="617" y="314" width="18" height="26" rx="4"/><rect x="638" y="314" width="18" height="26" rx="4"/><rect x="659" y="314" width="12" height="26" rx="4"/>
+  <rect x="478" y="348" width="18" height="26" rx="4"/><rect x="499" y="348" width="18" height="26" rx="4"/><rect x="520" y="348" width="18" height="26" rx="4"/><rect x="541" y="348" width="18" height="26" rx="4"/><rect x="562" y="348" width="18" height="26" rx="4"/><rect x="583" y="348" width="18" height="26" rx="4"/><rect x="604" y="348" width="18" height="26" rx="4"/><rect x="625" y="348" width="18" height="26" rx="4"/><rect x="646" y="348" width="18" height="26" rx="4"/>
+  <rect x="499" y="382" width="18" height="26" rx="4"/><rect x="520" y="382" width="18" height="26" rx="4"/><rect x="541" y="382" width="18" height="26" rx="4"/><rect x="562" y="382" width="18" height="26" rx="4"/><rect x="583" y="382" width="18" height="26" rx="4"/><rect x="604" y="382" width="18" height="26" rx="4"/><rect x="625" y="382" width="18" height="26" rx="4"/>
+  <rect x="510" y="416" width="120" height="26" rx="4"/>
+</g>
+<text x="570" y="544" font-size="12" fill="#1E6B3A" font-weight="bold" text-anchor="middle">✓ o botão sobe junto com o body</text>
+<!-- contornos por cima do teclado -->
+<rect x="80" y="100" width="220" height="420" rx="22" fill="none" stroke="#263D4F" stroke-width="2"/>
+<rect x="460" y="100" width="220" height="420" rx="22" fill="none" stroke="#263D4F" stroke-width="2"/>
+</svg>

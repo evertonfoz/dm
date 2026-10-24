@@ -25,7 +25,9 @@ flutter test
 | 1 | [Splash e Onboarding](docs/tutorials/CeliLac_Splash_e_Onboarding.md) | Identidade visual, splash nativa e animada, onboarding com persistência |
 | 2 | [Homepage](docs/tutorials/CeliLac_HomePage.md) | Tema e tokens, domínio e repositório, shell de navegação, estados de carregamento, acessibilidade, testes |
 | 3 | [Detalhe do Estabelecimento](docs/tutorials/CeliLac_Detalhe_Estabelecimento.md) | Navegação com dados, `Hero`, horários, imagens, ações externas, testes |
-| 4 | [Perfil Alimentar (roteiro)](docs/tutorials/CeliLac_Perfil_Alimentar_Roteiro.md) | Em andamento: formulários, persistência em JSON, estado compartilhado |
+| 4 | [Perfil Alimentar](docs/tutorials/CeliLac_Perfil_Alimentar.md) | Formulários, persistência em JSON, estado compartilhado entre telas, Home personalizada |
+
+O [roteiro de implementação do Perfil Alimentar](docs/tutorials/CeliLac_Perfil_Alimentar_Roteiro.md) registra o plano e as decisões tomadas durante a implementação, e serviu de base para o material 4.
 
 ## Organização
 

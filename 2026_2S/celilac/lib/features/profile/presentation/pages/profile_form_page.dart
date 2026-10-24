@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/common/widgets/section_header.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_layout.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../establishments/domain/entities/dietary_option.dart';
@@ -228,13 +229,17 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
       onChanged: _avoidsGluten ? _onCrossContactChanged : null,
       contentPadding: EdgeInsets.zero,
       title: const Text('Preciso de cuidado com contaminação cruzada'),
-      // Um controle desabilitado precisa dizer por quê.
-      subtitle: Text(
-        _avoidsGluten
-            ? 'Mostraremos se o lugar tem área de preparo '
-                  'ou utensílios separados.'
-            : 'Disponível quando você marca Glúten.',
-      ),
+      // Um controle desabilitado precisa dizer por quê, e essa explicação
+      // não pode ficar no cinza claro de "desabilitado": ela é para ser lida.
+      subtitle: _avoidsGluten
+          ? const Text(
+              'Mostraremos se o lugar tem área de preparo '
+              'ou utensílios separados.',
+            )
+          : Text(
+              'Disponível quando você marca Glúten.',
+              style: TextStyle(color: AppColors.navy.withValues(alpha: 0.8)),
+            ),
     );
   }
 
@@ -250,7 +255,9 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
         ),
         child: FilledButton(
           onPressed: _hasChanges && !_isSaving ? _save : null,
-          style: FilledButton.styleFrom(minimumSize: const Size(0, 48)),
+          // fromHeight: largura infinita, então o botão ocupa a linha toda,
+          // como o "Próximo" do onboarding.
+          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
           child: _isSaving
               ? const SizedBox.square(
                   dimension: 20,

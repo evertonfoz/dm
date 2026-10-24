@@ -1,6 +1,8 @@
 # CeliLac: Perfil Alimentar (roteiro de implementação)
 ## Formulários, persistência em JSON, estado compartilhado entre telas e testes
 
+> **Material final gerado:** [CeliLac_Perfil_Alimentar.md](CeliLac_Perfil_Alimentar.md), com capturas e diagramas em `docs/perfil/`. Este roteiro continua como registro do plano e das decisões.
+
 > **Este documento é o plano de trabalho**, e não o material didático final. Ele registra **o que** será implementado, em que ordem, com quais arquivos, decisões e critérios de pronto. Depois da implementação (e de cada parte validada com `flutter analyze` e `flutter test`), ele serve de base para escrever o material `CeliLac_Perfil_Alimentar.md` no mesmo formato dos anteriores (Conceito → código → **Conceitos** → **Atenção** / **No seu projeto** / **Execute**).
 
 Este material continua o **CeliLac: Detalhe do Estabelecimento**. O onboarding fez três promessas; duas já têm onde ser cumpridas:

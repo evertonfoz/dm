@@ -31,7 +31,7 @@ Como conteúdo complementar, para quem quiser se aprofundar, o material apresent
 
 | Topo da Home | Lista "Perto de você" |
 |---|---|
-| ![Topo da Home](../docs/home/home_inicio.png) | ![Lista de estabelecimentos](../docs/home/home_lista.png) |
+| ![Topo da Home](../home/home_inicio.png) | ![Lista de estabelecimentos](../home/home_lista.png) |
 
 ---
 
@@ -299,7 +299,7 @@ Repare que `sm`, `md` e `lg` aparecem nas duas classes com **valores diferentes*
 
 Por que funciona? Com poucos valores possíveis, o olho percebe **ritmo**: os espaços "batem" entre si e as bordas se alinham. Com valores livres (13, 17, 22), a tela parece desalinhada, mesmo que ninguém saiba dizer por quê:
 
-![Comparação entre um layout na grade de 8 dp e um com valores livres](../docs/home/grade_espacamento.svg)
+![Comparação entre um layout na grade de 8 dp e um com valores livres](../home/grade_espacamento.svg)
 
 Do lado esquerdo, todos os blocos começam na mesma margem (16 dp) e os espaços seguem um padrão: 8 dentro de um grupo, 16 entre itens e 24 antes de uma nova seção. Do lado direito, as margens variam entre 13 e 17 dp e os espaços não seguem padrão algum. A diferença é de poucos dp, mas o olho percebe o "degrau" na borda esquerda.
 
