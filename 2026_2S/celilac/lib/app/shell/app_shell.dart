@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../features/establishments/data/fake_establishment_repository.dart';
 import '../../features/home/presentation/pages/home_page.dart';
+import '../../features/profile/presentation/pages/profile_page.dart';
 import '../common/widgets/coming_soon_view.dart';
 
 class AppShell extends StatefulWidget {
@@ -18,7 +19,7 @@ class _AppShellState extends State<AppShell> {
     HomePage(repository: FakeEstablishmentRepository()),
     ComingSoonView(title: 'Explorar', icon: Icons.explore_outlined),
     ComingSoonView(title: 'Favoritos', icon: Icons.favorite_outline),
-    ComingSoonView(title: 'Perfil', icon: Icons.person_outline),
+    ProfilePage(),
   ];
 
   void _onDestinationSelected(int index) {

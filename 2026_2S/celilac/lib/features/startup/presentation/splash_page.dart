@@ -5,8 +5,10 @@ import '../../../app/common/widgets/gold_accent.dart';
 import '../../../app/routes/fade_route.dart';
 import '../../../app/shell/app_shell.dart';
 import '../../../app/theme/app_colors.dart';
+import '../../../app/theme/app_spacing.dart';
 import '../../onboarding/data/onboarding_storage.dart';
 import '../../onboarding/presentation/onboarding_page.dart';
+import '../../profile/presentation/profile_scope.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -74,6 +76,9 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   }
 
   Future<void> _initialize() async {
+    // Começa já, em paralelo com as animações: a Splash não fica mais longa.
+    final profileLoad = ProfileScope.read(context).load();
+
     await _introController.forward();
     if (!mounted) {
       return;
@@ -84,7 +89,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       return;
     }
 
-    final completed = await OnboardingStorage().isCompleted();
+    final (completed, _) = await (
+      OnboardingStorage().isCompleted(),
+      profileLoad,
+    ).wait;
     if (!mounted) {
       return;
     }
@@ -131,7 +139,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: Column(
               children: [
                 const Spacer(flex: 3),
@@ -147,7 +155,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                const SizedBox(height: 32.0),
+                const SizedBox(height: AppSpacing.xl),
                 FadeTransition(
                   opacity: _textFade,
                   child: SlideTransition(
@@ -162,16 +170,16 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                             letterSpacing: 1.2,
                           ),
                         ),
-                        const SizedBox(height: 8.0),
+                        const SizedBox(height: AppSpacing.sm),
 
                         const GoldAccent(width: 80.0),
 
-                        const SizedBox(height: 12.0),
+                        const SizedBox(height: AppSpacing.sm),
                         Text(
                           'Alimentação sem glúten e sem lactose',
                           textAlign: TextAlign.center,
                           style: textTheme.bodyLarge?.copyWith(
-                            color: AppColors.navy.withValues(alpha: 0.7),
+                            color: AppColors.navy.withValues(alpha: 0.8),
                             letterSpacing: 0.3,
                           ),
                         ),
@@ -184,7 +192,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                   opacity: _footerFade,
                   child: _buildProgress(textTheme),
                 ),
-                const SizedBox(height: 40.0),
+                const SizedBox(height: AppSpacing.xl),
                 FadeTransition(
                   opacity: _footerFade,
                   child: Text(
@@ -195,7 +203,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: AppSpacing.md),
               ],
             ),
           ),
@@ -217,16 +225,21 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: Text(
-                      _statusFor(progress),
-                      key: ValueKey(_statusFor(progress)),
-                      style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.navy.withValues(alpha: 0.6),
+                  // Flexible: com fonte ampliada, o texto quebra em vez de
+                  // empurrar a porcentagem para fora da tela.
+                  Flexible(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: Text(
+                        _statusFor(progress),
+                        key: ValueKey(_statusFor(progress)),
+                        style: textTheme.bodySmall?.copyWith(
+                          color: AppColors.navy.withValues(alpha: 0.6),
+                        ),
                       ),
                     ),
                   ),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     '${(progress * 100).round()}%',
                     style: textTheme.bodySmall?.copyWith(
@@ -237,7 +250,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                   ),
                 ],
               ),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: AppSpacing.sm),
               ClipRRect(
                 borderRadius: BorderRadius.circular(4.0),
                 child: LinearProgressIndicator(

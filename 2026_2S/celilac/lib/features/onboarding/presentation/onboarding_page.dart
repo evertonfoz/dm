@@ -5,6 +5,7 @@ import '../../../app/common/widgets/gold_accent.dart';
 import '../../../app/common/widgets/image_card.dart';
 import '../../../app/routes/fade_route.dart';
 import '../../../app/shell/app_shell.dart';
+import '../../../app/theme/app_spacing.dart';
 import '../data/onboarding_storage.dart';
 import '../domain/onboarding_item.dart';
 
@@ -24,14 +25,14 @@ class OnboardingPage extends StatefulWidget {
       description:
           'Consulte informações alimentares e conheça '
           'melhor as opções disponíveis.',
-      imagePath: 'assets/images/onboarding/discovery.png',
+      imagePath: 'assets/images/onboarding/information.png',
     ),
     OnboardingItem(
       title: 'Uma experiência mais relevante',
       description:
           'Seu perfil alimentar poderá ajudar o CeliLac '
           'a apresentar opções mais adequadas.',
-      imagePath: 'assets/images/onboarding/discovery.png',
+      imagePath: 'assets/images/onboarding/profile.png',
     ),
   ];
 
@@ -110,7 +111,12 @@ class _OnboardingPageState extends State<OnboardingPage>
     final isLastPage = _currentPage == OnboardingPage.items.length - 1;
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.sm,
+          AppSpacing.md,
+          0,
+        ),
         child: Align(
           alignment: Alignment.centerRight,
           child: AnimatedOpacity(
@@ -168,7 +174,7 @@ class _OnboardingPageState extends State<OnboardingPage>
         ],
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: FilledButton(
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.navy,
@@ -208,11 +214,11 @@ class _OnboardingContent extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 32),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
       child: Column(
         children: [
           // const Spacer(),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
           Flexible(
             flex: 6,
             child: AspectRatio(
@@ -223,7 +229,7 @@ class _OnboardingContent extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xl),
           Text(
             item.title,
             style: textTheme.headlineSmall?.copyWith(
@@ -232,13 +238,13 @@ class _OnboardingContent extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           const GoldAccent(),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             item.description,
             style: textTheme.bodyMedium?.copyWith(
-              color: AppColors.navy.withValues(alpha: 0.7),
+              color: AppColors.navy.withValues(alpha: 0.8),
               height: 1.4,
             ),
             textAlign: TextAlign.center,
@@ -263,7 +269,7 @@ class _PageIndicator extends StatelessWidget {
         final isActive = index == currentPage;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+          margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
           width: isActive ? 24.0 : 8.0,
           height: 8.0,
           decoration: BoxDecoration(

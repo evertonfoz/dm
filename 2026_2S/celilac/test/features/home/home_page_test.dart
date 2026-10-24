@@ -134,4 +134,21 @@ void main() {
     expect(find.text('Completar perfil'), findsOne);
     expect(repo.nearbyCalls, 1);
   });
+
+  testWidgets('segue as regras de acessibilidade', (tester) async {
+    final handle = tester.ensureSemantics();
+    final repo = StubEstablishmentRepository(
+      nearbyResults: [
+        () async => [testCafe],
+      ],
+    );
+    await _pumpHome(tester, repo);
+    await tester.pumpAndSettle();
+
+    await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+    await expectLater(tester, meetsGuideline(iOSTapTargetGuideline));
+    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    await expectLater(tester, meetsGuideline(textContrastGuideline));
+    handle.dispose();
+  });
 }
