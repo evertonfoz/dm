@@ -1,34 +1,29 @@
-import 'package:celilac/app/theme/app_theme.dart';
 import 'package:celilac/features/establishments/domain/entities/establishment_details.dart';
 import 'package:celilac/features/establishments/domain/repositories/establishment_repository.dart';
 import 'package:celilac/features/establishments/presentation/pages/establishment_details_page.dart';
 import 'package:celilac/features/establishments/presentation/widgets/details_loading.dart';
 import 'package:celilac/features/establishments/presentation/widgets/photo_carousel.dart';
+import 'package:celilac/features/favorites/domain/repositories/favorites_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/memory_favorites_repository.dart';
+import '../../support/pump_app.dart';
 import '../../support/stub_establishment_repository.dart';
 
 Future<void> _pumpDetails(
   WidgetTester tester,
   EstablishmentRepository repo, {
+  FavoritesRepository? favoritesRepository,
   Size size = const Size(360, 800),
   double textScale = 1,
 }) {
-  tester.view.physicalSize = size * 3;
-  tester.view.devicePixelRatio = 3;
-  addTearDown(tester.view.reset);
-
-  return tester.pumpWidget(
-    MaterialApp(
-      theme: AppTheme.light,
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context)
-            .copyWith(textScaler: TextScaler.linear(textScale)),
-        child: child!,
-      ),
-      home: EstablishmentDetailsPage(establishment: testCafe, repository: repo),
-    ),
+  return pumpWithProfile(
+    tester,
+    EstablishmentDetailsPage(establishment: testCafe, repository: repo),
+    favoritesRepository: favoritesRepository,
+    size: size,
+    textScale: textScale,
   );
 }
 
@@ -136,6 +131,51 @@ void main() {
 
     expect(find.byType(PhotoCarousel), findsNothing);
     expect(find.text('Um café de teste.'), findsOne);
+  });
+
+  testWidgets('salva e remove dos favoritos pela barra superior', (
+    tester,
+  ) async {
+    final favoritesRepo = MemoryFavoritesRepository();
+    final repo = StubEstablishmentRepository(
+      detailsResults: [() async => testCafeDetails],
+    );
+    await _pumpDetails(tester, repo, favoritesRepository: favoritesRepo);
+    await tester.pumpAndSettle();
+
+    final saveButton = find.byTooltip('Salvar Café Teste nos favoritos');
+    expect(saveButton, findsOne);
+
+    await tester.tap(saveButton);
+    await tester.pumpAndSettle();
+
+    expect(favoritesRepo.stored, [testCafe]);
+    final removeButton = find.byTooltip('Remover Café Teste dos favoritos');
+    expect(removeButton, findsOne);
+
+    await tester.tap(removeButton);
+    await tester.pumpAndSettle();
+
+    expect(favoritesRepo.stored, isEmpty);
+  });
+
+  testWidgets('mostra aviso se falhar ao atualizar favorito no detalhe', (
+    tester,
+  ) async {
+    final favoritesRepo = MemoryFavoritesRepository(failOnChange: true);
+    final repo = StubEstablishmentRepository(
+      detailsResults: [() async => testCafeDetails],
+    );
+    await _pumpDetails(tester, repo, favoritesRepository: favoritesRepo);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Salvar Café Teste nos favoritos'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Não foi possível atualizar os favoritos.'),
+      findsOne,
+    );
   });
 
   testWidgets('não transborda com fonte a 200% em tela pequena', (

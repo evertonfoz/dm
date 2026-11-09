@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../features/establishments/data/fake_establishment_repository.dart';
+import '../../features/favorites/presentation/pages/favorites_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../common/widgets/coming_soon_view.dart';
@@ -15,11 +16,14 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _tabs = [
-    HomePage(repository: FakeEstablishmentRepository()),
-    ComingSoonView(title: 'Explorar', icon: Icons.explore_outlined),
-    ComingSoonView(title: 'Favoritos', icon: Icons.favorite_outline),
-    ProfilePage(),
+  late final List<Widget> _tabs = [
+    const HomePage(repository: FakeEstablishmentRepository()),
+    const ComingSoonView(title: 'Explorar', icon: Icons.explore_outlined),
+    FavoritesPage(
+      repository: const FakeEstablishmentRepository(),
+      onExploreTap: () => _onDestinationSelected(0),
+    ),
+    const ProfilePage(),
   ];
 
   void _onDestinationSelected(int index) {

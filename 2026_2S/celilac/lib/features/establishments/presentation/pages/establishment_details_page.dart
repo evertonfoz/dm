@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../app/common/external_links.dart';
 import '../../../../app/common/widgets/status_message.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_layout.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../favorites/presentation/favorites_controller.dart';
 import '../../domain/entities/establishment.dart';
 import '../../domain/entities/establishment_details.dart';
 import '../../domain/repositories/establishment_repository.dart';
@@ -14,6 +16,7 @@ import '../widgets/details_loading.dart';
 import '../widgets/details_section.dart';
 import '../widgets/establishment_logo.dart';
 import '../widgets/establishment_summary.dart';
+import '../widgets/favorite_button.dart';
 import '../widgets/open_status.dart';
 import '../widgets/opening_hours_table.dart';
 import '../widgets/photo_carousel.dart';
@@ -24,10 +27,12 @@ class EstablishmentDetailsPage extends StatefulWidget {
     super.key,
     required this.establishment,
     required this.repository,
+    this.heroOrigin = 'home',
   });
 
   final Establishment establishment;
   final EstablishmentRepository repository;
+  final String heroOrigin;
 
   @override
   State<EstablishmentDetailsPage> createState() =>
@@ -58,19 +63,46 @@ class _EstablishmentDetailsPageState extends State<EstablishmentDetailsPage> {
     }
   }
 
+  Future<void> _toggleFavorite() async {
+    try {
+      await context.read<FavoritesController>().toggle(widget.establishment);
+    } on Object {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Não foi possível atualizar os favoritos.'),
+          ),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final horizontalPadding = AppLayout.horizontalPadding(
       MediaQuery.sizeOf(context).width,
     );
+    final isFavorite = context.watch<FavoritesController>().isFavorite(
+      widget.establishment.id,
+    );
 
     return Scaffold(
       appBar: AppBar(
         actions: [
+          FavoriteButton(
+            establishmentName: widget.establishment.name,
+            isFavorite: isFavorite,
+            onPressed: _toggleFavorite,
+          ),
+          const SizedBox(width: AppSpacing.xs),
           Padding(
             padding: EdgeInsets.only(right: horizontalPadding),
             child: Hero(
-              tag: establishmentHeroTag(widget.establishment.id),
+              tag: establishmentHeroTag(
+                widget.establishment.id,
+                origin: widget.heroOrigin,
+              ),
               child: EstablishmentLogo(
                 establishment: widget.establishment,
                 size: 40,

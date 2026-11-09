@@ -2,6 +2,7 @@ import 'package:celilac/features/establishments/domain/entities/dietary_option.d
 import 'package:celilac/features/establishments/domain/entities/establishment.dart';
 import 'package:celilac/features/establishments/domain/entities/establishment_category.dart';
 import 'package:celilac/features/establishments/domain/repositories/establishment_repository.dart';
+import 'package:celilac/features/favorites/domain/repositories/favorites_repository.dart';
 import 'package:celilac/features/home/presentation/pages/home_page.dart';
 import 'package:celilac/features/home/presentation/widgets/nearby_loading.dart';
 import 'package:celilac/features/profile/domain/entities/dietary_profile.dart';
@@ -9,6 +10,7 @@ import 'package:celilac/features/profile/presentation/pages/profile_form_page.da
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/memory_favorites_repository.dart';
 import '../../support/memory_profile_repository.dart';
 import '../../support/pump_app.dart';
 import '../../support/stub_establishment_repository.dart';
@@ -17,11 +19,13 @@ Future<void> _pumpHome(
   WidgetTester tester,
   EstablishmentRepository repo, {
   DietaryProfile profile = DietaryProfile.empty,
+  FavoritesRepository? favoritesRepository,
 }) {
   return pumpWithProfile(
     tester,
     Scaffold(body: HomePage(repository: repo)),
     repository: MemoryProfileRepository(stored: profile),
+    favoritesRepository: favoritesRepository,
   );
 }
 
@@ -205,6 +209,28 @@ void main() {
     expect(_top(tester, 'Empório Teste'), lessThan(_top(tester, 'Café Teste')));
     expect(_matchBadge, findsOne);
     expect(repo.nearbyCalls, 1);
+  });
+
+  testWidgets('favoritar no cartão atualiza o botão sem abrir o detalhe', (
+    tester,
+  ) async {
+    final favoritesRepo = MemoryFavoritesRepository();
+    final repo = StubEstablishmentRepository(
+      nearbyResults: [
+        () async => [testCafe],
+      ],
+    );
+    await _pumpHome(tester, repo, favoritesRepository: favoritesRepo);
+    await tester.pumpAndSettle();
+
+    await _tapVisible(
+      tester,
+      find.byTooltip('Salvar Café Teste nos favoritos'),
+    );
+
+    expect(favoritesRepo.stored, [testCafe]);
+    expect(find.byTooltip('Remover Café Teste dos favoritos'), findsOne);
+    expect(repo.detailsCalls, 0);
   });
 
   testWidgets('abre o detalhe ao tocar no cartão e volta para a Home', (

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../app/common/widgets/section_header.dart';
 import '../../../../app/theme/app_colors.dart';
@@ -6,7 +7,7 @@ import '../../../../app/theme/app_layout.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../establishments/domain/entities/dietary_option.dart';
 import '../../domain/entities/dietary_profile.dart';
-import '../profile_scope.dart';
+import '../profile_controller.dart';
 import '../widgets/discard_changes_dialog.dart';
 import '../widgets/profile_privacy_note.dart';
 import '../widgets/restrictions_field.dart';
@@ -34,7 +35,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   @override
   void initState() {
     super.initState();
-    _original = ProfileScope.read(context).profile;
+    _original = context.read<ProfileController>().profile;
     _draft = _original;
     _nameController = TextEditingController(text: _original.name ?? '');
   }
@@ -88,7 +89,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
 
     setState(() => _isSaving = true);
     final messenger = ScaffoldMessenger.of(context);
-    final controller = ProfileScope.read(context);
+    final controller = context.read<ProfileController>();
 
     try {
       await controller.save(_draft);

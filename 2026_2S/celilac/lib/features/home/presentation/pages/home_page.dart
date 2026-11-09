@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../app/common/widgets/section_header.dart';
 import '../../../../app/common/widgets/status_message.dart';
@@ -9,10 +10,11 @@ import '../../../establishments/domain/entities/establishment.dart';
 import '../../../establishments/domain/repositories/establishment_repository.dart';
 import '../../../establishments/presentation/pages/establishment_details_page.dart';
 import '../../../establishments/presentation/widgets/establishment_card.dart';
+import '../../../favorites/presentation/favorites_controller.dart';
 import '../../../profile/domain/entities/dietary_profile.dart';
 import '../../../profile/domain/profile_match.dart';
 import '../../../profile/presentation/pages/profile_form_page.dart';
-import '../../../profile/presentation/profile_scope.dart';
+import '../../../profile/presentation/profile_controller.dart';
 import '../greeting.dart';
 import '../widgets/category_shortcuts.dart';
 import '../widgets/home_header.dart';
@@ -76,13 +78,29 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> _toggleFavorite(Establishment establishment) async {
+    try {
+      await context.read<FavoritesController>().toggle(establishment);
+    } on Object {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Não foi possível atualizar os favoritos.'),
+          ),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final horizontalPadding = AppLayout.horizontalPadding(
       MediaQuery.sizeOf(context).width,
     );
-    // of: a Home se redesenha quando o perfil é salvo em outra tela.
-    final profile = ProfileScope.of(context).profile;
+    // watch: a Home se redesenha quando o perfil ou os favoritos mudam.
+    final profile = context.watch<ProfileController>().profile;
+    final favorites = context.watch<FavoritesController>();
 
     return RefreshIndicator(
       onRefresh: _refresh,
@@ -157,14 +175,17 @@ class _HomePageState extends State<HomePage> {
               horizontalPadding,
               AppSpacing.xl,
             ),
-            sliver: _buildNearby(profile),
+            sliver: _buildNearby(profile, favorites),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildNearby(DietaryProfile profile) {
+  Widget _buildNearby(
+    DietaryProfile profile,
+    FavoritesController favorites,
+  ) {
     return FutureBuilder<List<Establishment>>(
       future: _nearbyFuture,
       builder: (context, snapshot) {
@@ -210,6 +231,8 @@ class _HomePageState extends State<HomePage> {
             return EstablishmentCard(
               establishment: establishment,
               matchesProfile: meetsProfile(establishment, profile),
+              isFavorite: favorites.isFavorite(establishment.id),
+              onFavoriteToggle: () => _toggleFavorite(establishment),
               onTap: () => _openDetails(establishment),
             );
           },

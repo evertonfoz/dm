@@ -26,15 +26,16 @@ flutter test
 | 2 | [Homepage](docs/tutorials/CeliLac_HomePage.md) | Tema e tokens, domínio e repositório, shell de navegação, estados de carregamento, acessibilidade, testes |
 | 3 | [Detalhe do Estabelecimento](docs/tutorials/CeliLac_Detalhe_Estabelecimento.md) | Navegação com dados, `Hero`, horários, imagens, ações externas, testes |
 | 4 | [Perfil Alimentar](docs/tutorials/CeliLac_Perfil_Alimentar.md) | Formulários, persistência em JSON, estado compartilhado entre telas, Home personalizada |
+| 5 | [Favoritos, SQLite e Provider](docs/tutorials/CeliLac_Favoritos_SQLite_e_Provider.md) | Persistência relacional com `sqflite`, migração de esquema (`onUpgrade`), `MultiProvider` e sincronização entre Home, Detalhe e aba Favoritos |
 
-O [roteiro de implementação do Perfil Alimentar](docs/tutorials/CeliLac_Perfil_Alimentar_Roteiro.md) registra o plano e as decisões tomadas durante a implementação, e serviu de base para o material 4.
+O [roteiro de implementação do Perfil Alimentar](docs/tutorials/CeliLac_Perfil_Alimentar_Roteiro.md) registra o plano e as decisões tomadas durante a implementação do material 4, e o documento [Base para Slides — Favoritos, SQLite e Provider](docs/tutorials/CeliLac_Favoritos_SQLite_e_Provider_Slides.md) estrutura os problemas, soluções e opções da etapa 5 para apresentação em aula.
 
 ## Organização
 
 ```text
 lib/
 ├── app/          tema, tokens, shell de navegação, rotas e widgets compartilhados
-└── features/     uma pasta por assunto (startup, onboarding, home, establishments)
+└── features/     uma pasta por assunto (startup, onboarding, home, establishments, profile, favorites)
     └── <feature>/
         ├── domain/        entidades e contratos, sem Flutter
         ├── data/          implementações (fake, armazenamento local)

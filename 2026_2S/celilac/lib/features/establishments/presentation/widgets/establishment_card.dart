@@ -8,6 +8,7 @@ import '../../domain/entities/establishment.dart';
 import '../establishment_hero_tag.dart';
 import 'dietary_badge.dart';
 import 'establishment_logo.dart';
+import 'favorite_button.dart';
 
 class EstablishmentCard extends StatelessWidget {
   const EstablishmentCard({
@@ -15,6 +16,9 @@ class EstablishmentCard extends StatelessWidget {
     required this.establishment,
     required this.onTap,
     this.matchesProfile = false,
+    this.isFavorite = false,
+    this.onFavoriteToggle,
+    this.heroOrigin = 'home',
   });
 
   final Establishment establishment;
@@ -23,6 +27,10 @@ class EstablishmentCard extends StatelessWidget {
   /// Quem decide é a tela que usa o cartão: estabelecimentos não conhecem
   /// o perfil.
   final bool matchesProfile;
+
+  final bool isFavorite;
+  final VoidCallback? onFavoriteToggle;
+  final String heroOrigin;
 
   @override
   Widget build(BuildContext context) {
@@ -33,85 +41,99 @@ class EstablishmentCard extends StatelessWidget {
       formatDistance(establishment.distanceInKm),
     ].join(' · ');
 
-    return MergeSemantics(
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Hero(
-                      tag: establishmentHeroTag(establishment.id),
-                      child: EstablishmentLogo(establishment: establishment),
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Hero(
+                    tag: establishmentHeroTag(
+                      establishment.id,
+                      origin: heroOrigin,
                     ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            establishment.name,
-                            style: textTheme.titleMedium?.copyWith(
-                              color: AppColors.navy,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                          Text(
-                            details,
-                            style: textTheme.bodySmall?.copyWith(
-                              color: AppColors.navy.withValues(alpha: 0.8),
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          Wrap(
-                            spacing: AppSpacing.xs,
-                            runSpacing: AppSpacing.xs,
-                            children: [
-                              for (final option in establishment.dietaryOptions)
-                                DietaryBadge(option: option),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
+                    child: EstablishmentLogo(establishment: establishment),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(
-                          Icons.star_rounded,
-                          size: 18,
-                          color: AppColors.gold,
-                          semanticLabel: 'Nota',
-                        ),
-                        const SizedBox(width: 2),
                         Text(
-                          formatDecimal(establishment.rating),
-                          style: textTheme.labelLarge?.copyWith(
+                          establishment.name,
+                          style: textTheme.titleMedium?.copyWith(
                             color: AppColors.navy,
                             fontWeight: FontWeight.bold,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          details,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: AppColors.navy.withValues(alpha: 0.8),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Wrap(
+                          spacing: AppSpacing.xs,
+                          runSpacing: AppSpacing.xs,
+                          children: [
+                            for (final option in establishment.dietaryOptions)
+                              DietaryBadge(option: option),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-                // Abaixo da linha toda, à direita: alinhado com a nota.
-                if (matchesProfile) ...[
-                  const SizedBox(height: AppSpacing.sm),
-                  const _ProfileMatchBadge(),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.star_rounded,
+                            size: 18,
+                            color: AppColors.gold,
+                            semanticLabel: 'Nota',
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            formatDecimal(establishment.rating),
+                            style: textTheme.labelLarge?.copyWith(
+                              color: AppColors.navy,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (onFavoriteToggle != null) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        FavoriteButton(
+                          establishmentName: establishment.name,
+                          isFavorite: isFavorite,
+                          onPressed: onFavoriteToggle!,
+                        ),
+                      ],
+                    ],
+                  ),
                 ],
+              ),
+              // Abaixo da linha toda, à direita: alinhado com a nota.
+              if (matchesProfile) ...[
+                const SizedBox(height: AppSpacing.sm),
+                const _ProfileMatchBadge(),
               ],
-            ),
+            ],
           ),
         ),
       ),

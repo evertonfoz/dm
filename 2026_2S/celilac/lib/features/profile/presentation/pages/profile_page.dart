@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../app/common/widgets/status_message.dart';
 import '../../../../app/theme/app_layout.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../profile_scope.dart';
+import '../profile_controller.dart';
 import '../widgets/profile_privacy_note.dart';
 import '../widgets/profile_summary_card.dart';
 import 'profile_form_page.dart';
@@ -17,8 +18,8 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // of: a aba é reconstruída sempre que o perfil muda.
-    final controller = ProfileScope.of(context);
+    // watch: a aba é reconstruída sempre que o perfil muda.
+    final controller = context.watch<ProfileController>();
     final profile = controller.profile;
     final horizontalPadding = AppLayout.horizontalPadding(
       MediaQuery.sizeOf(context).width,

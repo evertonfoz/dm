@@ -1,9 +1,9 @@
 import 'package:celilac/features/establishments/domain/entities/dietary_option.dart';
 import 'package:celilac/features/profile/domain/entities/dietary_profile.dart';
 import 'package:celilac/features/profile/presentation/profile_controller.dart';
-import 'package:celilac/features/profile/presentation/profile_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 
 import '../../support/memory_profile_repository.dart';
 
@@ -17,8 +17,8 @@ class _NameLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     onBuild();
     final controller = listen
-        ? ProfileScope.of(context)
-        : ProfileScope.read(context);
+        ? context.watch<ProfileController>()
+        : context.read<ProfileController>();
     return Text(controller.profile.name ?? 'sem nome');
   }
 }
@@ -30,8 +30,8 @@ Future<int Function()> _pumpLabel(
 }) async {
   var builds = 0;
   await tester.pumpWidget(
-    ProfileScope(
-      controller: controller,
+    ChangeNotifierProvider<ProfileController>.value(
+      value: controller,
       child: MaterialApp(
         home: _NameLabel(listen: listen, onBuild: () => builds++),
       ),
@@ -46,7 +46,7 @@ const _ana = DietaryProfile(
 );
 
 void main() {
-  testWidgets('of: reconstrói quando o perfil muda', (tester) async {
+  testWidgets('watch: reconstrói quando o perfil muda', (tester) async {
     final controller = ProfileController(MemoryProfileRepository());
     addTearDown(controller.dispose);
     final builds = await _pumpLabel(tester, controller, listen: true);

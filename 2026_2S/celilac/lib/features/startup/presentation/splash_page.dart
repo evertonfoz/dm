@@ -1,14 +1,16 @@
 import 'package:celilac/app/common/widgets/image_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../app/common/widgets/gold_accent.dart';
 import '../../../app/routes/fade_route.dart';
 import '../../../app/shell/app_shell.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_spacing.dart';
+import '../../favorites/presentation/favorites_controller.dart';
 import '../../onboarding/data/onboarding_storage.dart';
 import '../../onboarding/presentation/onboarding_page.dart';
-import '../../profile/presentation/profile_scope.dart';
+import '../../profile/presentation/profile_controller.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -76,8 +78,9 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   }
 
   Future<void> _initialize() async {
-    // Começa já, em paralelo com as animações: a Splash não fica mais longa.
-    final profileLoad = ProfileScope.read(context).load();
+    // Começam já, em paralelo com as animações: a Splash não fica mais longa.
+    final profileLoad = context.read<ProfileController>().load();
+    final favoritesLoad = context.read<FavoritesController>().load();
 
     await _introController.forward();
     if (!mounted) {
@@ -89,9 +92,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       return;
     }
 
-    final (completed, _) = await (
+    final (completed, _, _) = await (
       OnboardingStorage().isCompleted(),
       profileLoad,
+      favoritesLoad,
     ).wait;
     if (!mounted) {
       return;
