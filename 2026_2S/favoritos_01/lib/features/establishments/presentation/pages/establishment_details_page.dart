@@ -41,7 +41,9 @@ class EstablishmentDetailsPage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-              Text('${establishment.category} · ${establishment.neighborhood}'),
+              Text(
+                '${establishment.category.displayName} · ${establishment.neighborhood}',
+              ),
               const SizedBox(height: 4),
               Text('Nota: ★ ${establishment.rating}'),
             ],

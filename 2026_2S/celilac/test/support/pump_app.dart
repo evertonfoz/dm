@@ -1,4 +1,7 @@
 import 'package:celilac/app/theme/app_theme.dart';
+import 'package:celilac/features/establishments/data/fake_establishment_repository.dart';
+import 'package:celilac/features/establishments/domain/repositories/establishment_repository.dart';
+import 'package:celilac/features/explore/presentation/explore_controller.dart';
 import 'package:celilac/features/favorites/domain/repositories/favorites_repository.dart';
 import 'package:celilac/features/favorites/presentation/favorites_controller.dart';
 import 'package:celilac/features/profile/domain/repositories/profile_repository.dart';
@@ -17,6 +20,7 @@ Future<ProfileController> pumpWithProfile(
   Widget home, {
   ProfileRepository? repository,
   FavoritesRepository? favoritesRepository,
+  EstablishmentRepository? exploreRepository,
   Size size = const Size(360, 800),
   double textScale = 1,
 }) async {
@@ -28,7 +32,12 @@ Future<ProfileController> pumpWithProfile(
   final favoritesController = FavoritesController(
     favoritesRepository ?? MemoryFavoritesRepository(),
   );
+  final exploreController = ExploreController(
+    exploreRepository ??
+        const FakeEstablishmentRepository(delay: Duration.zero),
+  );
   addTearDown(controller.dispose);
+  addTearDown(exploreController.dispose);
   addTearDown(favoritesController.dispose);
   await (controller.load(), favoritesController.load()).wait;
 
@@ -38,6 +47,9 @@ Future<ProfileController> pumpWithProfile(
         ChangeNotifierProvider<ProfileController>.value(value: controller),
         ChangeNotifierProvider<FavoritesController>.value(
           value: favoritesController,
+        ),
+        ChangeNotifierProvider<ExploreController>.value(
+          value: exploreController,
         ),
       ],
       child: MaterialApp(

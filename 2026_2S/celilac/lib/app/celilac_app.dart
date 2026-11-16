@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../features/establishments/data/fake_establishment_repository.dart';
+import '../features/establishments/domain/repositories/establishment_repository.dart';
+import '../features/explore/presentation/explore_controller.dart';
 import '../features/favorites/data/sqlite_favorites_repository.dart';
 import '../features/favorites/domain/repositories/favorites_repository.dart';
 import '../features/favorites/presentation/favorites_controller.dart';
@@ -16,10 +19,12 @@ class CeliLacApp extends StatelessWidget {
     super.key,
     this.profileRepository,
     this.favoritesRepository,
+    this.establishmentRepository,
   });
 
   final ProfileRepository? profileRepository;
   final FavoritesRepository? favoritesRepository;
+  final EstablishmentRepository? establishmentRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +33,17 @@ class CeliLacApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ProfileController>(
-          create: (_) => ProfileController(
-            profileRepository ?? LocalProfileRepository(),
-          ),
+          create: (_) =>
+              ProfileController(profileRepository ?? LocalProfileRepository()),
         ),
         ChangeNotifierProvider<FavoritesController>(
           create: (_) => FavoritesController(
             favoritesRepository ?? SqliteFavoritesRepository(),
+          ),
+        ),
+        ChangeNotifierProvider<ExploreController>(
+          create: (_) => ExploreController(
+            establishmentRepository ?? const FakeEstablishmentRepository(),
           ),
         ),
       ],

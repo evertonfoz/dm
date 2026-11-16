@@ -1,4 +1,5 @@
 import 'package:celilac/app/shell/app_shell.dart';
+import 'package:celilac/features/explore/presentation/pages/explore_page.dart';
 import 'package:celilac/features/favorites/presentation/pages/favorites_page.dart';
 import 'package:celilac/features/home/presentation/pages/home_page.dart';
 import 'package:celilac/features/profile/presentation/pages/profile_page.dart';
@@ -71,4 +72,62 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('um atalho de categoria da Home abre Explorar já filtrado', (
+    tester,
+  ) async {
+    await pumpWithProfile(
+      tester,
+      const AppShell(),
+      size: const Size(360, 2400),
+    );
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+
+    await tester.tap(
+      find.descendant(
+        of: find.byType(HomePage),
+        matching: find.widgetWithText(InkWell, 'Padaria'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ExplorePage), findsOne);
+    expect(find.text('Padaria Leve Grão'), findsWidgets);
+    expect(find.text('Café Aconchego'), findsNothing);
+    final chip = tester.widget<FilterChip>(
+      find.widgetWithText(FilterChip, 'Padaria'),
+    );
+    expect(chip.selected, isTrue);
+  });
+
+  testWidgets('os filtros de Explorar sobrevivem à troca de aba', (
+    tester,
+  ) async {
+    await pumpWithProfile(
+      tester,
+      const AppShell(),
+      size: const Size(360, 2400),
+    );
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    await _goToTab(tester, 'Explorar');
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(FilterChip, 'Mercado'));
+    await tester.pumpAndSettle();
+
+    await _goToTab(tester, 'Perfil');
+    await tester.pumpAndSettle();
+    await _goToTab(tester, 'Explorar');
+    await tester.pumpAndSettle();
+
+    final chip = tester.widget<FilterChip>(
+      find.widgetWithText(FilterChip, 'Mercado'),
+    );
+    expect(chip.selected, isTrue);
+  });
 }
+
+/// Toca numa aba da barra de navegação inferior pelo rótulo.
+Future<void> _goToTab(WidgetTester tester, String label) => tester.tap(
+  find.descendant(of: find.byType(NavigationBar), matching: find.text(label)),
+);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../features/explore/presentation/pages/explore_page.dart';
 import '../../features/favorites/presentation/pages/favorites_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 
@@ -20,6 +21,7 @@ class _AppShellState extends State<AppShell> {
         index: _selectedIndex,
         children: [
           const HomePage(),
+          const ExplorePage(),
           FavoritesPage(onExploreTap: () => setState(() => _selectedIndex = 0)),
         ],
       ),
@@ -35,6 +37,11 @@ class _AppShellState extends State<AppShell> {
             icon: Icon(Icons.storefront_outlined),
             selectedIcon: Icon(Icons.storefront),
             label: 'Início',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search),
+            label: 'Explorar',
           ),
           NavigationDestination(
             icon: Icon(Icons.favorite_border),

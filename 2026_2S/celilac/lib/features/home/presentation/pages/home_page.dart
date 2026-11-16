@@ -10,7 +10,9 @@ import '../../../establishments/domain/entities/establishment.dart';
 import '../../../establishments/domain/repositories/establishment_repository.dart';
 import '../../../establishments/presentation/pages/establishment_details_page.dart';
 import '../../../establishments/presentation/widgets/establishment_card.dart';
+import '../../../explore/presentation/explore_controller.dart';
 import '../../../favorites/presentation/favorites_controller.dart';
+import '../../../favorites/presentation/toggle_favorite.dart';
 import '../../../profile/domain/entities/dietary_profile.dart';
 import '../../../profile/domain/profile_match.dart';
 import '../../../profile/presentation/pages/profile_form_page.dart';
@@ -23,9 +25,12 @@ import '../widgets/profile_prompt_card.dart';
 import '../widgets/search_entry.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.repository});
+  const HomePage({super.key, required this.repository, this.onOpenExplore});
 
   final EstablishmentRepository repository;
+
+  /// Pede ao AppShell para mostrar a aba Explorar.
+  final VoidCallback? onOpenExplore;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -55,14 +60,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _showComingSoon(String feature) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(content: Text('$feature estará disponível em breve.')),
-      );
-  }
-
   void _openProfileForm() {
     Navigator.of(context).push(ProfileFormPage.route());
   }
@@ -76,21 +73,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  Future<void> _toggleFavorite(Establishment establishment) async {
-    try {
-      await context.read<FavoritesController>().toggle(establishment);
-    } on Object {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text('Não foi possível atualizar os favoritos.'),
-          ),
-        );
-    }
   }
 
   @override
@@ -138,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                   name: profile.name,
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                SearchEntry(onTap: () => _showComingSoon('A busca')),
+                SearchEntry(onTap: () => widget.onOpenExplore?.call()),
                 // O espaço some junto com o cartão, sem buraco na tela.
                 if (!profile.isComplete) ...[
                   const SizedBox(height: AppSpacing.lg),
@@ -148,14 +130,19 @@ class _HomePageState extends State<HomePage> {
                 const SectionHeader(title: 'Categorias'),
                 const SizedBox(height: AppSpacing.sm),
                 CategoryShortcuts(
-                  onSelected: (category) =>
-                      _showComingSoon('A categoria ${category.label}'),
+                  onSelected: (category) {
+                    context.read<ExploreController>().showOnly(category);
+                    widget.onOpenExplore?.call();
+                  },
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 SectionHeader(
                   title: 'Perto de você',
                   actionLabel: 'Ver todos',
-                  onAction: () => _showComingSoon('A lista completa'),
+                  onAction: () {
+                    context.read<ExploreController>().clearFilters();
+                    widget.onOpenExplore?.call();
+                  },
                 ),
                 if (profile.isComplete)
                   Text(
@@ -182,10 +169,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildNearby(
-    DietaryProfile profile,
-    FavoritesController favorites,
-  ) {
+  Widget _buildNearby(DietaryProfile profile, FavoritesController favorites) {
     return FutureBuilder<List<Establishment>>(
       future: _nearbyFuture,
       builder: (context, snapshot) {
@@ -232,7 +216,8 @@ class _HomePageState extends State<HomePage> {
               establishment: establishment,
               matchesProfile: meetsProfile(establishment, profile),
               isFavorite: favorites.isFavorite(establishment.id),
-              onFavoriteToggle: () => _toggleFavorite(establishment),
+              onFavoriteToggle: () =>
+                  toggleFavoriteWithFeedback(context, establishment),
               onTap: () => _openDetails(establishment),
             );
           },

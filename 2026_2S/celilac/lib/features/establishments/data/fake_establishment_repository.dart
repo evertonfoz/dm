@@ -56,6 +56,78 @@ class FakeEstablishmentRepository implements EstablishmentRepository {
       rating: 4.5,
       dietaryOptions: {DietaryOption.lactoseFree},
     ),
+    Establishment(
+      id: '5',
+      name: 'Cozinha da Vó Lúcia',
+      category: EstablishmentCategory.restaurant,
+      neighborhood: 'Zona 7',
+      distanceInKm: 0.8,
+      rating: 4.4,
+      dietaryOptions: {DietaryOption.glutenFree},
+    ),
+    Establishment(
+      id: '6',
+      name: 'Pão de Quinoa',
+      category: EstablishmentCategory.bakery,
+      neighborhood: 'Centro',
+      distanceInKm: 0.6,
+      rating: 4.9,
+      dietaryOptions: {DietaryOption.glutenFree, DietaryOption.lactoseFree},
+    ),
+    Establishment(
+      id: '7',
+      name: 'Café Grão Leve',
+      category: EstablishmentCategory.cafe,
+      neighborhood: 'Zona 7',
+      distanceInKm: 1.9,
+      rating: 4.2,
+      dietaryOptions: {DietaryOption.lactoseFree},
+    ),
+    Establishment(
+      id: '8',
+      name: 'Mercado Vida Simples',
+      category: EstablishmentCategory.market,
+      neighborhood: 'Jardim das Flores',
+      distanceInKm: 1.5,
+      rating: 4.3,
+      dietaryOptions: {DietaryOption.glutenFree, DietaryOption.lactoseFree},
+    ),
+    Establishment(
+      id: '9',
+      name: 'Trattoria Sem Trigo',
+      category: EstablishmentCategory.restaurant,
+      neighborhood: 'Vila Nova',
+      distanceInKm: 2.8,
+      rating: 4.6,
+      dietaryOptions: {DietaryOption.glutenFree},
+    ),
+    Establishment(
+      id: '10',
+      name: 'Doce Pureza Confeitaria',
+      category: EstablishmentCategory.bakery,
+      neighborhood: 'Bela Vista',
+      distanceInKm: 3.4,
+      rating: 4.7,
+      dietaryOptions: {DietaryOption.lactoseFree},
+    ),
+    Establishment(
+      id: '11',
+      name: 'Café Pé de Serra',
+      category: EstablishmentCategory.cafe,
+      neighborhood: 'Bela Vista',
+      distanceInKm: 4.2,
+      rating: 4.1,
+      dietaryOptions: {DietaryOption.glutenFree, DietaryOption.lactoseFree},
+    ),
+    Establishment(
+      id: '12',
+      name: 'Empório da Terra',
+      category: EstablishmentCategory.market,
+      neighborhood: 'Zona 7',
+      distanceInKm: 5.0,
+      rating: 4.0,
+      dietaryOptions: {DietaryOption.glutenFree},
+    ),
   ];
 
   static final Map<String, EstablishmentDetails> _details = {
@@ -189,7 +261,77 @@ class FakeEstablishmentRepository implements EstablishmentRepository {
         ),
       ],
     ),
+    ..._simpleDetails(
+      '5',
+      'Cozinha caseira com pratos do dia sem glúten.',
+      'Rua Pioneiro, 210 - Zona 7',
+      {SafetyPractice.trainedStaff},
+    ),
+    ..._simpleDetails(
+      '6',
+      'Padaria especializada em pães sem glúten e sem lactose.',
+      'Rua das Acácias, 48 - Centro',
+      {SafetyPractice.separateKitchen, SafetyPractice.exclusiveUtensils},
+    ),
+    ..._simpleDetails(
+      '7',
+      'Café com bebidas vegetais e bolos sem lactose.',
+      'Avenida Brasil, 1500 - Zona 7',
+      {SafetyPractice.ingredientList},
+    ),
+    ..._simpleDetails(
+      '8',
+      'Mercado de bairro com seção de alimentos especiais.',
+      'Rua das Flores, 77 - Jardim das Flores',
+      {SafetyPractice.ingredientList},
+    ),
+    ..._simpleDetails(
+      '9',
+      'Massas artesanais feitas sem trigo.',
+      'Rua Paraná, 640 - Vila Nova',
+      {SafetyPractice.separateKitchen, SafetyPractice.trainedStaff},
+    ),
+    ..._simpleDetails(
+      '10',
+      'Confeitaria de doces sem lactose sob encomenda.',
+      'Rua Ipê, 15 - Bela Vista',
+      {SafetyPractice.ingredientList},
+    ),
+    ..._simpleDetails(
+      '11',
+      'Café de serra com opções sem glúten e sem lactose.',
+      'Estrada do Café, 300 - Bela Vista',
+      {SafetyPractice.exclusiveUtensils},
+    ),
+    ..._simpleDetails(
+      '12',
+      'Empório com grãos, farinhas e snacks sem glúten.',
+      'Rua da Colheita, 9 - Zona 7',
+      {SafetyPractice.ingredientList},
+    ),
   };
+
+  /// Detalhes enxutos para os lugares que não têm fotos próprias.
+  static Map<String, EstablishmentDetails> _simpleDetails(
+    String id,
+    String description,
+    String address,
+    Set<SafetyPractice> practices,
+  ) {
+    return {
+      id: EstablishmentDetails(
+        establishmentId: id,
+        description: description,
+        address: address,
+        openingHours: _hoursFor(
+          [1, 2, 3, 4, 5, 6],
+          opensAt: const Duration(hours: 9),
+          closesAt: const Duration(hours: 18),
+        ),
+        safetyPractices: practices,
+      ),
+    };
+  }
 
   static List<OpeningHours> _hoursFor(
     List<int> weekdays, {

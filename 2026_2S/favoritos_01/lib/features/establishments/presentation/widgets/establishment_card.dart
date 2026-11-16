@@ -31,7 +31,7 @@ class EstablishmentCard extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
-          '${item.category} · ${item.neighborhood} · ★ ${item.rating}',
+          '${item.category.displayName} · ${item.neighborhood} · ★ ${item.rating}',
         ),
         trailing: onFavoriteToggle != null
             ? FavoriteButton(

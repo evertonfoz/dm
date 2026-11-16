@@ -13,6 +13,7 @@ import '../../../establishments/presentation/widgets/establishment_card.dart';
 import '../../../profile/domain/profile_match.dart';
 import '../../../profile/presentation/profile_controller.dart';
 import '../favorites_controller.dart';
+import '../toggle_favorite.dart';
 
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({
@@ -34,24 +35,6 @@ class FavoritesPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _toggleFavorite(
-    BuildContext context,
-    Establishment establishment,
-  ) async {
-    try {
-      await context.read<FavoritesController>().toggle(establishment);
-    } on Object {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text('Não foi possível atualizar os favoritos.'),
-          ),
-        );
-    }
   }
 
   @override
@@ -112,7 +95,7 @@ class FavoritesPage extends StatelessWidget {
                     isFavorite: true,
                     heroOrigin: 'favorites',
                     onFavoriteToggle: () =>
-                        _toggleFavorite(context, favorites[i]),
+                        toggleFavoriteWithFeedback(context, favorites[i]),
                     onTap: () => _openDetails(context, favorites[i]),
                   ),
                 ],

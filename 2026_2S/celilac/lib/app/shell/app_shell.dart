@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../features/establishments/data/fake_establishment_repository.dart';
+import '../../features/explore/presentation/pages/explore_page.dart';
 import '../../features/favorites/presentation/pages/favorites_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
-import '../common/widgets/coming_soon_view.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -17,11 +17,14 @@ class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
 
   late final List<Widget> _tabs = [
-    const HomePage(repository: FakeEstablishmentRepository()),
-    const ComingSoonView(title: 'Explorar', icon: Icons.explore_outlined),
+    HomePage(
+      repository: const FakeEstablishmentRepository(),
+      onOpenExplore: () => _onDestinationSelected(1),
+    ),
+    const ExplorePage(repository: FakeEstablishmentRepository()),
     FavoritesPage(
       repository: const FakeEstablishmentRepository(),
-      onExploreTap: () => _onDestinationSelected(0),
+      onExploreTap: () => _onDestinationSelected(1),
     ),
     const ProfilePage(),
   ];
