@@ -32,10 +32,11 @@ Future<ProfileController> pumpWithProfile(
   final favoritesController = FavoritesController(
     favoritesRepository ?? MemoryFavoritesRepository(),
   );
-  final exploreController = ExploreController(
-    exploreRepository ??
-        const FakeEstablishmentRepository(delay: Duration.zero),
-  );
+  // O mesmo repositório para o ExploreController e para o AppShell, como no app.
+  final establishmentRepository =
+      exploreRepository ??
+      const FakeEstablishmentRepository(delay: Duration.zero);
+  final exploreController = ExploreController(establishmentRepository);
   addTearDown(controller.dispose);
   addTearDown(exploreController.dispose);
   addTearDown(favoritesController.dispose);
@@ -44,6 +45,7 @@ Future<ProfileController> pumpWithProfile(
   await tester.pumpWidget(
     MultiProvider(
       providers: [
+        Provider<EstablishmentRepository>.value(value: establishmentRepository),
         ChangeNotifierProvider<ProfileController>.value(value: controller),
         ChangeNotifierProvider<FavoritesController>.value(
           value: favoritesController,

@@ -1,5 +1,6 @@
 import 'package:celilac/app/celilac_app.dart';
 import 'package:celilac/app/shell/app_shell.dart';
+import 'package:celilac/features/establishments/data/fake_establishment_repository.dart';
 import 'package:celilac/features/establishments/domain/entities/dietary_option.dart';
 import 'package:celilac/features/favorites/presentation/favorites_controller.dart';
 import 'package:celilac/features/onboarding/presentation/onboarding_page.dart';
@@ -39,6 +40,7 @@ void main() {
       CeliLacApp(
         profileRepository: profileRepo,
         favoritesRepository: favoritesRepo,
+        establishmentRepository: const FakeEstablishmentRepository(),
       ),
     );
     expect(find.byType(SplashPage), findsOne);
@@ -70,6 +72,7 @@ void main() {
       CeliLacApp(
         profileRepository: profileRepo,
         favoritesRepository: favoritesRepo,
+        establishmentRepository: const FakeEstablishmentRepository(),
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 100));

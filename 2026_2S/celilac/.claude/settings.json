@@ -6,7 +6,11 @@
       "Bash(flutter --version)",
       "Bash(flutter analyze *)",
       "Bash(grep -v '^\\\\s*$')",
-      "Bash(git mv *)"
+      "Bash(git mv *)",
+      "Bash(cp pubspec.lock /private/tmp/claude-501/-Users-evertoncoimbradearaujo-Documents-GitHub-dm-2026-2S-celilac/1a6da724-f777-4066-8952-acf45cf0ecf5/scratchpad/pubspec.lock.before && flutter pub add supabase_flutter dev:http 2>&1 | tail -8 && grep -A2 -E \"^  \\(supabase_flutter|supabase|postgrest|http|storage_client|gotrue\\):\" pubspec.lock && grep -n \"supabase\\\\|http\" pubspec.yaml)"
+    ],
+    "additionalDirectories": [
+      "/Users/evertoncoimbradearaujo/Documents/GitHub/dm/2026_2S/celilac"
     ]
   }
 }

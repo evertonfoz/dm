@@ -135,4 +135,27 @@ void main() {
     expect(all.first.logoSource, _cafe.logoSource);
     expect(all.last.logoSource, isNull);
   });
+
+  test(
+    'migra para a versão 3 apagando os favoritos do catálogo fake',
+    () async {
+      final v2Db = await databaseFactoryFfi.openDatabase(
+        inMemoryDatabasePath,
+        options: OpenDatabaseOptions(
+          version: 2,
+          singleInstance: false,
+          onCreate: SqliteFavoritesRepository.createSchema,
+        ),
+      );
+      addTearDown(v2Db.close);
+      final v2Repo = SqliteFavoritesRepository(openDatabase: () async => v2Db);
+      await v2Repo.add(_cafe);
+      await v2Repo.add(_bakery);
+
+      await SqliteFavoritesRepository.upgradeSchema(v2Db, 2, 3);
+
+      expect(await v2Repo.loadAll(), isEmpty);
+      expect(await v2Repo.isFavorite('1'), isFalse);
+    },
+  );
 }

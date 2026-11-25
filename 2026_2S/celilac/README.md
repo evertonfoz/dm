@@ -6,9 +6,12 @@ Aplicativo Flutter para encontrar estabelecimentos e produtos adequados a quem p
 
 Feito com Flutter 3.47 / Dart 3.13.
 
+A partir do material 8, o catálogo vem do **seu** projeto Supabase (material 7). Copie o modelo de configuração, preencha com a Project URL e a chave **pública** (nunca a secreta) e rode passando o arquivo:
+
 ```bash
+cp supabase.example.json supabase.json   # o supabase.json fica fora do Git
 flutter pub get
-flutter run
+flutter run --dart-define-from-file=supabase.json
 ```
 
 Qualidade:
@@ -28,6 +31,8 @@ flutter test
 | 4 | [Perfil Alimentar](docs/tutorials/CeliLac_Perfil_Alimentar.md) | Formulários, persistência em JSON, estado compartilhado entre telas, Home personalizada |
 | 5 | [Favoritos, SQLite e Provider](docs/tutorials/CeliLac_Favoritos_SQLite_e_Provider.md) | Persistência relacional com `sqflite`, migração de esquema (`onUpgrade`), `MultiProvider` e sincronização entre Home, Detalhe e aba Favoritos |
 | 6 | [Explorar: busca, filtros e ordenação](docs/tutorials/CeliLac_Explorar_Busca_e_Filtros.md) | Consulta imutável, função pura de filtragem, estado derivado de três fontes, *debounce*, filtros acessíveis e integração Home ↔ Explorar |
+| 7 | [Introdução ao Supabase](docs/tutorials/CeliLac_Supabase_Introducao.md) | Postgres na nuvem, modelagem, SQL básico, RLS, Storage e consulta à API REST com `curl` (sem Flutter); scripts em [`docs/tutorials/supabase/sql/`](docs/tutorials/supabase/sql/) |
+| 8 | [CeliLac com Supabase](docs/tutorials/CeliLac_Supabase_Flutter.md) | `supabase_flutter`, chaves por `--dart-define-from-file`, conversão JSON → entidades, dados embutidos, contrato de erro, *timeout* e nova tentativa, migração dos favoritos e testes sem rede com `MockClient` |
 
 O [roteiro de implementação do Perfil Alimentar](docs/tutorials/CeliLac_Perfil_Alimentar_Roteiro.md) registra o plano e as decisões tomadas durante a implementação do material 4, e o documento [Base para Slides — Favoritos, SQLite e Provider](docs/tutorials/CeliLac_Favoritos_SQLite_e_Provider_Slides.md) estrutura os problemas, soluções e opções da etapa 5 para apresentação em aula.
 
@@ -41,8 +46,8 @@ lib/
 └── features/     uma pasta por assunto (startup, onboarding, home, establishments, profile, favorites, explore)
     └── <feature>/
         ├── domain/        entidades e contratos, sem Flutter
-        ├── data/          implementações (fake, armazenamento local)
+        ├── data/          implementações (Supabase, fake, armazenamento local)
         └── presentation/  páginas e widgets
 ```
 
-Os dados dos estabelecimentos são fictícios (`FakeEstablishmentRepository`), e as imagens foram geradas por IA.
+Os dados dos estabelecimentos são fictícios: no app, vêm do Supabase (carregados pelo `02_seed.sql`); nos testes, do `FakeEstablishmentRepository`. As imagens foram geradas por IA.

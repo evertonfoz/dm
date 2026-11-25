@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-import '../features/establishments/data/fake_establishment_repository.dart';
 import '../features/establishments/domain/repositories/establishment_repository.dart';
 import '../features/explore/presentation/explore_controller.dart';
 import '../features/favorites/data/sqlite_favorites_repository.dart';
@@ -19,12 +18,15 @@ class CeliLacApp extends StatelessWidget {
     super.key,
     this.profileRepository,
     this.favoritesRepository,
-    this.establishmentRepository,
+    required this.establishmentRepository,
   });
 
   final ProfileRepository? profileRepository;
   final FavoritesRepository? favoritesRepository;
-  final EstablishmentRepository? establishmentRepository;
+
+  /// De onde vem o catálogo. Quem decide é o `main` (Supabase) ou o teste
+  /// (fake); nenhuma tela sabe qual é.
+  final EstablishmentRepository establishmentRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,9 @@ class CeliLacApp extends StatelessWidget {
     // controladores, e o ChangeNotifierProvider cuida de criar e descartar.
     return MultiProvider(
       providers: [
+        // Provider simples (não ChangeNotifier): o repositório não muda, só
+        // precisa estar ao alcance do AppShell.
+        Provider<EstablishmentRepository>.value(value: establishmentRepository),
         ChangeNotifierProvider<ProfileController>(
           create: (_) =>
               ProfileController(profileRepository ?? LocalProfileRepository()),
@@ -42,9 +47,7 @@ class CeliLacApp extends StatelessWidget {
           ),
         ),
         ChangeNotifierProvider<ExploreController>(
-          create: (_) => ExploreController(
-            establishmentRepository ?? const FakeEstablishmentRepository(),
-          ),
+          create: (_) => ExploreController(establishmentRepository),
         ),
       ],
       child: MaterialApp(

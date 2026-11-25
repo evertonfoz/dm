@@ -11,7 +11,10 @@ class SqliteFavoritesRepository implements FavoritesRepository {
 
   static const String tableName = 'favorites';
   static const String databaseFileName = 'celilac_favorites.db';
-  static const int schemaVersion = 2;
+
+  /// 1: tabela inicial. 2: coluna `logo_source`.
+  /// 3: catálogo no Supabase (ids passam a ser uuids; favoritos antigos saem).
+  static const int schemaVersion = 3;
 
   final Future<Database> Function() _openDatabase;
   Future<Database>? _database;
@@ -50,10 +53,18 @@ class SqliteFavoritesRepository implements FavoritesRepository {
     int oldVersion,
     int newVersion,
   ) async {
-    if (oldVersion < 2) {
+    // Cada passo roda só se a migração atravessa aquela versão.
+    if (oldVersion < 2 && newVersion >= 2) {
       await db.execute(
         'ALTER TABLE $tableName ADD COLUMN logo_source TEXT',
       );
+    }
+    if (oldVersion < 3 && newVersion >= 3) {
+      // Os favoritos salvos apontam para os ids '1'..'12' do catálogo fake,
+      // que não existem no Supabase (lá os ids são uuids). A cópia guardada
+      // também traz caminhos de assets em vez de URLs. Recomeçar do zero é a
+      // opção mais simples e honesta para um catálogo fictício.
+      await db.delete(tableName);
     }
   }
 

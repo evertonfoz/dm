@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- O catálogo vem do Supabase. Sem esta linha, o APK de release não
+         acessa a internet (debug e profile já a declaram nos seus manifestos). -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="celilac"
         android:name="${applicationName}"

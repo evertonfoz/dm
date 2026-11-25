@@ -1,3 +1,9 @@
+# Supabase: URL e chave pública de cada aluno (modelo em supabase.example.json)
+supabase.json
+.env
+.env*.local
+
+
 # Miscellaneous
 *.class
 *.log
